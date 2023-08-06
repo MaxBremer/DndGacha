@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 876edf0a239a40643beaf9d65bf9d9fd, type: 3}
+  m_Name: Taran
+  m_EditorClassIdentifier: 
+  CharName: Taran Elmroot
+  rarity: 3
+  CardTexture: {fileID: 2800000, guid: cc884d92e9d625d4c8a8b731df9b347d, type: 3}
+  attack: 0
+  defense: 0
+  health: 0
