@@ -23,7 +23,7 @@ public class Player
 
     public List<Creature> Reserve = new List<Creature>();
 
-    public List<GridSpace> ValidCallSpots = new List<GridSpace>();
+    public List<GridSpace> ValidInitSpaces = new List<GridSpace>();
 
     public Game MyGame;
 
@@ -39,6 +39,7 @@ public class Player
         {
             RemoveFromReserve(creat);
             OnBoardCreatures.Add(creat);
+            CanCallThisTurn = false;
         }
         else
         {

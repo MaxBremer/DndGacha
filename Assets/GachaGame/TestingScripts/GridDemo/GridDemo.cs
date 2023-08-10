@@ -70,11 +70,11 @@ public class GridDemo : MonoBehaviour
                 }
             }
 
-            if (g.Players[0].ValidCallSpots.Contains(gSquare))
+            if (g.Players[0].ValidInitSpaces.Contains(gSquare))
             {
                 mat.color = P1CallSquareColor;
             }
-            else if (g.Players[1].ValidCallSpots.Contains(gSquare))
+            else if (g.Players[1].ValidInitSpaces.Contains(gSquare))
             {
                 mat.color = P2CallSquareColor;
             }

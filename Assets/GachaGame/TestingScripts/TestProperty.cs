@@ -75,8 +75,8 @@ public class TestProperty : MonoBehaviour
         g.Players[0].PutInReserve(dotCreature);
         g.Players[1].PutInReserve(huskCreature);
 
-        g.CallCharacter(dotCreature, g.Players[0].ValidCallSpots[0], g.Players[0]);
-        g.CallCharacter(huskCreature, g.Players[1].ValidCallSpots[0], g.Players[1]);
+        g.CallCharacter(dotCreature, g.Players[0].ValidInitSpaces[0], g.Players[0]);
+        g.CallCharacter(huskCreature, g.Players[1].ValidInitSpaces[0], g.Players[1]);
         Debug.Log("Dot third ability is " + dotCreature.Abilities[2].DisplayName);
 
 

@@ -5,6 +5,7 @@ using UnityEngine;
 public class GameDemoBoardChar : MonoBehaviour
 {
     public Creature MyCreature;
+    public GameDemo MyGameDemo;
 
     // Start is called before the first frame update
     void Start()
@@ -21,5 +22,10 @@ public class GameDemoBoardChar : MonoBehaviour
     public void SetCreat(Creature creat)
     {
         MyCreature = creat;
+    }
+
+    private void OnMouseDown()
+    {
+        MyGameDemo.SelOnboardChar(gameObject);
     }
 }

@@ -78,7 +78,7 @@ public class GachaGrid
 
     public static bool InitSquareAvailable(Player p)
     {
-        foreach (var sq in p.ValidCallSpots)
+        foreach (var sq in p.ValidInitSpaces)
         {
             if (!sq.isBlocked)
             {

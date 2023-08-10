@@ -197,14 +197,14 @@ public class Game
             int[] options = GridWidth % 2 == 0 ? new int[] { midPoint - 2, midPoint - 1, midPoint, midPoint + 1 } : new int[] { midPoint - 2, midPoint - 1, midPoint };
             foreach (int xPos in options)
             {
-                Players[0].ValidCallSpots.Add(GameGrid[(xPos, 0)]);
-                Players[1].ValidCallSpots.Add(GameGrid[(xPos, GridHeight - 1)]);
+                Players[0].ValidInitSpaces.Add(GameGrid[(xPos, 0)]);
+                Players[1].ValidInitSpaces.Add(GameGrid[(xPos, GridHeight - 1)]);
             }
         }
         else
         {
-            Players[0].ValidCallSpots.Add(GameGrid[(midPoint - 1, 0)]);
-            Players[1].ValidCallSpots.Add(GameGrid[(midPoint - 1, GridHeight - 1)]);
+            Players[0].ValidInitSpaces.Add(GameGrid[(midPoint - 1, 0)]);
+            Players[1].ValidInitSpaces.Add(GameGrid[(midPoint - 1, GridHeight - 1)]);
         }
     }
 

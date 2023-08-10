@@ -20,7 +20,8 @@ public class GameDemo : MonoBehaviour
     public GameObject BoardCharObj;
     public GameObject InfoPanelObj;
 
-    public GameObject CurSelectedChar;
+    public Creature CurSelectedCreat;
+    private GameObject CurInfoPanel;
 
     public GameObject P1ReserveLoc;
     public GameObject P2ReserveLoc;
@@ -53,6 +54,7 @@ public class GameDemo : MonoBehaviour
             GridObjs.Add(gSquare, space);
             var gameDemoProp = space.GetComponent<GameDemoSquare>();
             gameDemoProp.MyGridSpace = gSquare;
+            gameDemoProp.MyGameDemo = this;
         }
 
         ResetTilesToBase();
@@ -91,18 +93,36 @@ public class GameDemo : MonoBehaviour
     {
         PotentialDeselect();
         var infoPanel = Instantiate(InfoPanelObj, target.transform.position - new Vector3(0, 0, 4), Quaternion.identity);
-        infoPanel.GetComponent<BaseInfoPanel>().SetCreature(target.GetComponent<GameDemoReserveChar>().MyCreature);
-        CurSelectedChar = infoPanel;
+        var targetCreat = target.GetComponent<GameDemoReserveChar>().MyCreature;
+        infoPanel.GetComponent<BaseInfoPanel>().SetCreature(targetCreat);
+        CurSelectedCreat = targetCreat;
+        CurInfoPanel = infoPanel;
     }
 
-    private void SelOnboardChar(GameObject target)
+    public void SelOnboardChar(GameObject target)
     {
+        // Deselect any currently selected character
+        PotentialDeselect();
 
+        // Get the GameDemoBoardChar component from the target GameObject
+        GameDemoBoardChar boardCharComp = target.GetComponent<GameDemoBoardChar>();
+
+        // Check if the character belongs to the current player
+        if (boardCharComp.MyCreature.Controller == MyGame.Players[MyGame.CurrentPlayerIndex])
+        {
+            // Instantiate the InfoPanelObj to display the character's information
+            var infoPanel = Instantiate(InfoPanelObj, target.transform.position - new Vector3(0, 0, 4), Quaternion.identity);
+            infoPanel.GetComponent<BaseInfoPanel>().SetCreature(boardCharComp.MyCreature);
+
+            // Set the CurSelectedCreat to the instantiated InfoPanelObj
+            CurSelectedCreat = boardCharComp.MyCreature;
+            CurInfoPanel = infoPanel;
+        }
     }
 
-    private void PotentialDeselect()
+    public void PotentialDeselect()
     {
-        if(CurSelectedChar != null)
+        if(CurSelectedCreat != null)
         {
             ClearSelChar();
         }
@@ -110,19 +130,23 @@ public class GameDemo : MonoBehaviour
 
     private void ClearSelChar()
     {
-        Destroy(CurSelectedChar);
-        CurSelectedChar = null;
+        if (CurInfoPanel != null)
+        {
+            Destroy(CurInfoPanel);
+            CurInfoPanel = null;
+        }
+        CurSelectedCreat = null;
     }
 
     private void ResetTilesToBase()
     {
         foreach (var gSquare in MyGame.GameGrid.GetAllGridSquares())
         {
-            if (MyGame.Players[0].ValidCallSpots.Contains(gSquare))
+            if (MyGame.Players[0].ValidInitSpaces.Contains(gSquare))
             {
                 SetSquareCol(gSquare, NeededColors[P1COLOR]);
             }
-            else if (MyGame.Players[1].ValidCallSpots.Contains(gSquare))
+            else if (MyGame.Players[1].ValidInitSpaces.Contains(gSquare))
             {
                 SetSquareCol(gSquare, NeededColors[P2COLOR]);
             }
@@ -150,6 +174,14 @@ public class GameDemo : MonoBehaviour
             gameComp.MyCreature = cArgs.BeingSummoned;
         }
     }*/
+    private void InstantiateBoardCharacter(CreatureSpaceArgs cArgs)
+    {
+        var creat = Instantiate(BoardCharObj, new Vector3(cArgs.SpaceInvolved.XPos, cArgs.SpaceInvolved.YPos, 0), Quaternion.identity);
+        var gameComp = creat.GetComponent<GameDemoBoardChar>();
+        gameComp.SetCreat(cArgs.MyCreature);
+        gameComp.MyGameDemo = this;
+        CreatObjs.Add(cArgs.MyCreature, creat);
+    }
 
     private void OnCreatureEntersSpace(object sender, EventArgs e)
     {
@@ -161,10 +193,7 @@ public class GameDemo : MonoBehaviour
             }
             else
             {
-                var creat = Instantiate(BoardCharObj, new Vector3(cArgs.SpaceInvolved.XPos, cArgs.SpaceInvolved.YPos, 0), Quaternion.identity);
-                var gameComp = creat.GetComponent<GameDemoBoardChar>();
-                gameComp.SetCreat(cArgs.MyCreature);
-                CreatObjs.Add(cArgs.MyCreature, creat);
+                InstantiateBoardCharacter(cArgs);
             }
         }
     }
