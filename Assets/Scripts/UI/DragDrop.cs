@@ -27,16 +27,6 @@ public class DragDrop : MonoBehaviour
     {
         if (_dragging)
         {
-            /*Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-            Vector3 startPos = transform.position;
-            Vector3 endPos = ray.GetPoint(_dist);
-            Vector3 endPosLook = new Vector3(endPos.x, endPos.y, endPos.z + DRAG_LOOK_INCR);
-
-            transform.position = Vector3.Lerp(startPos, endPos, Time.deltaTime * DRAG_SPEED_MULT);
-
-            Vector3 relPos = endPosLook - transform.position;
-            transform.rotation = Quaternion.LookRotation(relPos, Vector3.up);*/
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
             Vector3 startPos = transform.position;

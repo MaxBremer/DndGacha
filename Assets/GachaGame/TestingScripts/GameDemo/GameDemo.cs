@@ -80,7 +80,7 @@ public class GameDemo : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(1))
         {
-            ClearSelChar();
+            PotentialDeselect();
         }
     }
 
@@ -91,12 +91,10 @@ public class GameDemo : MonoBehaviour
 
     public void SelReserveChar(GameObject target)
     {
-        PotentialDeselect();
-        var infoPanel = Instantiate(InfoPanelObj, target.transform.position - new Vector3(0, 0, 4), Quaternion.identity);
+        PotentialDeselect(false);
         var targetCreat = target.GetComponent<GameDemoReserveChar>().MyCreature;
-        infoPanel.GetComponent<BaseInfoPanel>().SetCreature(targetCreat);
+        UpdateOrInstantiateInfoPanel(targetCreat, target.transform.position);
         CurSelectedCreat = targetCreat;
-        CurInfoPanel = infoPanel;
     }
 
     public void SelOnboardChar(GameObject target)
@@ -111,31 +109,54 @@ public class GameDemo : MonoBehaviour
         if (boardCharComp.MyCreature.Controller == MyGame.Players[MyGame.CurrentPlayerIndex])
         {
             // Instantiate the InfoPanelObj to display the character's information
-            var infoPanel = Instantiate(InfoPanelObj, target.transform.position - new Vector3(0, 0, 4), Quaternion.identity);
-            infoPanel.GetComponent<BaseInfoPanel>().SetCreature(boardCharComp.MyCreature);
+            UpdateOrInstantiateInfoPanel(boardCharComp.MyCreature, target.transform.position);
 
             // Set the CurSelectedCreat to the instantiated InfoPanelObj
             CurSelectedCreat = boardCharComp.MyCreature;
-            CurInfoPanel = infoPanel;
         }
     }
 
-    public void PotentialDeselect()
+    public void PotentialDeselect(bool destroyInfoPanel = true)
     {
         if(CurSelectedCreat != null)
         {
-            ClearSelChar();
+            if (CreatObjs.TryGetValue(CurSelectedCreat, out GameObject gameObj))
+            {
+                gameObj.GetComponent<GameDemoBoardChar>()?.Deselect();
+                gameObj.GetComponent<GameDemoReserveChar>()?.Deselect();
+            }
+
+            ClearSelChar(destroyInfoPanel);
         }
     }
 
-    private void ClearSelChar()
+    public void EndTurn()
     {
-        if (CurInfoPanel != null)
+        MyGame.EndTurn();
+    }
+
+    private void ClearSelChar(bool destroyInfoPanel)
+    {
+        if (destroyInfoPanel && CurInfoPanel != null)
         {
             Destroy(CurInfoPanel);
             CurInfoPanel = null;
         }
         CurSelectedCreat = null;
+    }
+
+    private void UpdateOrInstantiateInfoPanel(Creature targetCreat, Vector3 position)
+    {
+        if (CurInfoPanel != null)
+        {
+            CurInfoPanel.GetComponent<BaseInfoPanel>().SetCreature(targetCreat);
+        }
+        else
+        {
+            var infoPanel = Instantiate(InfoPanelObj, position - new Vector3(0, 0, 4), Quaternion.identity);
+            infoPanel.GetComponent<BaseInfoPanel>().SetCreature(targetCreat);
+            CurInfoPanel = infoPanel;
+        }
     }
 
     private void ResetTilesToBase()
@@ -220,6 +241,7 @@ public class GameDemo : MonoBehaviour
             }
             var gameComp = creat.GetComponent<GameDemoReserveChar>();
             gameComp.SetCreat(cArgs.BeingReserved);
+            CreatObjs.Add(cArgs.BeingReserved, creat);
             gameComp.MyGameDemo = this;
         }
     }
@@ -238,6 +260,7 @@ public class GameDemo : MonoBehaviour
                 }
 
                 targetList.Remove(targetObj);
+
                 Destroy(targetObj);
             }
         }
