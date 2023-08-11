@@ -91,6 +91,7 @@ public class GameDemo : MonoBehaviour
 
     public void SelReserveChar(GameObject target)
     {
+        Debug.Log("Its the selReserveChar call");
         PotentialDeselect(false);
         var targetCreat = target.GetComponent<GameDemoReserveChar>().MyCreature;
         UpdateOrInstantiateInfoPanel(targetCreat, target.transform.position);
@@ -99,8 +100,9 @@ public class GameDemo : MonoBehaviour
 
     public void SelOnboardChar(GameObject target)
     {
+        Debug.Log("Its the SelOnboardChar call");
         // Deselect any currently selected character
-        PotentialDeselect();
+        PotentialDeselect(false);
 
         // Get the GameDemoBoardChar component from the target GameObject
         GameDemoBoardChar boardCharComp = target.GetComponent<GameDemoBoardChar>();
@@ -201,7 +203,14 @@ public class GameDemo : MonoBehaviour
         var gameComp = creat.GetComponent<GameDemoBoardChar>();
         gameComp.SetCreat(cArgs.MyCreature);
         gameComp.MyGameDemo = this;
-        CreatObjs.Add(cArgs.MyCreature, creat);
+        if (CreatObjs.ContainsKey(cArgs.MyCreature))
+        {
+            CreatObjs[cArgs.MyCreature] = creat;
+        }
+        else
+        {
+            CreatObjs.Add(cArgs.MyCreature, creat);
+        }
     }
 
     private void OnCreatureEntersSpace(object sender, EventArgs e)
@@ -260,6 +269,11 @@ public class GameDemo : MonoBehaviour
                 }
 
                 targetList.Remove(targetObj);
+                if(CurSelectedCreat != null && CurSelectedCreat == cArgs.BeingReserved)
+                {
+                    Debug.Log("Its the OnCreatureLeavesReserve call");
+                    PotentialDeselect();
+                }
 
                 Destroy(targetObj);
             }

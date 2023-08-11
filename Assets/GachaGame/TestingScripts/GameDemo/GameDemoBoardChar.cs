@@ -33,6 +33,7 @@ public class GameDemoBoardChar : MonoBehaviour
 
     public void Deselect()
     {
+        Debug.Log("My creature: " + MyCreature.DisplayName);
         rend.material.color = defaultColor;
     }
 

@@ -25,7 +25,7 @@ public class GameDemoSquare : MonoBehaviour
             if (GameUtils.CanCallCreatureToGridSpace(selectedCreature, currentPlayer, game, MyGridSpace))
             {
                 game.CallCharacter(selectedCreature, MyGridSpace, currentPlayer);
-                MyGameDemo.PotentialDeselect();
+                //MyGameDemo.PotentialDeselect();
             }
         }
     }
