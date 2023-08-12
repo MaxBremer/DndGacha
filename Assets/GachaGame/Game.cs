@@ -18,6 +18,8 @@ public class Game
 
     public int CurrentPlayerIndex;
 
+    public Player CurrentPlayer => Players[CurrentPlayerIndex];
+
     public int TurnCount;
 
     public GachaGrid GameGrid;
@@ -127,10 +129,10 @@ public class Game
     public void EndTurn()
     {
         var EOTArgs = new TurnEndArgs() { PlayerWhoseTurnIsEnding = CurrentPlayerIndex };
-        EventManager.Invoke("EndOfTurn", this, EOTArgs);
         EndOfTurnSetup();
+        EventManager.Invoke("EndOfTurn", this, EOTArgs);
         // If it's not the last players turn, cycle to next player. Otherwise, next REAL turn.
-        if(CurrentPlayerIndex >= Players.Length - 1)
+        if (CurrentPlayerIndex >= Players.Length - 1)
         {
             CurrentPlayerIndex = 0;
             TurnCount++;
@@ -141,8 +143,8 @@ public class Game
         }
 
         var SOTArgs = new TurnStartArgs() { PlayerWhoseTurnIsStarting = CurrentPlayerIndex };
-        EventManager.Invoke("StartOfTurn", this, SOTArgs);
         StartOfTurnSetup();
+        EventManager.Invoke("StartOfTurn", this, SOTArgs);
     }
 
     private void EndOfTurnSetup()

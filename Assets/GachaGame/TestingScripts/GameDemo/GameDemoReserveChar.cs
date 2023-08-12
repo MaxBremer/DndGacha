@@ -38,6 +38,10 @@ public class GameDemoReserveChar : MonoBehaviour
 
     public void Deselect()
     {
+        if (rend == null)
+        {
+            rend = GetComponent<Renderer>();
+        }
         rend.material.color = defaultColor;
     }
 }

@@ -5,6 +5,13 @@ using UnityEngine;
 
 public class BaseInfoPanel : MonoBehaviour
 {
+    [SerializeField]
+    private GameObject colorIndicatorObject;
+    [SerializeField]
+    private Color ActiveAbilColor;
+    [SerializeField]
+    private Color PassiveAbilColor;
+
     private TextMeshPro nameText;
     private TextMeshPro statsText;
     private TextMeshPro abilText;
@@ -26,8 +33,8 @@ public class BaseInfoPanel : MonoBehaviour
         statsText.text = "S: " + creat.Speed + "  I: " + creat.Initiative + "  H: " + creat.Health + "/" + creat.MaxHealth + "  A: " + creat.Attack;
         if(creat.Abilities.Count > 0)
         {
-            abilText.text = creat.Abilities[0].DisplayName;
             curAbilIndex = 0;
+            UpdateAbilityText();
         }
     }
 
@@ -36,13 +43,12 @@ public class BaseInfoPanel : MonoBehaviour
         if (isLeft && curAbilIndex > 0)
         {
             curAbilIndex -= 1;
-            abilText.text = myCreature.Abilities[curAbilIndex].DisplayName;
         }
         if(!isLeft && curAbilIndex < myCreature.Abilities.Count - 1)
         {
             curAbilIndex += 1;
-            abilText.text = myCreature.Abilities[curAbilIndex].DisplayName;
         }
+        UpdateAbilityText();
     }
 
     private void InitTextObjs()
@@ -52,6 +58,25 @@ public class BaseInfoPanel : MonoBehaviour
             nameText = transform.Find("NameText").GetComponent<TextMeshPro>();
             statsText = transform.Find("StatsText").GetComponent<TextMeshPro>();
             abilText = transform.Find("AbilityText").GetComponent<TextMeshPro>();
+        }
+    }
+
+    private void UpdateAbilityText(int abilityIndex = -1)
+    {
+        abilityIndex = abilityIndex < 0 ? curAbilIndex : abilityIndex;
+
+        abilText.text = myCreature.Abilities[abilityIndex].DisplayName;
+
+        // Check if the ability is Active or Passive and update the color accordingly
+        if (myCreature.Abilities[abilityIndex] is ActiveAbility)
+        {
+            // Set color for ActiveAbility (example: red)
+            colorIndicatorObject.GetComponent<Renderer>().material.color = ActiveAbilColor;
+        }
+        else if (myCreature.Abilities[abilityIndex] is PassiveAbility)
+        {
+            // Set color for PassiveAbility (example: blue)
+            colorIndicatorObject.GetComponent<Renderer>().material.color = PassiveAbilColor;
         }
     }
 }

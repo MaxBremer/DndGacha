@@ -6,6 +6,7 @@ public class GameDemoSquare : MonoBehaviour
 {
     public GridSpace MyGridSpace;
     public GameDemo MyGameDemo;
+    public bool Highlighted = false;
 
     // Start is called before the first frame update
     void Start()
@@ -28,5 +29,16 @@ public class GameDemoSquare : MonoBehaviour
                 //MyGameDemo.PotentialDeselect();
             }
         }
+    }
+
+    public void Highlight(Color c)
+    {
+        Highlighted = true;
+        SetColor(c);
+    }
+
+    public void SetColor(Color c)
+    {
+        GetComponent<Renderer>().material.color = c;
     }
 }

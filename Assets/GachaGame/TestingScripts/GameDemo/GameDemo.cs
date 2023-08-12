@@ -6,12 +6,14 @@ using UnityEngine;
 
 public class GameDemo : MonoBehaviour
 {
-    private Dictionary<GridSpace, GameObject> GridObjs = new Dictionary<GridSpace, GameObject>();
+    private Dictionary<GridSpace, (GameObject obj, GameDemoSquare square)> GridObjs = new Dictionary<GridSpace, (GameObject obj, GameDemoSquare square)>();
     private Dictionary<Creature, GameObject> CreatObjs = new Dictionary<Creature, GameObject>();
-    private const int BASECOLOR = 0;
-    private const int P1COLOR = 1;
-    private const int P2COLOR = 2;
-    private const int OBSTACLECOLOR = 3;
+    private const int BASE_COLOR = 0;
+    private const int P1_COLOR = 1;
+    private const int P2_COLOR = 2;
+    private const int OBSTACLE_COLOR = 3;
+    private const int GRID_HIGHLIGHT_COLOR = 4;
+    private const int GRID_DEFAULT_COLOR = 5;
 
     public Game MyGame;
 
@@ -29,6 +31,8 @@ public class GameDemo : MonoBehaviour
     private int CurP2Offset = 0;
     private List<GameObject> P1Reserves = new List<GameObject>();
     private List<GameObject> P2Reserves = new List<GameObject>();
+
+    private Dictionary<GridSpace, List<GridSpace>> curValidMoveDict = null;
 
     private const int RESERVE_OFFSET_AMOUNT = 1;
 
@@ -48,11 +52,14 @@ public class GameDemo : MonoBehaviour
         EventManager.StartListening("CreatureEntersSpace", OnCreatureEntersSpace);
         EventManager.StartListening("StartOfTurn", OnStartOfTurn);
 
+        var uiManager = GetComponent<GameDemoUIManager>();
+        uiManager.InitUIManagement(MyGame);
+
         foreach (var gSquare in MyGame.GameGrid.GetAllGridSquares())
         {
             var space = Instantiate(gridSquareObj, new Vector3(gSquare.XPos, gSquare.YPos, 0), Quaternion.identity);
-            GridObjs.Add(gSquare, space);
             var gameDemoProp = space.GetComponent<GameDemoSquare>();
+            GridObjs.Add(gSquare, (space, gameDemoProp));
             gameDemoProp.MyGridSpace = gSquare;
             gameDemoProp.MyGameDemo = this;
         }
@@ -91,7 +98,6 @@ public class GameDemo : MonoBehaviour
 
     public void SelReserveChar(GameObject target)
     {
-        Debug.Log("Its the selReserveChar call");
         PotentialDeselect(false);
         var targetCreat = target.GetComponent<GameDemoReserveChar>().MyCreature;
         UpdateOrInstantiateInfoPanel(targetCreat, target.transform.position);
@@ -100,7 +106,6 @@ public class GameDemo : MonoBehaviour
 
     public void SelOnboardChar(GameObject target)
     {
-        Debug.Log("Its the SelOnboardChar call");
         // Deselect any currently selected character
         PotentialDeselect(false);
 
@@ -115,6 +120,20 @@ public class GameDemo : MonoBehaviour
 
             // Set the CurSelectedCreat to the instantiated InfoPanelObj
             CurSelectedCreat = boardCharComp.MyCreature;
+            Debug.Log("Pre-call");
+            HighlightValidMoves(CurSelectedCreat);
+        }
+    }
+
+    private void HighlightValidMoves(Creature targetCreat)
+    {
+        if(targetCreat.SpeedLeft > 0)
+        {
+            curValidMoveDict = MyGame.GameGrid.GetValidMoves(targetCreat);
+            foreach (var gSpace in curValidMoveDict.Keys)
+            {
+                GridObjs[gSpace].square.Highlight(NeededColors[GRID_HIGHLIGHT_COLOR]);
+            }
         }
     }
 
@@ -126,6 +145,11 @@ public class GameDemo : MonoBehaviour
             {
                 gameObj.GetComponent<GameDemoBoardChar>()?.Deselect();
                 gameObj.GetComponent<GameDemoReserveChar>()?.Deselect();
+
+                if(gameObj.GetComponent<GameDemoBoardChar>() != null)
+                {
+                    ResetTilesToBase();
+                }
             }
 
             ClearSelChar(destroyInfoPanel);
@@ -167,26 +191,26 @@ public class GameDemo : MonoBehaviour
         {
             if (MyGame.Players[0].ValidInitSpaces.Contains(gSquare))
             {
-                SetSquareCol(gSquare, NeededColors[P1COLOR]);
+                SetSquareCol(gSquare, NeededColors[P1_COLOR]);
             }
             else if (MyGame.Players[1].ValidInitSpaces.Contains(gSquare))
             {
-                SetSquareCol(gSquare, NeededColors[P2COLOR]);
+                SetSquareCol(gSquare, NeededColors[P2_COLOR]);
             }
             else if (gSquare.Obstacle)
             {
-                SetSquareCol(gSquare, NeededColors[OBSTACLECOLOR]);
+                SetSquareCol(gSquare, NeededColors[OBSTACLE_COLOR]);
             }
             else
             {
-                SetSquareCol(gSquare, NeededColors[BASECOLOR]);
+                SetSquareCol(gSquare, NeededColors[BASE_COLOR]);
             }
         }
     }
 
     private void SetSquareCol(GridSpace gSquare, Color color)
     {
-        GridObjs[gSquare].GetComponent<Renderer>().material.color = color;
+        GridObjs[gSquare].obj.GetComponent<Renderer>().material.color = color;
     }
 
     /*private void OnCreatureSummon(object sender, EventArgs e)
@@ -271,7 +295,6 @@ public class GameDemo : MonoBehaviour
                 targetList.Remove(targetObj);
                 if(CurSelectedCreat != null && CurSelectedCreat == cArgs.BeingReserved)
                 {
-                    Debug.Log("Its the OnCreatureLeavesReserve call");
                     PotentialDeselect();
                 }
 
