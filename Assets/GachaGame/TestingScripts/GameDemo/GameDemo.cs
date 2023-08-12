@@ -6,14 +6,14 @@ using UnityEngine;
 
 public class GameDemo : MonoBehaviour
 {
-    private Dictionary<GridSpace, (GameObject obj, GameDemoSquare square)> GridObjs = new Dictionary<GridSpace, (GameObject obj, GameDemoSquare square)>();
+    public Dictionary<GridSpace, (GameObject obj, GameDemoSquare square)> GridObjs = new Dictionary<GridSpace, (GameObject obj, GameDemoSquare square)>();
     private Dictionary<Creature, GameObject> CreatObjs = new Dictionary<Creature, GameObject>();
     private const int BASE_COLOR = 0;
     private const int P1_COLOR = 1;
     private const int P2_COLOR = 2;
     private const int OBSTACLE_COLOR = 3;
     private const int GRID_HIGHLIGHT_COLOR = 4;
-    private const int GRID_DEFAULT_COLOR = 5;
+    private const int GRID_PATH_COLOR = 5;
 
     public Game MyGame;
 
@@ -60,6 +60,9 @@ public class GameDemo : MonoBehaviour
             var space = Instantiate(gridSquareObj, new Vector3(gSquare.XPos, gSquare.YPos, 0), Quaternion.identity);
             var gameDemoProp = space.GetComponent<GameDemoSquare>();
             GridObjs.Add(gSquare, (space, gameDemoProp));
+            gameDemoProp.BaseColor = NeededColors[BASE_COLOR];
+            gameDemoProp.IsPathColor = NeededColors[GRID_PATH_COLOR];
+            gameDemoProp.HighlightColor = NeededColors[GRID_HIGHLIGHT_COLOR];
             gameDemoProp.MyGridSpace = gSquare;
             gameDemoProp.MyGameDemo = this;
         }
@@ -106,21 +109,21 @@ public class GameDemo : MonoBehaviour
 
     public void SelOnboardChar(GameObject target)
     {
-        // Deselect any currently selected character
-        PotentialDeselect(false);
-
         // Get the GameDemoBoardChar component from the target GameObject
         GameDemoBoardChar boardCharComp = target.GetComponent<GameDemoBoardChar>();
 
         // Check if the character belongs to the current player
         if (boardCharComp.MyCreature.Controller == MyGame.Players[MyGame.CurrentPlayerIndex])
         {
+            // Deselect any currently selected character
+            PotentialDeselect(false);
+
             // Instantiate the InfoPanelObj to display the character's information
             UpdateOrInstantiateInfoPanel(boardCharComp.MyCreature, target.transform.position);
 
             // Set the CurSelectedCreat to the instantiated InfoPanelObj
             CurSelectedCreat = boardCharComp.MyCreature;
-            Debug.Log("Pre-call");
+            boardCharComp.Select();
             HighlightValidMoves(CurSelectedCreat);
         }
     }
@@ -132,7 +135,7 @@ public class GameDemo : MonoBehaviour
             curValidMoveDict = MyGame.GameGrid.GetValidMoves(targetCreat);
             foreach (var gSpace in curValidMoveDict.Keys)
             {
-                GridObjs[gSpace].square.Highlight(NeededColors[GRID_HIGHLIGHT_COLOR]);
+                GridObjs[gSpace].square.Highlight();
             }
         }
     }
@@ -159,6 +162,16 @@ public class GameDemo : MonoBehaviour
     public void EndTurn()
     {
         MyGame.EndTurn();
+    }
+
+    public bool IsSquareReachable(GridSpace space)
+    {
+        return curValidMoveDict != null && curValidMoveDict.ContainsKey(space);
+    }
+
+    public List<GridSpace> GetPathTo(GridSpace space)
+    {
+        return curValidMoveDict != null ? curValidMoveDict[space] : null;
     }
 
     private void ClearSelChar(bool destroyInfoPanel)
@@ -189,6 +202,7 @@ public class GameDemo : MonoBehaviour
     {
         foreach (var gSquare in MyGame.GameGrid.GetAllGridSquares())
         {
+            GridObjs[gSquare].square.UnHighlight();
             if (MyGame.Players[0].ValidInitSpaces.Contains(gSquare))
             {
                 SetSquareCol(gSquare, NeededColors[P1_COLOR]);
@@ -244,11 +258,18 @@ public class GameDemo : MonoBehaviour
             if(CreatObjs.TryGetValue(cArgs.MyCreature, out GameObject gameObj) && gameObj.GetComponent<GameDemoBoardChar>() != null)
             {
                 gameObj.transform.position = new Vector3(cArgs.SpaceInvolved.XPos, cArgs.SpaceInvolved.YPos, 0);
+                if (CurSelectedCreat == cArgs.MyCreature)
+                {
+                    ResetTilesToBase();
+                    SelOnboardChar(gameObj);
+                }
             }
             else
             {
                 InstantiateBoardCharacter(cArgs);
             }
+
+
         }
     }
 

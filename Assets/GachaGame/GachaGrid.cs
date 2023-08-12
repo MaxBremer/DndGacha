@@ -55,8 +55,8 @@ public class GachaGrid
             // ALL SPACES CREATURE MOVES THROUGH ITERATED HERE
             // Probably invoke some "Moved through" event.
         }
+        mover.SpeedLeft -= path.Count - 1;
         CreatureEntersSpace(mover, destination);
-        mover.SpeedLeft -= path.Count + 1;
     }
 
     public void CreatureLeavesSpace(Creature leaver)

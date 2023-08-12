@@ -49,9 +49,9 @@ public class Creature
 
     public GridSpace MySpace = null;
 
-    public bool InReserve;
+    public bool InReserve => State == CreatureState.RESERVE;
 
-    public bool InGraveyard;
+    public bool InGraveyard => State == CreatureState.GRAVEYARD;
 
     public bool CanBasicAttack => CanAct && GetValidBasicAttackTargets().Count > 0;
 

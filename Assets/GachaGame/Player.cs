@@ -51,6 +51,7 @@ public class Player
     {
         Reserve.Add(creat);
         creat.Controller = this;
+        creat.PutInReserve();
         EventManager.Invoke("CreatureReserved", this, new CreatureReservedArgs() { BeingReserved = creat, ReserveOwner = this });
     }
 

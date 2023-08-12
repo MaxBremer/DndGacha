@@ -25,10 +25,19 @@ public class GameDemoBoardChar : MonoBehaviour
         
     }
 
-    private void OnMouseDown()
+    void OnMouseDown()
     {
         MyGameDemo.SelOnboardChar(gameObject);
+    }
+
+    public void Select()
+    {
+        if (rend == null)
+        {
+            rend = GetComponent<Renderer>();
+        }
         rend.material.color = selectedColor;
+
     }
 
     public void Deselect()
