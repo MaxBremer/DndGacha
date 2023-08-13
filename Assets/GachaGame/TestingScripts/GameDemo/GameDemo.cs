@@ -14,6 +14,7 @@ public class GameDemo : MonoBehaviour
     private const int OBSTACLE_COLOR = 3;
     private const int GRID_HIGHLIGHT_COLOR = 4;
     private const int GRID_PATH_COLOR = 5;
+    private const int VALID_ATTACK_TARGET_COLOR = 6;
 
     public Game MyGame;
 
@@ -21,6 +22,8 @@ public class GameDemo : MonoBehaviour
     public GameObject ReserveCharObj;
     public GameObject BoardCharObj;
     public GameObject InfoPanelObj;
+
+    public List<Creature> ValidAttackTargets = new List<Creature>();
 
     public Creature CurSelectedCreat;
     private GameObject CurInfoPanel;
@@ -125,6 +128,11 @@ public class GameDemo : MonoBehaviour
             CurSelectedCreat = boardCharComp.MyCreature;
             boardCharComp.Select();
             HighlightValidMoves(CurSelectedCreat);
+            if (boardCharComp.MyCreature.CanAct)
+            {
+                ValidAttackTargets = boardCharComp.MyCreature.GetValidBasicAttackTargets();
+                HighlightValidAttackTargets();
+            }
         }
     }
 
@@ -136,6 +144,18 @@ public class GameDemo : MonoBehaviour
             foreach (var gSpace in curValidMoveDict.Keys)
             {
                 GridObjs[gSpace].square.Highlight();
+            }
+        }
+    }
+
+    private void HighlightValidAttackTargets()
+    {
+        foreach (var target in ValidAttackTargets)
+        {
+            var targetObj = GetOnboardComponent(target);
+            if(targetObj != null)
+            {
+                targetObj.HighlightAttackTarget();
             }
         }
     }
@@ -153,6 +173,8 @@ public class GameDemo : MonoBehaviour
                 {
                     ResetTilesToBase();
                 }
+
+                ClearAttackTargets();
             }
 
             ClearSelChar(destroyInfoPanel);
@@ -162,6 +184,7 @@ public class GameDemo : MonoBehaviour
     public void EndTurn()
     {
         MyGame.EndTurn();
+        PotentialDeselect();
     }
 
     public bool IsSquareReachable(GridSpace space)
@@ -174,6 +197,28 @@ public class GameDemo : MonoBehaviour
         return curValidMoveDict != null ? curValidMoveDict[space] : null;
     }
 
+    public void AttackTarget(Creature target)
+    {
+        if (CurSelectedCreat != null && ValidAttackTargets.Contains(target))
+        {
+            CurSelectedCreat.BasicAttack(target);
+            PotentialDeselect();
+        }
+    }
+
+    private void ClearAttackTargets()
+    {
+        foreach (var target in ValidAttackTargets)
+        {
+            var onboardComp = GetOnboardComponent(target);
+            if (onboardComp != null)
+            {
+                onboardComp.RevertHighlightToBase();
+            }
+        }
+        ValidAttackTargets.Clear();
+    }
+
     private void ClearSelChar(bool destroyInfoPanel)
     {
         if (destroyInfoPanel && CurInfoPanel != null)
@@ -182,6 +227,11 @@ public class GameDemo : MonoBehaviour
             CurInfoPanel = null;
         }
         CurSelectedCreat = null;
+    }
+
+    private GameDemoBoardChar GetOnboardComponent(Creature creat)
+    {
+        return CreatObjs.ContainsKey(creat) ? CreatObjs[creat].GetComponent<GameDemoBoardChar>() : null;
     }
 
     private void UpdateOrInstantiateInfoPanel(Creature targetCreat, Vector3 position)
@@ -241,6 +291,7 @@ public class GameDemo : MonoBehaviour
         var gameComp = creat.GetComponent<GameDemoBoardChar>();
         gameComp.SetCreat(cArgs.MyCreature);
         gameComp.MyGameDemo = this;
+        gameComp.attackTargetColor = NeededColors[VALID_ATTACK_TARGET_COLOR];
         if (CreatObjs.ContainsKey(cArgs.MyCreature))
         {
             CreatObjs[cArgs.MyCreature] = creat;

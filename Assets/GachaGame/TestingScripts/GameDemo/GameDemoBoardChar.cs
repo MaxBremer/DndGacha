@@ -9,6 +9,7 @@ public class GameDemoBoardChar : MonoBehaviour
 
     public Color defaultColor = Color.white;
     public Color selectedColor = Color.yellow;
+    public Color attackTargetColor = Color.red;
 
     private Renderer rend;
 
@@ -27,6 +28,12 @@ public class GameDemoBoardChar : MonoBehaviour
 
     void OnMouseDown()
     {
+        if (MyGameDemo.ValidAttackTargets.Contains(MyCreature))
+        {
+            MyGameDemo.AttackTarget(MyCreature);
+
+            return;
+        }
         MyGameDemo.SelOnboardChar(gameObject);
     }
 
@@ -46,11 +53,21 @@ public class GameDemoBoardChar : MonoBehaviour
         {
             rend = GetComponent<Renderer>();
         }
-        rend.material.color = defaultColor;
+        RevertHighlightToBase();
     }
 
     public void SetCreat(Creature creat)
     {
         MyCreature = creat;
+    }
+
+    public void HighlightAttackTarget()
+    {
+        rend.material.color = attackTargetColor;
+    }
+
+    public void RevertHighlightToBase()
+    {
+        rend.material.color = defaultColor;
     }
 }

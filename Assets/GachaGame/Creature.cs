@@ -160,6 +160,16 @@ public class Creature
         return MyGame.AllCreatures.Where(isValid).ToList();
     }
 
+    public bool CanActivateAbility(Ability abil)
+    {
+        return Abilities.Contains(abil) && abil is ActiveAbility activeAbil && activeAbil.IsActivateable();
+    }
+
+    public bool CanActivateAbility(int AbilIndex)
+    {
+        return Abilities[AbilIndex] is ActiveAbility activeAbil && activeAbil.IsActivateable();
+    }
+
     public void BasicAttack(Creature target)
     {
         if (CanAct)
