@@ -11,6 +11,8 @@ public static class ChoiceManager
 
     public static Game CurrentGame { get; set; }
 
+    public static Ability AbilityPending { get => _abilityPending; }
+
     public static void Reset(Game game)
     {
         CurrentGame = game;
@@ -47,13 +49,8 @@ public static class ChoiceManager
 
         //Is it truly always triggered by itself here??
         _abilityPending.ExternalTrigger(_abilityPending, new System.EventArgs());
-        _abilityPending = null;
 
-        if(_waitlistAbilities.Count > 0)
-        {
-            var nextAbil = _waitlistAbilities.Dequeue();
-            TriggerBasicPlayerDecision(nextAbil);
-        }
+        PotentiallyTriggerNextAbilInQueue();
     }
 
     public static void ChooseRandomlyAndTrigger(Ability abil, object sender)
@@ -104,6 +101,16 @@ public static class ChoiceManager
         }
     }
 
+    public static void CancelActiveChoiceAbility(Ability abil)
+    {
+        if(_abilityPending == null || _abilityPending != abil)
+        {
+            return;
+        }
+
+        PotentiallyTriggerNextAbilInQueue();
+    }
+
     public static bool ValidChoicesExist(IEnumerable<Choice> choices)
     {
         foreach (var choice in choices)
@@ -146,6 +153,27 @@ public static class ChoiceManager
             case ChoiceType.NONE:
             default:
                 return false;
+        }
+    }
+
+    public static Creature[] AllValidChoicesCreature(CreatureTargetChoice choice)
+    {
+        return CurrentGame.AllCreatures.Where(x => choice.IsValidCreature(x)).ToArray();
+    }
+
+    public static GridSpace[] AllValidChoicesPoint(PointTargetChoice choice)
+    {
+        return CurrentGame.GameGrid.GetAllGridSquares().Where(x => choice.IsValidSpace(x)).ToArray();
+    }
+
+    private static void PotentiallyTriggerNextAbilInQueue()
+    {
+        _abilityPending = null;
+
+        if (_waitlistAbilities.Count > 0)
+        {
+            var nextAbil = _waitlistAbilities.Dequeue();
+            TriggerBasicPlayerDecision(nextAbil);
         }
     }
 }

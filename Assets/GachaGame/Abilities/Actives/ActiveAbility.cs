@@ -8,6 +8,8 @@ public class ActiveAbility : Ability
     public int MaxCooldown;
     public int Cooldown;
 
+    public bool MidActivation = false;
+
     public override void InitAbility()
     {
         base.InitAbility();
@@ -29,9 +31,9 @@ public class ActiveAbility : Ability
             }
             else
             {
+                MidActivation = true;
                 ChoiceManager.TriggerBasicPlayerDecision(this);
             }
-            Cooldown = MaxCooldown;
         }
     }
 
@@ -48,9 +50,22 @@ public class ActiveAbility : Ability
         Cooldown = Math.Max(0, Cooldown - amount);
     }
 
+    public void PostActivation()
+    {
+        MidActivation = false;
+        Cooldown = MaxCooldown;
+        Owner.CanAct = false;
+    }
+
+    public void CancelActivation()
+    {
+        MidActivation = false;
+        ChoiceManager.CancelActiveChoiceAbility(this);
+    }
+
     public virtual bool IsActivateable()
     {
-        return Cooldown == 0 && ChoiceManager.ValidChoicesExist(ChoicesNeeded);
+        return Owner.CanAct && Cooldown == 0 && ChoiceManager.ValidChoicesExist(ChoicesNeeded);
     }
 
     public override Ability CreateCopy()

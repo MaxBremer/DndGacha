@@ -11,11 +11,11 @@ public class ClothOfErasAbility : RangedAttackEnemiesAbility
         Name = "ClothOfEras";
         DisplayName = "Cloth of Eras";
         Description = "Ranged Attack: 6";
+        MaxCooldown = 0;
     }
 
     public override void InitAbility()
     {
-        MaxCooldown = 6;
         Range = 6;
         base.InitAbility();
     }

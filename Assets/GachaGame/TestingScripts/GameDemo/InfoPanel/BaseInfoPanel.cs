@@ -6,7 +6,7 @@ using UnityEngine;
 public class BaseInfoPanel : MonoBehaviour
 {
     [SerializeField]
-    private GameObject colorIndicatorObject;
+    private GameObject AbilityBlockObject;
     [SerializeField]
     private Color ActiveAbilColor;
     [SerializeField]
@@ -34,7 +34,7 @@ public class BaseInfoPanel : MonoBehaviour
         if(creat.Abilities.Count > 0)
         {
             curAbilIndex = 0;
-            UpdateAbilityText();
+            UpdateAbilityBlock();
         }
     }
 
@@ -48,7 +48,7 @@ public class BaseInfoPanel : MonoBehaviour
         {
             curAbilIndex += 1;
         }
-        UpdateAbilityText();
+        UpdateAbilityBlock();
     }
 
     private void InitTextObjs()
@@ -61,7 +61,7 @@ public class BaseInfoPanel : MonoBehaviour
         }
     }
 
-    private void UpdateAbilityText(int abilityIndex = -1)
+    private void UpdateAbilityBlock(int abilityIndex = -1)
     {
         abilityIndex = abilityIndex < 0 ? curAbilIndex : abilityIndex;
 
@@ -71,12 +71,14 @@ public class BaseInfoPanel : MonoBehaviour
         if (myCreature.Abilities[abilityIndex] is ActiveAbility)
         {
             // Set color for ActiveAbility (example: red)
-            colorIndicatorObject.GetComponent<Renderer>().material.color = ActiveAbilColor;
+            AbilityBlockObject.GetComponent<Renderer>().material.color = ActiveAbilColor;
         }
         else if (myCreature.Abilities[abilityIndex] is PassiveAbility)
         {
             // Set color for PassiveAbility (example: blue)
-            colorIndicatorObject.GetComponent<Renderer>().material.color = PassiveAbilColor;
+            AbilityBlockObject.GetComponent<Renderer>().material.color = PassiveAbilColor;
         }
+
+        AbilityBlockObject.GetComponent<AbilBlock>().MyAbility = myCreature.Abilities[abilityIndex];
     }
 }

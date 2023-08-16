@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 584376924409426743}
   - component: {fileID: 5856607830126303223}
   - component: {fileID: 6915918283683517834}
+  - component: {fileID: 9019533667650156682}
   m_Layer: 0
   m_Name: AbilBlock
   m_TagString: Untagged
@@ -96,6 +97,18 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 0.99999994, z: 1.19}
   m_Center: {x: -0.00000011920929, y: -0.00000023841856, z: 0}
+--- !u!114 &9019533667650156682
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1239895786896709827}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac99df4aab6d7c643807b475168afd50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6107325912463649506
 GameObject:
   m_ObjectHideFlags: 0
@@ -213,7 +226,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6730a840aab08cf4696c5c4ea0ed219e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  colorIndicatorObject: {fileID: 1239895786896709827}
+  AbilityBlockObject: {fileID: 1239895786896709827}
   ActiveAbilColor: {r: 0.8584906, g: 0.3455559, b: 0.3455559, a: 0}
   PassiveAbilColor: {r: 0.32211933, g: 0.33165655, b: 0.8396226, a: 0}
 --- !u!114 &6360737720965252676
@@ -934,14 +947,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 86ad68db53db39741ac96873919264d8, type: 3}
---- !u!4 &6001941447655798655 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 86ad68db53db39741ac96873919264d8, type: 3}
-  m_PrefabInstance: {fileID: 6107325911869870228}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &6341346859608960453 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 86ad68db53db39741ac96873919264d8, type: 3}
+  m_PrefabInstance: {fileID: 6107325911869870228}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &6001941447655798655 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 86ad68db53db39741ac96873919264d8, type: 3}
   m_PrefabInstance: {fileID: 6107325911869870228}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6107325912006599965
@@ -1013,13 +1026,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 86ad68db53db39741ac96873919264d8, type: 3}
---- !u!4 &6001941447518733046 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 86ad68db53db39741ac96873919264d8, type: 3}
-  m_PrefabInstance: {fileID: 6107325912006599965}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &6341346859746596940 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 86ad68db53db39741ac96873919264d8, type: 3}
+  m_PrefabInstance: {fileID: 6107325912006599965}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &6001941447518733046 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 86ad68db53db39741ac96873919264d8, type: 3}
   m_PrefabInstance: {fileID: 6107325912006599965}
   m_PrefabAsset: {fileID: 0}

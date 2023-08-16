@@ -83,6 +83,10 @@ public class Ability
             }
         }
         ClearChoices();
+        if(this is ActiveAbility activeAbil && activeAbil.MidActivation)
+        {
+            activeAbil.PostActivation();
+        }
     }
 
     public virtual void ConditionalTrigger(object sender, EventArgs e)

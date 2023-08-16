@@ -10,6 +10,9 @@ public class GameDemoBoardChar : MonoBehaviour
     public Color defaultColor = Color.white;
     public Color selectedColor = Color.yellow;
     public Color attackTargetColor = Color.red;
+    public Color abilityTargetColor = Color.magenta;
+
+    public BoardCharSelMode MySelectMode = BoardCharSelMode.NORMAL;
 
     private Renderer rend;
 
@@ -28,13 +31,20 @@ public class GameDemoBoardChar : MonoBehaviour
 
     void OnMouseDown()
     {
-        if (MyGameDemo.ValidAttackTargets.Contains(MyCreature))
+        switch (MySelectMode)
         {
-            MyGameDemo.AttackTarget(MyCreature);
-
-            return;
+            case BoardCharSelMode.NORMAL:
+                MyGameDemo.SelOnboardChar(gameObject);
+                break;
+            case BoardCharSelMode.ATTACK:
+                MyGameDemo.AttackTarget(MyCreature);
+                break;
+            case BoardCharSelMode.ABIL:
+                MyGameDemo.TriggerCreatureAbil(MyCreature);
+                break;
+            case BoardCharSelMode.NONE:
+                break;
         }
-        MyGameDemo.SelOnboardChar(gameObject);
     }
 
     public void Select()
@@ -64,10 +74,26 @@ public class GameDemoBoardChar : MonoBehaviour
     public void HighlightAttackTarget()
     {
         rend.material.color = attackTargetColor;
+        MySelectMode = BoardCharSelMode.ATTACK;
+    }
+
+    public void HighlightAbilTarget()
+    {
+        rend.material.color = abilityTargetColor;
+        MySelectMode = BoardCharSelMode.ABIL;
     }
 
     public void RevertHighlightToBase()
     {
         rend.material.color = defaultColor;
+        MySelectMode = BoardCharSelMode.NORMAL;
     }
+}
+
+public enum BoardCharSelMode
+{
+    NORMAL,
+    ATTACK,
+    ABIL,
+    NONE,
 }

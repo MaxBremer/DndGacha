@@ -16,7 +16,7 @@ public class OverallCompetenceAbility : WhenImCalledAbility
     {
         base.Trigger(sender, e);
         var r = new System.Random();
-        var keyList = new List<string>(AbilityDatabase.AbilityDictionary.Keys);
+        var keyList = AbilityDatabase.ValidRandomAbilities;
         var key = keyList[r.Next(keyList.Count)];
         var newAbil = (Ability)Activator.CreateInstance(AbilityDatabase.AbilityDictionary[key]);
 

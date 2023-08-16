@@ -24,6 +24,8 @@ public class GameDemo : MonoBehaviour
     public GameObject InfoPanelObj;
 
     public List<Creature> ValidAttackTargets = new List<Creature>();
+    public List<Creature> ValidCreatureAbilityTargets = new List<Creature>();
+    public List<GridSpace> ValidPointAbilityTargets = new List<GridSpace>();
 
     public Creature CurSelectedCreat;
     private GameObject CurInfoPanel;
@@ -37,6 +39,8 @@ public class GameDemo : MonoBehaviour
 
     private Dictionary<GridSpace, List<GridSpace>> curValidMoveDict = null;
 
+    private Ability CurrentChoiceMakingAbility = null;
+
     private const int RESERVE_OFFSET_AMOUNT = 1;
 
     public List<ScriptableCharacterBase> P1Characters;
@@ -47,7 +51,8 @@ public class GameDemo : MonoBehaviour
     void Start()
     {
         MyGame = TestProperty.SetupBasicTestGame(9, 0);
-        MyGame.Init();
+        InitDemoPlayers();
+        MyGame.Init(false);
 
         //EventManager.StartListening("CreatureSummoned", OnCreatureSummon);
         EventManager.StartListening("CreatureReserved", OnCreatureReserve);
@@ -175,6 +180,8 @@ public class GameDemo : MonoBehaviour
                 }
 
                 ClearAttackTargets();
+                ClearCreatureAbilityTargets();
+                ClearPointAbilityTargets();
             }
 
             ClearSelChar(destroyInfoPanel);
@@ -206,6 +213,91 @@ public class GameDemo : MonoBehaviour
         }
     }
 
+    public GameDemoBoardChar GetOnboardComponent(Creature creat)
+    {
+        return CreatObjs.ContainsKey(creat) ? CreatObjs[creat].GetComponent<GameDemoBoardChar>() : null;
+    }
+
+    public GameDemoSquare GetBoardSpaceComponent(GridSpace gs)
+    {
+        return GridObjs.ContainsKey(gs) ? GridObjs[gs].square : null;
+    }
+
+    public void HighlightCreatureAbilityTargets(Ability abil, Creature[] targets)
+    {
+        foreach (var creat in targets)
+        {
+            GetOnboardComponent(creat).HighlightAbilTarget();
+        }
+        ValidCreatureAbilityTargets.AddRange(targets);
+        CurrentChoiceMakingAbility = abil;
+    }
+
+    public void ClearCreatureAbilityTargets(bool cancelAbility = true)
+    {
+        foreach (var creat in ValidCreatureAbilityTargets)
+        {
+            GetOnboardComponent(creat).RevertHighlightToBase();
+        }
+
+        ValidCreatureAbilityTargets.Clear();
+
+        if (cancelAbility)
+        {
+            if (CurrentChoiceMakingAbility != null && CurrentChoiceMakingAbility is ActiveAbility activeAbil)
+            {
+                activeAbil.CancelActivation();
+            }
+
+            CurrentChoiceMakingAbility = null;
+        }
+    }
+
+    public void HighlightPointAbilityTargets(Ability abil, GridSpace[] targets)
+    {
+        foreach (var square in targets)
+        {
+            GetBoardSpaceComponent(square).HighlightAbilityTarget();
+        }
+        ValidPointAbilityTargets.AddRange(targets);
+        CurrentChoiceMakingAbility = abil;
+    }
+
+    public void ClearPointAbilityTargets(bool cancelAbility = true)
+    {
+        foreach (var space in ValidPointAbilityTargets)
+        {
+            ResetSquareColorToBase(space);
+        }
+
+        ValidPointAbilityTargets.Clear();
+
+        if (cancelAbility)
+        {
+            if (CurrentChoiceMakingAbility != null && CurrentChoiceMakingAbility is ActiveAbility activeAbil)
+            {
+                activeAbil.CancelActivation();
+            }
+            CurrentChoiceMakingAbility = null;
+        }
+    }
+
+    public void TriggerCreatureAbil(Creature target)
+    {
+        if (MyGame.CurrentPlayer is DemoPlayer dPlayer)
+        {
+            dPlayer.SelectCreatureTarget(target);
+        }
+    }
+
+    public void TriggerPointAbil(GridSpace target)
+    {
+        if (MyGame.CurrentPlayer is DemoPlayer dPlayer)
+        {
+            dPlayer.SelectPointTarget(target);
+        }
+    }
+
     private void ClearAttackTargets()
     {
         foreach (var target in ValidAttackTargets)
@@ -229,11 +321,6 @@ public class GameDemo : MonoBehaviour
         CurSelectedCreat = null;
     }
 
-    private GameDemoBoardChar GetOnboardComponent(Creature creat)
-    {
-        return CreatObjs.ContainsKey(creat) ? CreatObjs[creat].GetComponent<GameDemoBoardChar>() : null;
-    }
-
     private void UpdateOrInstantiateInfoPanel(Creature targetCreat, Vector3 position)
     {
         if (CurInfoPanel != null)
@@ -252,23 +339,28 @@ public class GameDemo : MonoBehaviour
     {
         foreach (var gSquare in MyGame.GameGrid.GetAllGridSquares())
         {
-            GridObjs[gSquare].square.UnHighlight();
-            if (MyGame.Players[0].ValidInitSpaces.Contains(gSquare))
-            {
-                SetSquareCol(gSquare, NeededColors[P1_COLOR]);
-            }
-            else if (MyGame.Players[1].ValidInitSpaces.Contains(gSquare))
-            {
-                SetSquareCol(gSquare, NeededColors[P2_COLOR]);
-            }
-            else if (gSquare.Obstacle)
-            {
-                SetSquareCol(gSquare, NeededColors[OBSTACLE_COLOR]);
-            }
-            else
-            {
-                SetSquareCol(gSquare, NeededColors[BASE_COLOR]);
-            }
+            ResetSquareColorToBase(gSquare);
+        }
+    }
+
+    private void ResetSquareColorToBase(GridSpace gSquare)
+    {
+        GridObjs[gSquare].square.UnHighlight();
+        if (MyGame.Players[0].ValidInitSpaces.Contains(gSquare))
+        {
+            SetSquareCol(gSquare, NeededColors[P1_COLOR]);
+        }
+        else if (MyGame.Players[1].ValidInitSpaces.Contains(gSquare))
+        {
+            SetSquareCol(gSquare, NeededColors[P2_COLOR]);
+        }
+        else if (gSquare.Obstacle)
+        {
+            SetSquareCol(gSquare, NeededColors[OBSTACLE_COLOR]);
+        }
+        else
+        {
+            SetSquareCol(gSquare, NeededColors[BASE_COLOR]);
         }
     }
 
@@ -300,6 +392,29 @@ public class GameDemo : MonoBehaviour
         {
             CreatObjs.Add(cArgs.MyCreature, creat);
         }
+    }
+
+    private void InitDemoPlayers()
+    {
+        var pList = new List<DemoPlayer>();
+        // For tracking player index while they're initialized.
+        var count = 0;
+        foreach (var pArgs in MyGame.MyGameArgs.Players)
+        {
+            var Player = new DemoPlayer(new PlayerArgs() { type = pArgs.type }) { MyPlayerIndex = count, };
+            //Player.Creatures.AddRange(pArgs.startingCreatures);
+            Player.MyGame = MyGame;
+            Player.MyGameDemo = this;
+            foreach (var creature in pArgs.startingCreatures)
+            {
+                creature.Controller = Player;
+                Player.PutInReserve(creature);
+                MyGame.AllCreatures.Add(creature);
+            }
+            pList.Add(Player);
+            count++;
+        }
+        MyGame.Players = pList.ToArray();
     }
 
     private void OnCreatureEntersSpace(object sender, EventArgs e)

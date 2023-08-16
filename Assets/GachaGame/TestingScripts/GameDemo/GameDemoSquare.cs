@@ -8,9 +8,11 @@ public class GameDemoSquare : MonoBehaviour
     public GameDemo MyGameDemo;
     public bool Highlighted = false;
     public bool IsPathTarget = false;
+    public bool IsPotentialPointTarget = false;
     public Color BaseColor;
     public Color IsPathColor;
     public Color HighlightColor;
+    public Color AbilTargetColor = Color.magenta;
 
     // Start is called before the first frame update
     void Start()
@@ -24,6 +26,11 @@ public class GameDemoSquare : MonoBehaviour
 
         if (selectedCreature != null)
         {
+            if (IsPotentialPointTarget)
+            {
+                MyGameDemo.TriggerPointAbil(MyGridSpace);
+                return;
+            }
             if (selectedCreature.InReserve)
             {
                 Player currentPlayer = selectedCreature.Controller;
@@ -43,7 +50,7 @@ public class GameDemoSquare : MonoBehaviour
 
     void OnMouseEnter()
     {
-        if (Highlighted)
+        if (Highlighted && !IsPotentialPointTarget)
         {
             IsPathTarget = true;
             List<GridSpace> path = MyGameDemo.GetPathTo(MyGridSpace);
@@ -56,7 +63,7 @@ public class GameDemoSquare : MonoBehaviour
 
     void OnMouseExit()
     {
-        if (IsPathTarget)
+        if (IsPathTarget && !IsPotentialPointTarget)
         {
             List<GridSpace> path = MyGameDemo.GetPathTo(MyGridSpace);
             foreach (var space in path)
@@ -81,7 +88,14 @@ public class GameDemoSquare : MonoBehaviour
     {
         Highlighted = false;
         IsPathTarget = false;
+        IsPotentialPointTarget = false;
         SetColor(BaseColor);
+    }
+
+    public void HighlightAbilityTarget()
+    {
+        IsPotentialPointTarget = true;
+        SetColor(AbilTargetColor);
     }
 
     public void SetColor(Color c)

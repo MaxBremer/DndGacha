@@ -33,7 +33,7 @@ public class Game
 
     public int CurrentInitiative = 0;
 
-    public void Init()
+    public void Init(bool initPlayers = true)
     {
         if (_myArgs == null)
         {
@@ -47,7 +47,10 @@ public class Game
         GridHeight = _myArgs.GridYSize;
 
         // Initialize Players
-        InitPlayers();
+        if (initPlayers)
+        {
+            InitPlayers();
+        }
 
         // First players turn.
         CurrentPlayerIndex = 0;
@@ -73,12 +76,7 @@ public class Game
         StartOfTurnSetup();
     }
 
-    /*public void CallCharacter(CreatureGameBase calledBase, GridSpace callLoc, Player caller)
-    {
-        var creat = new Creature();
-        creat.InitFromBase(calledBase);
-        CallCharacter(creat, callLoc, caller);
-    }*/
+    public GameArgs MyGameArgs { get => _myArgs; }
 
     public void CallCharacter(Creature called, GridSpace callLocation, Player caller)
     {
