@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using TMPro;
+using UnityEngine.UI;
 
 public class GameDemo : MonoBehaviour
 {
@@ -18,10 +20,12 @@ public class GameDemo : MonoBehaviour
 
     public Game MyGame;
 
-    public GameObject gridSquareObj;
-    public GameObject ReserveCharObj;
-    public GameObject BoardCharObj;
-    public GameObject InfoPanelObj;
+    public GameObject gridSquarePrefab;
+    public GameObject ReserveCharPrefab;
+    public GameObject BoardCharPrefab;
+    public GameObject InfoPanelPrefab;
+    public GameObject OptionButtonPrefab;
+    public Transform OptionButtonsParent;
 
     public List<Creature> ValidAttackTargets = new List<Creature>();
     public List<Creature> ValidCreatureAbilityTargets = new List<Creature>();
@@ -47,6 +51,10 @@ public class GameDemo : MonoBehaviour
     public List<ScriptableCharacterBase> P2Characters;
     public List<Color> NeededColors;
 
+    private Vector2 startingPosition = new Vector2(0, 300);
+
+    private float verticalSpacing = 150f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -65,7 +73,7 @@ public class GameDemo : MonoBehaviour
 
         foreach (var gSquare in MyGame.GameGrid.GetAllGridSquares())
         {
-            var space = Instantiate(gridSquareObj, new Vector3(gSquare.XPos, gSquare.YPos, 0), Quaternion.identity);
+            var space = Instantiate(gridSquarePrefab, new Vector3(gSquare.XPos, gSquare.YPos, 0), Quaternion.identity);
             var gameDemoProp = space.GetComponent<GameDemoSquare>();
             GridObjs.Add(gSquare, (space, gameDemoProp));
             gameDemoProp.BaseColor = NeededColors[BASE_COLOR];
@@ -89,6 +97,10 @@ public class GameDemo : MonoBehaviour
             creat.InitFromBase(ScriptableCreatureConverter.GameBaseFromScriptableCharacter(charBase));
             MyGame.Players[1].PutInReserve(creat);
         }
+
+        //REMOVE: Testing
+        MyGame.Players[1].Reserve[0].Initiative = 1;
+        MyGame.Players[1].Reserve[1].Initiative = 1;
 
         OnStartOfTurn(this, new TurnStartArgs { PlayerWhoseTurnIsStarting = 0 });
     }
@@ -178,14 +190,14 @@ public class GameDemo : MonoBehaviour
                 {
                     ResetTilesToBase();
                 }
-
-                ClearAttackTargets();
-                ClearCreatureAbilityTargets();
-                ClearPointAbilityTargets();
             }
 
             ClearSelChar(destroyInfoPanel);
         }
+        ClearAttackTargets();
+        ClearCreatureAbilityTargets();
+        ClearPointAbilityTargets();
+        RemoveOptionButtons();
     }
 
     public void EndTurn()
@@ -242,15 +254,7 @@ public class GameDemo : MonoBehaviour
 
         ValidCreatureAbilityTargets.Clear();
 
-        if (cancelAbility)
-        {
-            if (CurrentChoiceMakingAbility != null && CurrentChoiceMakingAbility is ActiveAbility activeAbil)
-            {
-                activeAbil.CancelActivation();
-            }
-
-            CurrentChoiceMakingAbility = null;
-        }
+        PotentiallyCancelActiveAbility(cancelAbility);
     }
 
     public void HighlightPointAbilityTargets(Ability abil, GridSpace[] targets)
@@ -272,14 +276,7 @@ public class GameDemo : MonoBehaviour
 
         ValidPointAbilityTargets.Clear();
 
-        if (cancelAbility)
-        {
-            if (CurrentChoiceMakingAbility != null && CurrentChoiceMakingAbility is ActiveAbility activeAbil)
-            {
-                activeAbil.CancelActivation();
-            }
-            CurrentChoiceMakingAbility = null;
-        }
+        PotentiallyCancelActiveAbility(cancelAbility);
     }
 
     public void TriggerCreatureAbil(Creature target)
@@ -295,6 +292,70 @@ public class GameDemo : MonoBehaviour
         if (MyGame.CurrentPlayer is DemoPlayer dPlayer)
         {
             dPlayer.SelectPointTarget(target);
+        }
+    }
+
+    public void DisplayOptionButtons(List<string> options, Action<string> onOptionSelected)
+    {
+        for (int i = 0; i < options.Count; i++)
+        {
+            string option = options[i];
+            GameObject button = CreateOptionButton(option, onOptionSelected);
+
+            // Adjust the position of the button based on its index
+            RectTransform rectTransform = button.GetComponent<RectTransform>();
+            rectTransform.anchoredPosition = new Vector2(startingPosition.x, startingPosition.y - i * verticalSpacing);
+        }
+    }
+
+    private GameObject CreateOptionButton(string option, Action<string> onOptionSelected)
+    {
+        GameObject button = Instantiate(OptionButtonPrefab);
+
+        // Set the button's text to the option
+        button.GetComponentInChildren<TextMeshProUGUI>().text = option;
+
+        // Attach an event listener to the button
+        button.GetComponent<Button>().onClick.AddListener(() => onOptionSelected(option));
+
+        // Add the button to the canvas or any other parent object
+        button.transform.SetParent(OptionButtonsParent, false);
+
+        return button;
+    }
+
+    public void RemoveOptionButtons(bool cancelAbility = true)
+    {
+        foreach (Transform child in OptionButtonsParent)
+        {
+            Destroy(child.gameObject);
+        }
+
+        PotentiallyCancelActiveAbility(cancelAbility);
+    }
+
+    public void PotentiallyCancelActiveAbility(bool cancelAbility)
+    {
+        if (cancelAbility)
+        {
+            if (CurrentChoiceMakingAbility != null && CurrentChoiceMakingAbility is ActiveAbility activeAbil)
+            {
+                activeAbil.CancelActivation();
+            }
+            CurrentChoiceMakingAbility = null;
+
+            if (MyGame.CurrentPlayer is DemoPlayer dPlayer)
+            {
+                dPlayer.ClearChoices();
+            }
+        }
+    }
+
+    public void ClearActivePlayerChoices()
+    {
+        if (MyGame.CurrentPlayer is DemoPlayer dPlayer)
+        {
+            dPlayer.ClearChoices();
         }
     }
 
@@ -329,7 +390,7 @@ public class GameDemo : MonoBehaviour
         }
         else
         {
-            var infoPanel = Instantiate(InfoPanelObj, position - new Vector3(0, 0, 4), Quaternion.identity);
+            var infoPanel = Instantiate(InfoPanelPrefab, position - new Vector3(0, 0, 4), Quaternion.identity);
             infoPanel.GetComponent<BaseInfoPanel>().SetCreature(targetCreat);
             CurInfoPanel = infoPanel;
         }
@@ -379,7 +440,7 @@ public class GameDemo : MonoBehaviour
     }*/
     private void InstantiateBoardCharacter(CreatureSpaceArgs cArgs)
     {
-        var creat = Instantiate(BoardCharObj, new Vector3(cArgs.SpaceInvolved.XPos, cArgs.SpaceInvolved.YPos, 0), Quaternion.identity);
+        var creat = Instantiate(BoardCharPrefab, new Vector3(cArgs.SpaceInvolved.XPos, cArgs.SpaceInvolved.YPos, 0), Quaternion.identity);
         var gameComp = creat.GetComponent<GameDemoBoardChar>();
         gameComp.SetCreat(cArgs.MyCreature);
         gameComp.MyGameDemo = this;
@@ -434,14 +495,7 @@ public class GameDemo : MonoBehaviour
             {
                 InstantiateBoardCharacter(cArgs);
             }
-
-
         }
-    }
-
-    private void OnCreatureLeavesSpace(object sender, EventArgs e)
-    {
-
     }
 
     private void OnCreatureReserve(object sender, EventArgs e)
@@ -450,7 +504,7 @@ public class GameDemo : MonoBehaviour
         {
             var offsetAmount = cArgs.ReserveOwner.MyPlayerIndex == 0 ? CurP1Offset = CurP1Offset + RESERVE_OFFSET_AMOUNT : CurP2Offset = CurP2Offset + RESERVE_OFFSET_AMOUNT;
             var locForReserve = (cArgs.ReserveOwner.MyPlayerIndex == 0 ? P1ReserveLoc.transform.position : P2ReserveLoc.transform.position) + new Vector3(0, offsetAmount, 0);
-            var creat = Instantiate(ReserveCharObj, locForReserve, Quaternion.Euler(270, 0, 0));
+            var creat = Instantiate(ReserveCharPrefab, locForReserve, Quaternion.Euler(270, 0, 0));
             if (cArgs.ReserveOwner.MyPlayerIndex == 0)
             {
                 P1Reserves.Add(creat);
@@ -487,6 +541,16 @@ public class GameDemo : MonoBehaviour
 
                 Destroy(targetObj);
             }
+        }
+    }
+
+    public void OnCreatureDies(object sender, EventArgs e)
+    {
+        if(sender is Creature dead)
+        {
+            var cObj = CreatObjs[dead];
+            CreatObjs.Remove(dead);
+            Destroy(cObj);
         }
     }
 

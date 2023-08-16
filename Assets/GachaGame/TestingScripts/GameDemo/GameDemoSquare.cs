@@ -6,19 +6,11 @@ public class GameDemoSquare : MonoBehaviour
 {
     public GridSpace MyGridSpace;
     public GameDemo MyGameDemo;
-    public bool Highlighted = false;
-    public bool IsPathTarget = false;
-    public bool IsPotentialPointTarget = false;
+    public SquareState MyState = SquareState.Base;
     public Color BaseColor;
     public Color IsPathColor;
     public Color HighlightColor;
     public Color AbilTargetColor = Color.magenta;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
     void OnMouseDown()
     {
@@ -26,44 +18,50 @@ public class GameDemoSquare : MonoBehaviour
 
         if (selectedCreature != null)
         {
-            if (IsPotentialPointTarget)
+            switch (MyState)
             {
-                MyGameDemo.TriggerPointAbil(MyGridSpace);
-                return;
-            }
-            if (selectedCreature.InReserve)
-            {
-                Player currentPlayer = selectedCreature.Controller;
-                Game game = currentPlayer.MyGame;
+                case SquareState.Base:
+                    if (selectedCreature.InReserve)
+                    {
+                        Player currentPlayer = selectedCreature.Controller;
+                        Game game = currentPlayer.MyGame;
 
-                if (GameUtils.CanCallCreatureToGridSpace(selectedCreature, currentPlayer, game, MyGridSpace))
-                {
-                    game.CallCharacter(selectedCreature, MyGridSpace, currentPlayer);
-                    //MyGameDemo.PotentialDeselect();
-                }
-            }else if(selectedCreature.IsOnBoard && IsPathTarget)
-            {
-                MyGameDemo.MyGame.GameGrid.Move(selectedCreature, MyGameDemo.GetPathTo(MyGridSpace), MyGridSpace);
+                        if (GameUtils.CanCallCreatureToGridSpace(selectedCreature, currentPlayer, game, MyGridSpace))
+                        {
+                            game.CallCharacter(selectedCreature, MyGridSpace, currentPlayer);
+                        }
+                    }
+                    break;
+                case SquareState.PathTargetHighlight:
+                    MyGameDemo.MyGame.GameGrid.Move(selectedCreature, MyGameDemo.GetPathTo(MyGridSpace), MyGridSpace);
+                    break;
+                case SquareState.AbilTarget:
+                    MyGameDemo.TriggerPointAbil(MyGridSpace);
+                    break;
+                case SquareState.NONE:
+                default:
+                    Debug.LogError("ERROR: Unrecognized square state clicked.");
+                    break;
             }
         }
     }
 
     void OnMouseEnter()
     {
-        if (Highlighted && !IsPotentialPointTarget)
+        if (MyState == SquareState.MoveHighlight)
         {
-            IsPathTarget = true;
             List<GridSpace> path = MyGameDemo.GetPathTo(MyGridSpace);
             foreach (var space in path)
             {
                 MyGameDemo.GridObjs[space].square.PathHighlight();
             }
+            MyState = SquareState.PathTargetHighlight;
         }
     }
 
     void OnMouseExit()
     {
-        if (IsPathTarget && !IsPotentialPointTarget)
+        if (MyState == SquareState.PathTargetHighlight)
         {
             List<GridSpace> path = MyGameDemo.GetPathTo(MyGridSpace);
             foreach (var space in path)
@@ -75,26 +73,25 @@ public class GameDemoSquare : MonoBehaviour
 
     public void Highlight()
     {
-        Highlighted = true;
+        MyState = SquareState.MoveHighlight;
         SetColor(HighlightColor);
     }
 
     public void PathHighlight()
     {
+        MyState = SquareState.PathHighlight;
         SetColor(IsPathColor);
     }
 
     public void UnHighlight()
     {
-        Highlighted = false;
-        IsPathTarget = false;
-        IsPotentialPointTarget = false;
+        MyState = SquareState.Base;
         SetColor(BaseColor);
     }
 
     public void HighlightAbilityTarget()
     {
-        IsPotentialPointTarget = true;
+        MyState = SquareState.AbilTarget;
         SetColor(AbilTargetColor);
     }
 
@@ -102,4 +99,14 @@ public class GameDemoSquare : MonoBehaviour
     {
         GetComponent<Renderer>().material.color = c;
     }
+}
+
+public enum SquareState
+{
+    Base,
+    MoveHighlight,
+    PathTargetHighlight,
+    PathHighlight,
+    AbilTarget,
+    NONE,
 }

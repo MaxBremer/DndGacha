@@ -239,6 +239,41 @@ MonoBehaviour:
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
   m_Version: 2
+--- !u!1 &248526894
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 248526895}
+  m_Layer: 5
+  m_Name: OptionButtonParent
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &248526895
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 248526894}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 497451694}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &497451690
 GameObject:
   m_ObjectHideFlags: 0
@@ -333,6 +368,7 @@ RectTransform:
   - {fileID: 1070857363}
   - {fileID: 790903737}
   - {fileID: 779896442}
+  - {fileID: 248526895}
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -424,10 +460,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc03d74fb7ae1d14c890a7495fb748be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridSquareObj: {fileID: 7263189157821394348, guid: bb7511324c4c4cf4aaf02d8e96ba774b, type: 3}
-  ReserveCharObj: {fileID: 6358010715277065038, guid: ea24a97e72217d24186d2742fe3a5639, type: 3}
-  BoardCharObj: {fileID: 2523191262594325922, guid: 80651676d5320ba47a2986ea715f145e, type: 3}
-  InfoPanelObj: {fileID: 6107325912463649506, guid: b7594668f639b134d99f78ebd3af6269, type: 3}
+  gridSquarePrefab: {fileID: 7263189157821394348, guid: bb7511324c4c4cf4aaf02d8e96ba774b, type: 3}
+  ReserveCharPrefab: {fileID: 6358010715277065038, guid: ea24a97e72217d24186d2742fe3a5639, type: 3}
+  BoardCharPrefab: {fileID: 2523191262594325922, guid: 80651676d5320ba47a2986ea715f145e, type: 3}
+  InfoPanelPrefab: {fileID: 6107325912463649506, guid: b7594668f639b134d99f78ebd3af6269, type: 3}
+  OptionButtonPrefab: {fileID: 4558153532994100277, guid: 59ff7ef67c2b766448b9fd9e976dbed9, type: 3}
+  OptionButtonsParent: {fileID: 248526895}
   P1ReserveLoc: {fileID: 1659739796}
   P2ReserveLoc: {fileID: 859793795}
   P1Characters:

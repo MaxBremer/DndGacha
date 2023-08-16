@@ -26,7 +26,7 @@ public class AbilBlock : MonoBehaviour
             activeAbil.Activate();
         }
 
-        /*if(MyAbility is ActiveAbility activeAbil2 && !activeAbil2.IsActivateable())
+        /*if (MyAbility is ActiveAbility activeAbil2 && !activeAbil2.IsActivateable())
         {
             if (!activeAbil2.Owner.CanAct)
             {
@@ -38,7 +38,7 @@ public class AbilBlock : MonoBehaviour
                 Debug.Log("Cooldown is greater than zero");
             }
 
-            if(activeAbil2.Cooldown < 0)
+            if (activeAbil2.Cooldown < 0)
             {
                 Debug.Log("COOLDOWN SOMEHOW LESS THAN ZERO");
             }
@@ -49,7 +49,7 @@ public class AbilBlock : MonoBehaviour
             }
         }
 
-        if(MyAbility == null)
+        if (MyAbility == null)
         {
             Debug.Log("MY ABILITY IS NULL");
         }

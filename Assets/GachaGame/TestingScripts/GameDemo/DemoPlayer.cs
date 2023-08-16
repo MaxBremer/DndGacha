@@ -41,6 +41,17 @@ public class DemoPlayer : Player
         }
     }
 
+    public void ClearChoices()
+    {
+        foreach (var choice in ChoicesToMake)
+        {
+            choice.ClearChoice();
+        }
+
+        ChoicesToMake.Clear();
+        CurrentTargetAbility = null;
+    }
+
     private void MakeNextChoice(Choice target)
     {
         if(target == null)
@@ -63,21 +74,18 @@ public class DemoPlayer : Player
                 break;
 
             case ChoiceType.POINTTARGET:
-                Debug.Log("Point choice");
                 var currentTargetChoice = CurrentTargetChoice as PointTargetChoice;
                 GridSpace[] validTargetSpaces = ChoiceManager.AllValidChoicesPoint(currentTargetChoice);
 
                 if (validTargetSpaces.Length > 0)
                 {
-                    Debug.Log("Highlight available");
                     MyGameDemo.HighlightPointAbilityTargets(CurrentTargetAbility, validTargetSpaces);
                 }
                 break;
 
             case ChoiceType.OPTIONSELECT:
-                // Handle the OPTIONSELECT choice type
-                // TODO: Implement the specific logic for this choice type
-                Debug.Log("Handling OPTIONSELECT choice");
+                var currentOptionChoice = CurrentTargetChoice as OptionSelectChoice;
+                HandleOptionSelectChoice(currentOptionChoice);
                 break;
 
             default:
@@ -91,7 +99,6 @@ public class DemoPlayer : Player
         var nextChoice = GetNextUnmadeChoice();
         if(nextChoice != null)
         {
-            Debug.Log("Making next choice");
             MakeNextChoice(nextChoice);
         }
         else
@@ -117,5 +124,19 @@ public class DemoPlayer : Player
         }
 
         return ret;
+    }
+
+    private void HandleOptionSelectChoice(OptionSelectChoice choice)
+    {
+        MyGameDemo.DisplayOptionButtons(choice.Options, (selectedOption) =>
+        {
+            choice.ChosenOption = selectedOption;
+
+            // Call a function in GameDemo to remove the displayed buttons
+            MyGameDemo.RemoveOptionButtons(false);
+
+            // Call the next choice
+            PotentialNextChoice();
+        });
     }
 }
