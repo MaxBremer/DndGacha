@@ -8,83 +8,76 @@ using UnityEngine.UI;
 
 public class GameDemo : MonoBehaviour
 {
+
+    // Constants
+    private const int RESERVE_OFFSET_AMOUNT = 1;
+    private const float verticalSpacing = 150f;
+    private Vector2 startingPosition = new Vector2(0, 300);
+
+    //Reference Dictionaries
     public Dictionary<GridSpace, (GameObject obj, GameDemoSquare square)> GridObjs = new Dictionary<GridSpace, (GameObject obj, GameDemoSquare square)>();
-    private Dictionary<Creature, GameObject> CreatObjs = new Dictionary<Creature, GameObject>();
-    private const int BASE_COLOR = 0;
-    private const int P1_COLOR = 1;
-    private const int P2_COLOR = 2;
-    private const int OBSTACLE_COLOR = 3;
-    private const int GRID_HIGHLIGHT_COLOR = 4;
-    private const int GRID_PATH_COLOR = 5;
-    private const int VALID_ATTACK_TARGET_COLOR = 6;
+    internal Dictionary<Creature, GameObject> CreatObjs = new Dictionary<Creature, GameObject>();
+
+    internal Dictionary<GridSpace, List<GridSpace>> curValidMoveDict = null;
 
     public Game MyGame;
 
+    internal HighlightManager MyHighlightManager;
+
+    //Prefabs and set references
     public GameObject gridSquarePrefab;
     public GameObject ReserveCharPrefab;
     public GameObject BoardCharPrefab;
     public GameObject InfoPanelPrefab;
     public GameObject OptionButtonPrefab;
     public Transform OptionButtonsParent;
-
-    public List<Creature> ValidAttackTargets = new List<Creature>();
-    public List<Creature> ValidCreatureAbilityTargets = new List<Creature>();
-    public List<GridSpace> ValidPointAbilityTargets = new List<GridSpace>();
-
-    public Creature CurSelectedCreat;
-    private GameObject CurInfoPanel;
-
     public GameObject P1ReserveLoc;
     public GameObject P2ReserveLoc;
-    private int CurP1Offset = 0;
-    private int CurP2Offset = 0;
-    private List<GameObject> P1Reserves = new List<GameObject>();
-    private List<GameObject> P2Reserves = new List<GameObject>();
-
-    private Dictionary<GridSpace, List<GridSpace>> curValidMoveDict = null;
-
-    private Ability CurrentChoiceMakingAbility = null;
-
-    private const int RESERVE_OFFSET_AMOUNT = 1;
-
     public List<ScriptableCharacterBase> P1Characters;
     public List<ScriptableCharacterBase> P2Characters;
     public List<Color> NeededColors;
 
-    private Vector2 startingPosition = new Vector2(0, 300);
+    //Valid Target Lists
+    public List<Creature> ValidAttackTargets = new List<Creature>();
+    public List<Creature> ValidCreatureAbilityTargets = new List<Creature>();
+    public List<GridSpace> ValidPointAbilityTargets = new List<GridSpace>();
 
-    private float verticalSpacing = 150f;
+    //Current Selections
+    public Creature CurSelectedCreat;
+    private GameObject CurInfoPanel;
+    internal Ability CurrentChoiceMakingAbility = null;
+
+    //Reserve-related variables
+    private int CurP1ReserveOffset = 0;
+    private int CurP2ReserveOffset = 0;
+    private List<GameObject> P1Reserves = new List<GameObject>();
+    private List<GameObject> P2Reserves = new List<GameObject>();
 
     // Start is called before the first frame update
     void Start()
     {
+        MyHighlightManager = new HighlightManager(this);
+        InitializeGame();
+        InitializeUI();
+        SubscribeToEvents();
+        InitializeGameCharacters();
+
+        //REMOVE: Testing
+        MyGame.Players[1].Reserve[0].Initiative = 1;
+        MyGame.Players[1].Reserve[1].Initiative = 1;
+
+        OnStartOfTurn(this, new TurnStartArgs { PlayerWhoseTurnIsStarting = 0 });
+    }
+
+    private void InitializeGame()
+    {
         MyGame = TestProperty.SetupBasicTestGame(9, 0);
         InitDemoPlayers();
         MyGame.Init(false);
+    }
 
-        //EventManager.StartListening("CreatureSummoned", OnCreatureSummon);
-        EventManager.StartListening("CreatureReserved", OnCreatureReserve);
-        EventManager.StartListening("CreatureLeavesReserve", OnCreatureLeavesReserve);
-        EventManager.StartListening("CreatureEntersSpace", OnCreatureEntersSpace);
-        EventManager.StartListening("StartOfTurn", OnStartOfTurn);
-
-        var uiManager = GetComponent<GameDemoUIManager>();
-        uiManager.InitUIManagement(MyGame);
-
-        foreach (var gSquare in MyGame.GameGrid.GetAllGridSquares())
-        {
-            var space = Instantiate(gridSquarePrefab, new Vector3(gSquare.XPos, gSquare.YPos, 0), Quaternion.identity);
-            var gameDemoProp = space.GetComponent<GameDemoSquare>();
-            GridObjs.Add(gSquare, (space, gameDemoProp));
-            gameDemoProp.BaseColor = NeededColors[BASE_COLOR];
-            gameDemoProp.IsPathColor = NeededColors[GRID_PATH_COLOR];
-            gameDemoProp.HighlightColor = NeededColors[GRID_HIGHLIGHT_COLOR];
-            gameDemoProp.MyGridSpace = gSquare;
-            gameDemoProp.MyGameDemo = this;
-        }
-
-        ResetTilesToBase();
-
+    private void InitializeGameCharacters()
+    {
         foreach (var charBase in P1Characters)
         {
             var creat = new Creature();
@@ -97,12 +90,35 @@ public class GameDemo : MonoBehaviour
             creat.InitFromBase(ScriptableCreatureConverter.GameBaseFromScriptableCharacter(charBase));
             MyGame.Players[1].PutInReserve(creat);
         }
+    }
 
-        //REMOVE: Testing
-        MyGame.Players[1].Reserve[0].Initiative = 1;
-        MyGame.Players[1].Reserve[1].Initiative = 1;
+    private void InitializeUI()
+    {
+        var uiManager = GetComponent<GameDemoUIManager>();
+        uiManager.InitUIManagement(MyGame);
 
-        OnStartOfTurn(this, new TurnStartArgs { PlayerWhoseTurnIsStarting = 0 });
+        foreach (var gSquare in MyGame.GameGrid.GetAllGridSquares())
+        {
+            var space = Instantiate(gridSquarePrefab, new Vector3(gSquare.XPos, gSquare.YPos, 0), Quaternion.identity);
+            var gameDemoProp = space.GetComponent<GameDemoSquare>();
+            GridObjs.Add(gSquare, (space, gameDemoProp));
+            gameDemoProp.BaseColor = NeededColors[(int)ColorIndex.BASE_COLOR];
+            gameDemoProp.IsPathColor = NeededColors[(int)ColorIndex.GRID_PATH_COLOR];
+            gameDemoProp.HighlightColor = NeededColors[(int)ColorIndex.GRID_HIGHLIGHT_COLOR];
+            gameDemoProp.MyGridSpace = gSquare;
+            gameDemoProp.MyGameDemo = this;
+        }
+
+        ResetTilesToBase();
+    }
+
+    private void SubscribeToEvents()
+    {
+        //EventManager.StartListening("CreatureSummoned", OnCreatureSummon);
+        EventManager.StartListening("CreatureReserved", OnCreatureReserve);
+        EventManager.StartListening("CreatureLeavesReserve", OnCreatureLeavesReserve);
+        EventManager.StartListening("CreatureEntersSpace", OnCreatureEntersSpace);
+        EventManager.StartListening("StartOfTurn", OnStartOfTurn);
     }
 
     // Update is called once per frame
@@ -112,11 +128,6 @@ public class GameDemo : MonoBehaviour
         {
             PotentialDeselect();
         }
-    }
-
-    public void TrySelChar(GameObject obj)
-    {
-
     }
 
     public void SelReserveChar(GameObject target)
@@ -144,35 +155,11 @@ public class GameDemo : MonoBehaviour
             // Set the CurSelectedCreat to the instantiated InfoPanelObj
             CurSelectedCreat = boardCharComp.MyCreature;
             boardCharComp.Select();
-            HighlightValidMoves(CurSelectedCreat);
+            MyHighlightManager.HighlightValidMoves(CurSelectedCreat);
             if (boardCharComp.MyCreature.CanAct)
             {
                 ValidAttackTargets = boardCharComp.MyCreature.GetValidBasicAttackTargets();
-                HighlightValidAttackTargets();
-            }
-        }
-    }
-
-    private void HighlightValidMoves(Creature targetCreat)
-    {
-        if(targetCreat.SpeedLeft > 0)
-        {
-            curValidMoveDict = MyGame.GameGrid.GetValidMoves(targetCreat);
-            foreach (var gSpace in curValidMoveDict.Keys)
-            {
-                GridObjs[gSpace].square.Highlight();
-            }
-        }
-    }
-
-    private void HighlightValidAttackTargets()
-    {
-        foreach (var target in ValidAttackTargets)
-        {
-            var targetObj = GetOnboardComponent(target);
-            if(targetObj != null)
-            {
-                targetObj.HighlightAttackTarget();
+                MyHighlightManager.HighlightValidAttackTargets();
             }
         }
     }
@@ -197,18 +184,13 @@ public class GameDemo : MonoBehaviour
         ClearAttackTargets();
         ClearCreatureAbilityTargets();
         ClearPointAbilityTargets();
-        RemoveOptionButtons();
+        ClearOptionAbilityTargets();
     }
 
     public void EndTurn()
     {
         MyGame.EndTurn();
         PotentialDeselect();
-    }
-
-    public bool IsSquareReachable(GridSpace space)
-    {
-        return curValidMoveDict != null && curValidMoveDict.ContainsKey(space);
     }
 
     public List<GridSpace> GetPathTo(GridSpace space)
@@ -235,46 +217,30 @@ public class GameDemo : MonoBehaviour
         return GridObjs.ContainsKey(gs) ? GridObjs[gs].square : null;
     }
 
-    public void HighlightCreatureAbilityTargets(Ability abil, Creature[] targets)
-    {
-        foreach (var creat in targets)
-        {
-            GetOnboardComponent(creat).HighlightAbilTarget();
-        }
-        ValidCreatureAbilityTargets.AddRange(targets);
-        CurrentChoiceMakingAbility = abil;
-    }
-
     public void ClearCreatureAbilityTargets(bool cancelAbility = true)
     {
-        foreach (var creat in ValidCreatureAbilityTargets)
-        {
-            GetOnboardComponent(creat).RevertHighlightToBase();
-        }
+        MyHighlightManager.ClearCreatureAbilityTargetHighlights();
 
         ValidCreatureAbilityTargets.Clear();
 
         PotentiallyCancelActiveAbility(cancelAbility);
     }
 
-    public void HighlightPointAbilityTargets(Ability abil, GridSpace[] targets)
-    {
-        foreach (var square in targets)
-        {
-            GetBoardSpaceComponent(square).HighlightAbilityTarget();
-        }
-        ValidPointAbilityTargets.AddRange(targets);
-        CurrentChoiceMakingAbility = abil;
-    }
-
     public void ClearPointAbilityTargets(bool cancelAbility = true)
     {
-        foreach (var space in ValidPointAbilityTargets)
-        {
-            ResetSquareColorToBase(space);
-        }
+        MyHighlightManager.ClearPointAbilityTargetHighlights();
 
         ValidPointAbilityTargets.Clear();
+
+        PotentiallyCancelActiveAbility(cancelAbility);
+    }
+
+    public void ClearOptionAbilityTargets(bool cancelAbility = true)
+    {
+        foreach (Transform child in OptionButtonsParent)
+        {
+            Destroy(child.gameObject);
+        }
 
         PotentiallyCancelActiveAbility(cancelAbility);
     }
@@ -324,15 +290,7 @@ public class GameDemo : MonoBehaviour
         return button;
     }
 
-    public void RemoveOptionButtons(bool cancelAbility = true)
-    {
-        foreach (Transform child in OptionButtonsParent)
-        {
-            Destroy(child.gameObject);
-        }
-
-        PotentiallyCancelActiveAbility(cancelAbility);
-    }
+    
 
     public void PotentiallyCancelActiveAbility(bool cancelAbility)
     {
@@ -344,10 +302,7 @@ public class GameDemo : MonoBehaviour
             }
             CurrentChoiceMakingAbility = null;
 
-            if (MyGame.CurrentPlayer is DemoPlayer dPlayer)
-            {
-                dPlayer.ClearChoices();
-            }
+            ClearActivePlayerChoices();
         }
     }
 
@@ -361,14 +316,7 @@ public class GameDemo : MonoBehaviour
 
     private void ClearAttackTargets()
     {
-        foreach (var target in ValidAttackTargets)
-        {
-            var onboardComp = GetOnboardComponent(target);
-            if (onboardComp != null)
-            {
-                onboardComp.RevertHighlightToBase();
-            }
-        }
+        MyHighlightManager.ClearAttackTargetHighlights();
         ValidAttackTargets.Clear();
     }
 
@@ -396,62 +344,32 @@ public class GameDemo : MonoBehaviour
         }
     }
 
-    private void ResetTilesToBase()
-    {
-        foreach (var gSquare in MyGame.GameGrid.GetAllGridSquares())
-        {
-            ResetSquareColorToBase(gSquare);
-        }
-    }
-
-    private void ResetSquareColorToBase(GridSpace gSquare)
-    {
-        GridObjs[gSquare].square.UnHighlight();
-        if (MyGame.Players[0].ValidInitSpaces.Contains(gSquare))
-        {
-            SetSquareCol(gSquare, NeededColors[P1_COLOR]);
-        }
-        else if (MyGame.Players[1].ValidInitSpaces.Contains(gSquare))
-        {
-            SetSquareCol(gSquare, NeededColors[P2_COLOR]);
-        }
-        else if (gSquare.Obstacle)
-        {
-            SetSquareCol(gSquare, NeededColors[OBSTACLE_COLOR]);
-        }
-        else
-        {
-            SetSquareCol(gSquare, NeededColors[BASE_COLOR]);
-        }
-    }
-
-    private void SetSquareCol(GridSpace gSquare, Color color)
-    {
-        GridObjs[gSquare].obj.GetComponent<Renderer>().material.color = color;
-    }
-
-    /*private void OnCreatureSummon(object sender, EventArgs e)
-    {
-        if (e is CreatureSummonArgs cArgs) {
-            var creat = Instantiate(BoardCharObj, new Vector3(cArgs.LocationOfSummon.XPos, cArgs.LocationOfSummon.YPos, 0), Quaternion.identity);
-            var gameComp = creat.GetComponent<GameDemoBoardChar>();
-            gameComp.MyCreature = cArgs.BeingSummoned;
-        }
-    }*/
     private void InstantiateBoardCharacter(CreatureSpaceArgs cArgs)
     {
-        var creat = Instantiate(BoardCharPrefab, new Vector3(cArgs.SpaceInvolved.XPos, cArgs.SpaceInvolved.YPos, 0), Quaternion.identity);
-        var gameComp = creat.GetComponent<GameDemoBoardChar>();
+        var boardCharacter = CreateBoardCharacter(new Vector3(cArgs.SpaceInvolved.XPos, cArgs.SpaceInvolved.YPos, 0), Quaternion.identity);
+        SetupBoardCharacterProperties(boardCharacter, cArgs);
+    }
+
+    private GameObject CreateBoardCharacter(Vector3 position, Quaternion rotation)
+    {
+        return Instantiate(BoardCharPrefab, position, rotation);
+        // Version that parents this to the board char obj, not sure if should use or not.
+        //return Instantiate(BoardCharPrefab, position, rotation, transform);
+    }
+
+    private void SetupBoardCharacterProperties(GameObject boardCharacter, CreatureSpaceArgs cArgs)
+    {
+        var gameComp = boardCharacter.GetComponent<GameDemoBoardChar>();
         gameComp.SetCreat(cArgs.MyCreature);
         gameComp.MyGameDemo = this;
-        gameComp.attackTargetColor = NeededColors[VALID_ATTACK_TARGET_COLOR];
+        gameComp.attackTargetColor = NeededColors[(int)ColorIndex.VALID_ATTACK_TARGET_COLOR];
         if (CreatObjs.ContainsKey(cArgs.MyCreature))
         {
-            CreatObjs[cArgs.MyCreature] = creat;
+            CreatObjs[cArgs.MyCreature] = boardCharacter;
         }
         else
         {
-            CreatObjs.Add(cArgs.MyCreature, creat);
+            CreatObjs.Add(cArgs.MyCreature, boardCharacter);
         }
     }
 
@@ -502,7 +420,7 @@ public class GameDemo : MonoBehaviour
     {
         if (e is CreatureReservedArgs cArgs)
         {
-            var offsetAmount = cArgs.ReserveOwner.MyPlayerIndex == 0 ? CurP1Offset = CurP1Offset + RESERVE_OFFSET_AMOUNT : CurP2Offset = CurP2Offset + RESERVE_OFFSET_AMOUNT;
+            var offsetAmount = cArgs.ReserveOwner.MyPlayerIndex == 0 ? CurP1ReserveOffset = CurP1ReserveOffset + RESERVE_OFFSET_AMOUNT : CurP2ReserveOffset = CurP2ReserveOffset + RESERVE_OFFSET_AMOUNT;
             var locForReserve = (cArgs.ReserveOwner.MyPlayerIndex == 0 ? P1ReserveLoc.transform.position : P2ReserveLoc.transform.position) + new Vector3(0, offsetAmount, 0);
             var creat = Instantiate(ReserveCharPrefab, locForReserve, Quaternion.Euler(270, 0, 0));
             if (cArgs.ReserveOwner.MyPlayerIndex == 0)
@@ -571,4 +489,50 @@ public class GameDemo : MonoBehaviour
             }
         }
     }
+
+    // UTILITY METHODS
+    private void ResetTilesToBase()
+    {
+        foreach (var gSquare in MyGame.GameGrid.GetAllGridSquares())
+        {
+            ResetSquareColorToBase(gSquare);
+        }
+    }
+
+    internal void ResetSquareColorToBase(GridSpace gSquare)
+    {
+        GridObjs[gSquare].square.UnHighlight();
+        if (MyGame.Players[0].ValidInitSpaces.Contains(gSquare))
+        {
+            SetSquareCol(gSquare, NeededColors[(int)ColorIndex.P1_COLOR]);
+        }
+        else if (MyGame.Players[1].ValidInitSpaces.Contains(gSquare))
+        {
+            SetSquareCol(gSquare, NeededColors[(int)ColorIndex.P2_COLOR]);
+        }
+        else if (gSquare.Obstacle)
+        {
+            SetSquareCol(gSquare, NeededColors[(int)ColorIndex.OBSTACLE_COLOR]);
+        }
+        else
+        {
+            SetSquareCol(gSquare, NeededColors[(int)ColorIndex.BASE_COLOR]);
+        }
+    }
+
+    private void SetSquareCol(GridSpace gSquare, Color color)
+    {
+        GridObjs[gSquare].obj.GetComponent<Renderer>().material.color = color;
+    }
+}
+
+internal enum ColorIndex
+{
+    BASE_COLOR,
+    P1_COLOR,
+    P2_COLOR,
+    OBSTACLE_COLOR,
+    GRID_HIGHLIGHT_COLOR,
+    GRID_PATH_COLOR,
+    VALID_ATTACK_TARGET_COLOR,
 }

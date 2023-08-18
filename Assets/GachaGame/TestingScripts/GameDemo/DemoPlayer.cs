@@ -69,7 +69,7 @@ public class DemoPlayer : Player
 
                 if (validTargetCreats.Length > 0)
                 {
-                    MyGameDemo.HighlightCreatureAbilityTargets(CurrentTargetAbility, validTargetCreats);
+                    MyGameDemo.MyHighlightManager.HighlightCreatureAbilityTargets(CurrentTargetAbility, validTargetCreats);
                 }
                 break;
 
@@ -79,7 +79,7 @@ public class DemoPlayer : Player
 
                 if (validTargetSpaces.Length > 0)
                 {
-                    MyGameDemo.HighlightPointAbilityTargets(CurrentTargetAbility, validTargetSpaces);
+                    MyGameDemo.MyHighlightManager.HighlightPointAbilityTargets(CurrentTargetAbility, validTargetSpaces);
                 }
                 break;
 
@@ -133,7 +133,7 @@ public class DemoPlayer : Player
             choice.ChosenOption = selectedOption;
 
             // Call a function in GameDemo to remove the displayed buttons
-            MyGameDemo.RemoveOptionButtons(false);
+            MyGameDemo.ClearOptionAbilityTargets(false);
 
             // Call the next choice
             PotentialNextChoice();
