@@ -16,6 +16,6 @@ public class TollOfAgesAbility : MyTurnEndPassive
 
     public override void Trigger(object sender, EventArgs e)
     {
-        Owner.TakeDamage(DAMAGE_AMOUNT);
+        Owner.TakeDamage(DAMAGE_AMOUNT, Owner);
     }
 }

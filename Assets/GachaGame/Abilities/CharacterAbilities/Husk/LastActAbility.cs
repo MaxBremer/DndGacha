@@ -26,6 +26,6 @@ public class LastActAbility : ActiveAbility
                 Owner.AttackTarget(target, true);
             }
         }
-        Owner.TakeDamage(SELF_DAMAGE);
+        Owner.TakeDamage(SELF_DAMAGE, Owner);
     }
 }

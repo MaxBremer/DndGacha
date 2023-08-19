@@ -7,7 +7,7 @@ public class VariableOffenseAbility : BeforeIAttackAbility
 {
     private const int UPPER_END_ATK_RANGE = 5;
 
-    private int AttackGained = 0;
+    //private int AttackGained = 0;
 
     public VariableOffenseAbility()
     {
@@ -20,17 +20,28 @@ public class VariableOffenseAbility : BeforeIAttackAbility
     {
         base.Trigger(sender, e);
         var r = new System.Random();
-        AttackGained = r.Next(1, UPPER_END_ATK_RANGE + 1);
+        var AttackGained = r.Next(1, UPPER_END_ATK_RANGE + 1);
         Owner.StatsChange(AtkChg: AttackGained);
-        EventManager.StartListening("AfterAttack", RemoveAttack);
+        var tClass = new TempAtkRemover(AttackGained, Owner);
+        EventManager.StartListening("AfterAttack", tClass.RemoveAttack);
+    }
+}
+
+public class TempAtkRemover
+{
+    private int MyAtkAmount;
+    private Creature Owner;
+    public TempAtkRemover(int amount, Creature creat)
+    {
+        MyAtkAmount = amount;
+        Owner = creat;
     }
 
-    private void RemoveAttack(object sender, EventArgs e)
+    public void RemoveAttack(object sender, EventArgs e)
     {
         if(e is AttackArgs && sender is Creature c && c == Owner)
         {
-            Owner.StatsChange(AtkChg: AttackGained * -1);
-            AttackGained = 0;
+            Owner.StatsChange(AtkChg: MyAtkAmount * -1);
             EventManager.StopListening("AfterAttack", RemoveAttack);
         }
     }

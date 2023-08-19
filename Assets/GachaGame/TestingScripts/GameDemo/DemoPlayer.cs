@@ -70,6 +70,7 @@ public class DemoPlayer : Player
                 if (validTargetCreats.Length > 0)
                 {
                     MyGameDemo.MyHighlightManager.HighlightCreatureAbilityTargets(CurrentTargetAbility, validTargetCreats);
+                    MyGameDemo.MySelectState = GameDemoSelectState.TARGETSELECT;
                 }
                 break;
 
@@ -80,6 +81,7 @@ public class DemoPlayer : Player
                 if (validTargetSpaces.Length > 0)
                 {
                     MyGameDemo.MyHighlightManager.HighlightPointAbilityTargets(CurrentTargetAbility, validTargetSpaces);
+                    MyGameDemo.MySelectState = GameDemoSelectState.TARGETSELECT;
                 }
                 break;
 
@@ -138,5 +140,6 @@ public class DemoPlayer : Player
             // Call the next choice
             PotentialNextChoice();
         });
+        MyGameDemo.MySelectState = GameDemoSelectState.TARGETSELECT;
     }
 }

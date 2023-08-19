@@ -4,19 +4,19 @@ using UnityEngine;
 
 public class CreatureGameBase
 {
-    public string Name;
+    public string Name = "NONAME";
 
-    public string DisplayName;
+    public string DisplayName = "NONAME";
 
-    public List<string> Abilities;
+    public List<string> Abilities = new List<string>();
 
-    public List<CreatureTag> Tags;
+    public HashSet<CreatureTag> Tags = new HashSet<CreatureTag>();
 
-    public int Attack;
+    public int Attack = 1;
 
-    public int Health;
+    public int Health = 1;
 
-    public int Speed;
+    public int Speed = 1;
 
-    public int Initiative;
+    public int Initiative = 1;
 }

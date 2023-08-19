@@ -101,3 +101,40 @@ public static class EventManager
         }
     }
 }
+
+public enum GachaEventType
+{
+    StartOfTurn,
+    EndOfTurn,
+
+    BeforeAttack,
+    AfterAttack,
+
+    BeforeDamage,
+    AfterDamage,
+
+    BeforeCreatureStatsChange,
+    AfterCreatureStatsChange,
+
+    BeforeAbilityTrigger,
+    AfterAbilityTrigger,
+
+    CreatureLeavesSpace,
+    CreatureEntersSpace,
+    CreatureMovesThroughSpace,
+
+    CreatureDies,
+    PointGained,
+    GameOver,
+
+    CreatureLostAbility,
+    CreatureGainedAbility,
+
+    CreatureCalled,
+    CreatureSummoned,
+
+    CreatureReserved,
+    CreatureLeavesReserve,
+
+    CustomEvent,
+}

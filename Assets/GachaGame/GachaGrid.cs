@@ -105,16 +105,18 @@ public class GachaGrid
         GridSquares.Add(pos, gs);
     }
 
-    public List<GridSpace> GetAdjacents(GridSpace gs)
+    public List<GridSpace> GetAdjacents(GridSpace gs, bool includeDiagonals)
     {
         var ret = new List<GridSpace>();
+        bool leftAvailable = gs.XPos > 0;
+        bool rightAvailable = gs.XPos < Width - 1;
 
-        if (gs.XPos > 0)
+        if (leftAvailable)
         {
             ret.Add(this[(gs.XPos - 1, gs.YPos)]);
         }
 
-        if(gs.XPos < Width - 1)
+        if(rightAvailable)
         {
             ret.Add(this[(gs.XPos + 1, gs.YPos)]);
         }
@@ -122,19 +124,43 @@ public class GachaGrid
         if (gs.YPos > 0)
         {
             ret.Add(this[(gs.XPos, gs.YPos - 1)]);
+            if (includeDiagonals)
+            {
+                if (leftAvailable)
+                {
+                    ret.Add(this[(gs.XPos - 1, gs.YPos - 1)]);
+                }
+
+                if (rightAvailable)
+                {
+                    ret.Add(this[(gs.XPos + 1, gs.YPos - 1)]);
+                }
+            }
         }
 
-        if (gs.YPos < Width - 1)
+        if (gs.YPos < Height - 1)
         {
             ret.Add(this[(gs.XPos, gs.YPos + 1)]);
+            if (includeDiagonals)
+            {
+                if (leftAvailable)
+                {
+                    ret.Add(this[(gs.XPos - 1, gs.YPos + 1)]);
+                }
+
+                if (rightAvailable)
+                {
+                    ret.Add(this[(gs.XPos + 1, gs.YPos + 1)]);
+                }
+            }
         }
 
         return ret;
     }
 
-    public List<GridSpace> GetUnblockedAdjacents(GridSpace gs)
+    public List<GridSpace> GetUnblockedAdjacents(GridSpace gs, bool includeDiagonals)
     {
-        var ret = GetAdjacents(gs);
+        var ret = GetAdjacents(gs, includeDiagonals);
         var toRemove = new List<GridSpace>();
 
         foreach (var space in ret)
@@ -153,13 +179,13 @@ public class GachaGrid
         return ret;
     }
 
-    public Dictionary<GridSpace, List<GridSpace>> GetValidMoves(Creature c) => GetValidMoves(c.MySpace, c.SpeedLeft);
+    public Dictionary<GridSpace, List<GridSpace>> GetValidMoves(Creature c) => GetValidMoves(c.MySpace, c.SpeedLeft, c.HasTag(CreatureTag.FREEMOVER));
 
-    public Dictionary<GridSpace, List<GridSpace>> GetValidMoves(int x, int y, int moveSpeed) => GetValidMoves(this[(x, y)], moveSpeed);
+    public Dictionary<GridSpace, List<GridSpace>> GetValidMoves(int x, int y, int moveSpeed) => GetValidMoves(this[(x, y)], moveSpeed, false);
 
     public GridSpace this[(int, int) x] => GridSquares[x];
 
-    public Dictionary<GridSpace, List<GridSpace>> GetValidMoves(GridSpace startSpace, int speed)
+    public Dictionary<GridSpace, List<GridSpace>> GetValidMoves(GridSpace startSpace, int speed, bool includeDiagonals)
     {
         // A dictionary to store paths to reachable spaces.
         Dictionary<GridSpace, List<GridSpace>> reachablePaths = new Dictionary<GridSpace, List<GridSpace>>();

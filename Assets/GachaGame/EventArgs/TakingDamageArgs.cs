@@ -6,4 +6,5 @@ using UnityEngine;
 public class TakingDamageArgs : EventArgs
 {
     public int DamageAmount;
+    public Creature DamageDealer;
 }

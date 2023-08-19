@@ -21,6 +21,7 @@ public class GameDemo : MonoBehaviour
     internal Dictionary<GridSpace, List<GridSpace>> curValidMoveDict = null;
 
     public Game MyGame;
+    public GameDemoSelectState MySelectState = GameDemoSelectState.UNSELECTED;
 
     internal HighlightManager MyHighlightManager;
 
@@ -126,7 +127,18 @@ public class GameDemo : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(1))
         {
-            PotentialDeselect();
+            if(MySelectState == GameDemoSelectState.BASICSELECT)
+            {
+                PotentialDeselect();
+            }
+            else if (MySelectState == GameDemoSelectState.TARGETSELECT)
+            {
+                ClearCreatureAbilityTargets();
+                ClearPointAbilityTargets();
+                ClearOptionAbilityTargets();
+                HighlightBasicActions(GetOnboardComponent(CurSelectedCreat));
+                MySelectState = GameDemoSelectState.BASICSELECT;
+            }
         }
     }
 
@@ -136,6 +148,7 @@ public class GameDemo : MonoBehaviour
         var targetCreat = target.GetComponent<GameDemoReserveChar>().MyCreature;
         UpdateOrInstantiateInfoPanel(targetCreat, target.transform.position);
         CurSelectedCreat = targetCreat;
+        MySelectState = GameDemoSelectState.BASICSELECT;
     }
 
     public void SelOnboardChar(GameObject target)
@@ -149,18 +162,29 @@ public class GameDemo : MonoBehaviour
             // Deselect any currently selected character
             PotentialDeselect(false);
 
+            MySelectState = GameDemoSelectState.BASICSELECT;
+
             // Instantiate the InfoPanelObj to display the character's information
             UpdateOrInstantiateInfoPanel(boardCharComp.MyCreature, target.transform.position);
 
             // Set the CurSelectedCreat to the instantiated InfoPanelObj
             CurSelectedCreat = boardCharComp.MyCreature;
             boardCharComp.Select();
-            MyHighlightManager.HighlightValidMoves(CurSelectedCreat);
-            if (boardCharComp.MyCreature.CanAct)
-            {
-                ValidAttackTargets = boardCharComp.MyCreature.GetValidBasicAttackTargets();
-                MyHighlightManager.HighlightValidAttackTargets();
-            }
+            HighlightBasicActions(boardCharComp);
+        }
+        else
+        {
+            // CODE HERE: Select the creature, showing its info panel, WITHOUT allowing selection of moves, attacks, or ability activations.
+        }
+    }
+
+    private void HighlightBasicActions(GameDemoBoardChar boardCharComp)
+    {
+        MyHighlightManager.HighlightValidMoves(CurSelectedCreat);
+        if (boardCharComp.MyCreature.CanAct)
+        {
+            ValidAttackTargets = boardCharComp.MyCreature.GetValidBasicAttackTargets();
+            MyHighlightManager.HighlightValidAttackTargets();
         }
     }
 
@@ -179,7 +203,13 @@ public class GameDemo : MonoBehaviour
                 }
             }
 
+            if (destroyInfoPanel)
+            {
+                MySelectState = GameDemoSelectState.UNSELECTED;
+            }
+
             ClearSelChar(destroyInfoPanel);
+
         }
         ClearAttackTargets();
         ClearCreatureAbilityTargets();
@@ -205,16 +235,6 @@ public class GameDemo : MonoBehaviour
             CurSelectedCreat.BasicAttack(target);
             PotentialDeselect();
         }
-    }
-
-    public GameDemoBoardChar GetOnboardComponent(Creature creat)
-    {
-        return CreatObjs.ContainsKey(creat) ? CreatObjs[creat].GetComponent<GameDemoBoardChar>() : null;
-    }
-
-    public GameDemoSquare GetBoardSpaceComponent(GridSpace gs)
-    {
-        return GridObjs.ContainsKey(gs) ? GridObjs[gs].square : null;
     }
 
     public void ClearCreatureAbilityTargets(bool cancelAbility = true)
@@ -348,6 +368,14 @@ public class GameDemo : MonoBehaviour
     {
         var boardCharacter = CreateBoardCharacter(new Vector3(cArgs.SpaceInvolved.XPos, cArgs.SpaceInvolved.YPos, 0), Quaternion.identity);
         SetupBoardCharacterProperties(boardCharacter, cArgs);
+        if (CreatObjs.ContainsKey(cArgs.MyCreature))
+        {
+            CreatObjs[cArgs.MyCreature] = boardCharacter;
+        }
+        else
+        {
+            CreatObjs.Add(cArgs.MyCreature, boardCharacter);
+        }
     }
 
     private GameObject CreateBoardCharacter(Vector3 position, Quaternion rotation)
@@ -363,14 +391,7 @@ public class GameDemo : MonoBehaviour
         gameComp.SetCreat(cArgs.MyCreature);
         gameComp.MyGameDemo = this;
         gameComp.attackTargetColor = NeededColors[(int)ColorIndex.VALID_ATTACK_TARGET_COLOR];
-        if (CreatObjs.ContainsKey(cArgs.MyCreature))
-        {
-            CreatObjs[cArgs.MyCreature] = boardCharacter;
-        }
-        else
-        {
-            CreatObjs.Add(cArgs.MyCreature, boardCharacter);
-        }
+        
     }
 
     private void InitDemoPlayers()
@@ -443,7 +464,7 @@ public class GameDemo : MonoBehaviour
         if (e is CreatureReservedArgs cArgs)
         {
             var targetList = cArgs.ReserveOwner.MyPlayerIndex == 0 ? P1Reserves : P2Reserves;
-            var targetObj = targetList.Where(x => x.GetComponent<GameDemoReserveChar>().MyCreature == cArgs.BeingReserved).FirstOrDefault();
+            var targetObj = GetReserve(cArgs.BeingReserved);
             if (targetObj != null)
             {
                 for (int i = targetList.IndexOf(targetObj); i < targetList.Count; i++)
@@ -524,6 +545,28 @@ public class GameDemo : MonoBehaviour
     {
         GridObjs[gSquare].obj.GetComponent<Renderer>().material.color = color;
     }
+
+    public GameDemoBoardChar GetOnboardComponent(Creature creat)
+    {
+        return CreatObjs.ContainsKey(creat) ? CreatObjs[creat].GetComponent<GameDemoBoardChar>() : null;
+    }
+
+    public GameDemoReserveChar GetReserveComponent(Creature creat)
+    {
+        var targetObj = GetReserve(creat);
+        return targetObj.GetComponent<GameDemoReserveChar>();
+    }
+
+    public GameObject GetReserve(Creature creat)
+    {
+        var targetList = creat.Controller.MyPlayerIndex == 0 ? P1Reserves : P2Reserves;
+        return targetList.Where(x => x.GetComponent<GameDemoReserveChar>().MyCreature == creat).FirstOrDefault();
+    }
+
+    public GameDemoSquare GetBoardSpaceComponent(GridSpace gs)
+    {
+        return GridObjs.ContainsKey(gs) ? GridObjs[gs].square : null;
+    }
 }
 
 internal enum ColorIndex
@@ -535,4 +578,11 @@ internal enum ColorIndex
     GRID_HIGHLIGHT_COLOR,
     GRID_PATH_COLOR,
     VALID_ATTACK_TARGET_COLOR,
+}
+
+public enum GameDemoSelectState
+{
+    UNSELECTED,
+    BASICSELECT,
+    TARGETSELECT,
 }

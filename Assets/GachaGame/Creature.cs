@@ -6,6 +6,14 @@ using UnityEngine;
 
 public class Creature
 {
+    public Creature(CreatureGameBase baseToInit = null)
+    {
+        if(baseToInit != null)
+        {
+
+        }
+    }
+
     public CreatureGameBase MyCreatureBase;
 
     public string DisplayName;
@@ -22,7 +30,7 @@ public class Creature
 
     public int SpeedLeft;
 
-    public List<CreatureTag> Tags = new List<CreatureTag>();
+    public List<Tag> Tags = new List<Tag>();
 
     public CreatureState State;
 
@@ -59,6 +67,8 @@ public class Creature
 
     public List<Ability> Abilities { get; } = new List<Ability>();
 
+    public List<Ability> HiddenAbilities { get; } = new List<Ability>();
+
     public Game MyGame => Controller.MyGame;
 
     public bool IsOnBoard => MySpace != null;
@@ -93,15 +103,27 @@ public class Creature
         }
 
         Tags.Clear();
-        Tags.AddRange(MyCreatureBase.Tags);
+        foreach (var tag in MyCreatureBase.Tags)
+        {
+            Tags.Add(new Tag(tag));
+        }
 
         DisplayName = MyCreatureBase.DisplayName;
     }
 
     public void StartOfTurnRefresh()
     {
-        SpeedLeft = Speed;
-        CanAct = true;
+        var stnTag = Tags.Where(x => x.TagType == CreatureTag.STUNNED);
+        if (stnTag.Any())
+        {
+            Tags.Remove(stnTag.First());
+            SpeedLeft = 0;
+        }
+        else
+        {
+            SpeedLeft = Speed;
+            CanAct = true;
+        }
     }
 
     public void EndOfTurn()
@@ -167,7 +189,12 @@ public class Creature
 
     public bool CanActivateAbility(int AbilIndex)
     {
-        return Abilities[AbilIndex] is ActiveAbility activeAbil && activeAbil.IsActivateable();
+        return Abilities.Count > AbilIndex && CanActivateAbility(Abilities[AbilIndex]);
+    }
+
+    public bool HasTag(CreatureTag tag)
+    {
+        return Tags.Where(x => x.TagType == tag).Any();
     }
 
     public void BasicAttack(Creature target)
@@ -184,9 +211,9 @@ public class Creature
         }
     }
 
-    public void TakeDamage(int damageAmount)
+    public void TakeDamage(int damageAmount, Creature damageDealer)
     {
-        var dmgArgs = new TakingDamageArgs() { DamageAmount = damageAmount };
+        var dmgArgs = new TakingDamageArgs() { DamageAmount = damageAmount, DamageDealer = damageDealer };
         EventManager.Invoke("BeforeDamage", this, dmgArgs);
         Health -= dmgArgs.DamageAmount;
         EventManager.Invoke("AfterDamage", this, dmgArgs);
@@ -196,16 +223,24 @@ public class Creature
         }
     }
 
+    public void Heal(int healingAmount)
+    {
+        var healingArgs = new TakingDamageArgs() { DamageAmount = healingAmount };
+        EventManager.Invoke("BeforeHealing", this, healingArgs);
+        Health = Math.Min(MaxHealth, Health + healingAmount);
+        EventManager.Invoke("AfterHealing", this, healingArgs);
+    }
+
     public void AttackTarget(Creature target, bool ranged = false)
     {
         var atkArgs = new AttackArgs() { Target = target, IsRanged = ranged };
         EventManager.Invoke("BeforeAttack", this, atkArgs);
         if (atkArgs.Target != null)
         {
-            atkArgs.Target.TakeDamage(Attack);
-            if (!atkArgs.IsRanged)
+            atkArgs.Target.TakeDamage(Attack, this);
+            if (!atkArgs.IsRanged && !atkArgs.Target.HasTag(CreatureTag.DEFENSELESS))
             {
-                TakeDamage(atkArgs.Target.Attack);
+                TakeDamage(atkArgs.Target.Attack, atkArgs.Target);
             }
             EventManager.Invoke("AfterAttack", this, atkArgs);
         }
@@ -242,7 +277,10 @@ public class Creature
             State = State,
         };
 
-        copy.Tags.AddRange(Tags);
+        foreach (var tag in Tags)
+        {
+            copy.Tags.Add(new Tag(tag.TagType, tag.Data));
+        }
 
         return copy;
     }
@@ -262,8 +300,8 @@ public class Creature
         if (initAbil)
         {
             abil.InitAbility();
+            EventManager.Invoke("GainedAbility", this, new AbilityChangeArgs() { AbilityChanged = abil });
         }
-        EventManager.Invoke("GainedAbility", this, new AbilityChangeArgs() { AbilityChanged = abil });
     }
 }
 

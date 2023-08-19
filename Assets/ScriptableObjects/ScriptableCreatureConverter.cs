@@ -15,10 +15,13 @@ public static class ScriptableCreatureConverter
             Name = scb.CharName,
             DisplayName = scb.CharDisplayName,
             Abilities = new List<string>(),
-            Tags = new List<CreatureTag>(),
+            Tags = new HashSet<CreatureTag>(),
         };
         ret.Abilities.AddRange(scb.Abilities);
-        ret.Tags.AddRange(scb.Tags);
+        foreach (var tag in scb.Tags)
+        {
+            ret.Tags.Add(tag);
+        }
 
         return ret;
     }
