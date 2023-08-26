@@ -9,18 +9,15 @@ public class Tag
         TagType = tag;
     }
 
-    public Tag(CreatureTag tag, object data)
-    {
-        TagType = tag;
-        Data = data;
-    }
-
-    public object Data;
-
     public CreatureTag TagType;
+
+    public Creature CreatureData = null;
+
+    public int IntData = -1;
 
     public Tag Copy()
     {
-        return new Tag(TagType, Data);
+        var retTag = new Tag(TagType) { IntData = IntData, CreatureData = CreatureData };
+        return retTag;
     }
 }

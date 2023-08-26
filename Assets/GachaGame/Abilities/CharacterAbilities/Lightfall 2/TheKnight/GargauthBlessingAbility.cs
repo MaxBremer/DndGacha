@@ -11,12 +11,7 @@ public class GargauthBlessingAbility : TargetFriendlyOrSelfAbility
         Name = "GargauthsBlessing";
         DisplayName = "Gargauth's Blessing";
         Description = "Give a friendly creature or this character +0/+8/+4 (speed/health/attack)";
-    }
-
-    public override void InitAbility()
-    {
         MaxCooldown = 4;
-        base.InitAbility();
     }
 
     public override void Trigger(object sender, EventArgs e)

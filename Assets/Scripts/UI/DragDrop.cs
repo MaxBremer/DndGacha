@@ -5,13 +5,13 @@ using UnityEngine;
 public class DragDrop : MonoBehaviour
 {
     public GameObject particlesObj;
+    public bool IsDragging = false;
 
     private ParticleSystem _myDragParticles;
 
     private const float DRAG_SPEED_MULT = 10f;
     private const float DRAG_LOOK_INCR = 5f;
 
-    private bool _dragging = false;
     private float _dist;
     private Vector3 _offset;
 
@@ -25,7 +25,7 @@ public class DragDrop : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (_dragging)
+        if (IsDragging)
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
@@ -54,7 +54,7 @@ public class DragDrop : MonoBehaviour
     private void StartDrag()
     {
         //Debug.Log("Starting drag");
-        _dragging = true;
+        IsDragging = true;
         _dist = Vector3.Distance(transform.position, Camera.main.transform.position);
         _offset = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, _dist));
 
@@ -66,7 +66,7 @@ public class DragDrop : MonoBehaviour
     private void StopDrag()
     {
         //Debug.Log("Stopping drag");
-        _dragging = false;
+        IsDragging = false;
         transform.rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
         _myDragParticles.Stop();
     }

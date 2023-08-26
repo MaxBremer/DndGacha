@@ -1,9 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class AbilBlock : MonoBehaviour
 {
+    public bool AllowInteraction = true;
+    public GameObject InfoBoxGameObject;
+    public TextMeshPro InfoBoxText;
+    public DragDrop PanelDragDrop;
+
     public Ability MyAbility;
 
     // Start is called before the first frame update
@@ -20,7 +26,7 @@ public class AbilBlock : MonoBehaviour
 
     void OnMouseDown()
     {
-        if(MyAbility is ActiveAbility activeAbil && activeAbil.IsActivateable())
+        if(AllowInteraction && MyAbility is ActiveAbility activeAbil && activeAbil.IsActivateable())
         {
             //Debug.Log("Activating");
             activeAbil.Activate();
@@ -57,5 +63,36 @@ public class AbilBlock : MonoBehaviour
         {
             Debug.Log("Ability name: " + MyAbility.DisplayName);
         }*/
+    }
+
+    void OnMouseEnter()
+    {
+        if (!PanelDragDrop.IsDragging)
+        {
+            ShowTooltip();
+        }
+    }
+
+    void OnMouseExit()
+    {
+        HideTooltip();
+    }
+
+    private void ShowTooltip()
+    {
+        string tooltipContent = MyAbility.DisplayName + "\n" + MyAbility.Description;
+
+        if (MyAbility is ActiveAbility activeAbil)
+        {
+            tooltipContent += "\nCooldown: " + activeAbil.Cooldown + "/" + activeAbil.MaxCooldown;
+        }
+
+        InfoBoxText.text = tooltipContent;
+        InfoBoxGameObject.SetActive(true);
+    }
+
+    private void HideTooltip()
+    {
+        InfoBoxGameObject.SetActive(false);
     }
 }

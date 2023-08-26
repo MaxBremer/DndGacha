@@ -82,16 +82,17 @@ public class Ability
                 EventManager.Invoke("AfterAbilityTrigger", this, new EventArgs());
             }
         }
-        ClearChoices();
-        if(this is ActiveAbility activeAbil && activeAbil.MidActivation)
-        {
-            activeAbil.PostActivation();
-        }
+        PostExternalTrigger();
     }
 
     public virtual void ConditionalTrigger(object sender, EventArgs e)
     {
         ExternalTrigger(sender, e);
+    }
+
+    public virtual void PostExternalTrigger() 
+    {
+        ClearChoices();
     }
 
     public virtual void AddReserveTriggers() { ReserveTriggerAdded = true; }

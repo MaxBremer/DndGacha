@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class ActiveAbility : Ability
 {
+    private bool _activatedThisTurn = false;
+    
     public int MaxCooldown;
     public int Cooldown;
 
@@ -25,13 +27,14 @@ public class ActiveAbility : Ability
         }
         else
         {
+            MidActivation = true;
+
             if (ChoicesNeeded.Count < 1)
             {
                 ExternalTrigger(this, new EventArgs());
             }
             else
             {
-                MidActivation = true;
                 ChoiceManager.TriggerBasicPlayerDecision(this);
             }
         }
@@ -41,7 +44,14 @@ public class ActiveAbility : Ability
     {
         if (Cooldown > 0)
         {
-            LowerCooldown(1);
+            if (_activatedThisTurn)
+            {
+                _activatedThisTurn = false;
+            }
+            else
+            {
+                LowerCooldown(1);
+            }
         }
     }
 
@@ -55,6 +65,7 @@ public class ActiveAbility : Ability
         MidActivation = false;
         Cooldown = MaxCooldown;
         Owner.CanAct = false;
+        _activatedThisTurn = true;
     }
 
     public void CancelActivation()
@@ -66,6 +77,15 @@ public class ActiveAbility : Ability
     public virtual bool IsActivateable()
     {
         return Owner.CanAct && Cooldown == 0 && ChoiceManager.ValidChoicesExist(ChoicesNeeded);
+    }
+
+    public override void PostExternalTrigger()
+    {
+        base.PostExternalTrigger();
+        if (MidActivation)
+        {
+            PostActivation();
+        }
     }
 
     public override Ability CreateCopy()

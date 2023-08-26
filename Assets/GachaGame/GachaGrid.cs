@@ -100,6 +100,12 @@ public class GachaGrid
         return Mathf.Abs(to.XPos - from.XPos) + Mathf.Abs(to.YPos - from.YPos) <= range;
     }
 
+    public GridSpace GetRandomAdjacent(GridSpace point, bool onlyUnblocked = false, bool includeDiagonals = false)
+    {
+        List<GridSpace> options = onlyUnblocked ? GetUnblockedAdjacents(point, includeDiagonals) : GetAdjacents(point, includeDiagonals);
+        return options.Count > 0 ? options[Random.Range(0, options.Count - 1)] : null;
+    }
+
     public void Add((int, int) pos, GridSpace gs)
     {
         GridSquares.Add(pos, gs);
@@ -218,7 +224,7 @@ public class GachaGrid
             }
 
             // Get the unblocked adjacent spaces.
-            List<GridSpace> adjacents = GetUnblockedAdjacents(space);
+            List<GridSpace> adjacents = GetUnblockedAdjacents(space, includeDiagonals);
 
             foreach (GridSpace adjacent in adjacents)
             {

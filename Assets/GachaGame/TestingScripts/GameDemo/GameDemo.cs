@@ -120,6 +120,7 @@ public class GameDemo : MonoBehaviour
         EventManager.StartListening("CreatureLeavesReserve", OnCreatureLeavesReserve);
         EventManager.StartListening("CreatureEntersSpace", OnCreatureEntersSpace);
         EventManager.StartListening("StartOfTurn", OnStartOfTurn);
+        EventManager.StartListening("CreatureDies", OnCreatureDies);
     }
 
     // Update is called once per frame
@@ -156,25 +157,23 @@ public class GameDemo : MonoBehaviour
         // Get the GameDemoBoardChar component from the target GameObject
         GameDemoBoardChar boardCharComp = target.GetComponent<GameDemoBoardChar>();
 
+        PotentialDeselect(false);
+        MySelectState = GameDemoSelectState.BASICSELECT;
+        CurSelectedCreat = boardCharComp.MyCreature;
+
         // Check if the character belongs to the current player
         if (boardCharComp.MyCreature.Controller == MyGame.Players[MyGame.CurrentPlayerIndex])
         {
-            // Deselect any currently selected character
-            PotentialDeselect(false);
-
-            MySelectState = GameDemoSelectState.BASICSELECT;
-
-            // Instantiate the InfoPanelObj to display the character's information
             UpdateOrInstantiateInfoPanel(boardCharComp.MyCreature, target.transform.position);
 
-            // Set the CurSelectedCreat to the instantiated InfoPanelObj
-            CurSelectedCreat = boardCharComp.MyCreature;
             boardCharComp.Select();
             HighlightBasicActions(boardCharComp);
         }
         else
         {
-            // CODE HERE: Select the creature, showing its info panel, WITHOUT allowing selection of moves, attacks, or ability activations.
+            // Otherwise, select without allowing interaction.
+            UpdateOrInstantiateInfoPanel(boardCharComp.MyCreature, target.transform.position, false);
+            boardCharComp.Select();
         }
     }
 
@@ -350,16 +349,16 @@ public class GameDemo : MonoBehaviour
         CurSelectedCreat = null;
     }
 
-    private void UpdateOrInstantiateInfoPanel(Creature targetCreat, Vector3 position)
+    private void UpdateOrInstantiateInfoPanel(Creature targetCreat, Vector3 position, bool allowAbilities = true)
     {
         if (CurInfoPanel != null)
         {
-            CurInfoPanel.GetComponent<BaseInfoPanel>().SetCreature(targetCreat);
+            CurInfoPanel.GetComponent<BaseInfoPanel>().SetCreature(targetCreat, !allowAbilities);
         }
         else
         {
             var infoPanel = Instantiate(InfoPanelPrefab, position - new Vector3(0, 0, 4), Quaternion.identity);
-            infoPanel.GetComponent<BaseInfoPanel>().SetCreature(targetCreat);
+            infoPanel.GetComponent<BaseInfoPanel>().SetCreature(targetCreat, !allowAbilities);
             CurInfoPanel = infoPanel;
         }
     }
@@ -391,6 +390,7 @@ public class GameDemo : MonoBehaviour
         gameComp.SetCreat(cArgs.MyCreature);
         gameComp.MyGameDemo = this;
         gameComp.attackTargetColor = NeededColors[(int)ColorIndex.VALID_ATTACK_TARGET_COLOR];
+        gameComp.defaultColor = cArgs.MyCreature.Controller.MyPlayerIndex == 0 ? NeededColors[(int)ColorIndex.P1_COLOR] : NeededColors[(int)ColorIndex.P2_COLOR];
         
     }
 
@@ -487,6 +487,11 @@ public class GameDemo : MonoBehaviour
     {
         if(sender is Creature dead)
         {
+            if(CurSelectedCreat == dead)
+            {
+                PotentialDeselect();
+            }
+
             var cObj = CreatObjs[dead];
             CreatObjs.Remove(dead);
             Destroy(cObj);

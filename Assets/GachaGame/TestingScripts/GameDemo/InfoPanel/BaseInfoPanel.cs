@@ -18,6 +18,8 @@ public class BaseInfoPanel : MonoBehaviour
     private int curAbilIndex = 0;
     private Creature myCreature;
 
+    public GameDemo MyGameDemo;
+
 
     // Start is called before the first frame update
     void Start()
@@ -25,7 +27,7 @@ public class BaseInfoPanel : MonoBehaviour
         InitTextObjs();
     }
 
-    public void SetCreature(Creature creat)
+    public void SetCreature(Creature creat, bool forbidInteraction)
     {
         InitTextObjs();
         myCreature = creat;
@@ -35,6 +37,11 @@ public class BaseInfoPanel : MonoBehaviour
         {
             curAbilIndex = 0;
             UpdateAbilityBlock();
+        }
+
+        if (forbidInteraction)
+        {
+            AbilityBlockObject.GetComponent<AbilBlock>().AllowInteraction = false;
         }
     }
 

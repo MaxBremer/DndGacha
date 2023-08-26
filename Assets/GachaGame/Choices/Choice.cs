@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,4 +18,6 @@ public abstract class Choice
     public string Caption;
 
     public abstract void ClearChoice();
+
+    public Func<bool> ConditionOfPresentation = () => true; 
 }

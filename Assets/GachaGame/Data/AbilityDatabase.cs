@@ -22,10 +22,30 @@ public static class AbilityDatabase
         { "ArmCannon", typeof(ArmCannonAbility) },
         { "GargauthBlessing", typeof(GargauthBlessingAbility) },
 
-        //The Husk
+        // The Husk
         { "LastAct", typeof(LastActAbility) },
         { "TollOfAges", typeof(TollOfAgesAbility) },
         { "ClothOfEras", typeof(ClothOfErasAbility) },
+
+        // Nuruva
+        { "FlurryOfBlows", typeof(FlurryOfBlowsAbility) },
+        { "FocusKi", typeof(FocusKiAbility) },
+        { "StunningStrike", typeof(StunningStrikeAbility) },
+
+        // Rasuil
+        { "AuraOfCourage", typeof(AuraOfCourageAbility) },
+        { "DivineSmite", typeof(DivineSmiteAbility) },
+        { "LayOnHands", typeof(LayOnHandsAbility) },
+
+        // Emil
+        { "HexbladesCurse", typeof(HexbladesCurseAbility) },
+        { "EldritchBlast", typeof(EldritchBlastAbility) },
+        { "AccursedSpectre", typeof(AccursedSpectreAbility) },
+
+        // Kthellan
+        { "TridentsSpeed", typeof(TridentsSpeedAbility) },
+        { "WrathOfTheStorm", typeof(WrathOfTheStormAbility) },
+        { "LightningsFlash", typeof(LightningsFlashAbility) },
 
         // TEST ABILITIES
         { "PointTargetObstacle", typeof(PointTargetObstacle) },

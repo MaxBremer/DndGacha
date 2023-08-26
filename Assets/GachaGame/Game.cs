@@ -80,8 +80,6 @@ public class Game
 
     public void CallCharacter(Creature called, GridSpace callLocation, Player caller)
     {
-        // EVENTUALLY, will have to decision-make GridSpace out of possible locations.
-        // Although maybe just write separate function? That can call this one on return?
         SummonCreature(called, callLocation);
         caller.CreatureCalled(called);
         called.IsPrime = true;

@@ -460,6 +460,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc03d74fb7ae1d14c890a7495fb748be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MySelectState: 0
   gridSquarePrefab: {fileID: 7263189157821394348, guid: bb7511324c4c4cf4aaf02d8e96ba774b, type: 3}
   ReserveCharPrefab: {fileID: 6358010715277065038, guid: ea24a97e72217d24186d2742fe3a5639, type: 3}
   BoardCharPrefab: {fileID: 2523191262594325922, guid: 80651676d5320ba47a2986ea715f145e, type: 3}
@@ -471,10 +472,11 @@ MonoBehaviour:
   P1Characters:
   - {fileID: 11400000, guid: 1366e9fe58bf3ff46889f339c0682967, type: 2}
   - {fileID: 11400000, guid: 8ee64b186d063e245a0d803e5c0fa3dd, type: 2}
+  - {fileID: 11400000, guid: 05cefb4b8f7b9524b914c191d120ec87, type: 2}
   P2Characters:
   - {fileID: 11400000, guid: 8ee64b186d063e245a0d803e5c0fa3dd, type: 2}
   - {fileID: 11400000, guid: 4f6dbb7d14f1a3043848d6602fda5295, type: 2}
-  - {fileID: 11400000, guid: 4f6dbb7d14f1a3043848d6602fda5295, type: 2}
+  - {fileID: 11400000, guid: cbfd722b06116404cb4514d35fc2b71f, type: 2}
   NeededColors:
   - {r: 0.6603774, g: 0.5850818, b: 0.52124125, a: 0}
   - {r: 0.9056604, g: 0.32455292, b: 0.31327868, a: 0}

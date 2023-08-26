@@ -67,7 +67,9 @@ public class Creature
 
     public List<Ability> Abilities { get; } = new List<Ability>();
 
-    public List<Ability> HiddenAbilities { get; } = new List<Ability>();
+    public List<PassiveAbility> HiddenAbilities { get; } = new List<PassiveAbility>();
+
+    public IEnumerable<Ability> AllAbilities => Abilities.Concat<Ability>(HiddenAbilities);
 
     public Game MyGame => Controller.MyGame;
 
@@ -108,6 +110,9 @@ public class Creature
             Tags.Add(new Tag(tag));
         }
 
+        HiddenAbilities.Clear();
+        // TODO: Hidden abilities in creature base? I don't think so but maybe.
+
         DisplayName = MyCreatureBase.DisplayName;
     }
 
@@ -118,15 +123,21 @@ public class Creature
         {
             Tags.Remove(stnTag.First());
             SpeedLeft = 0;
+            CanAct = false;
         }
         else
         {
             SpeedLeft = Speed;
-            CanAct = true;
+            CanAct = HasTag(CreatureTag.CANT_ACT) ? false : true;
         }
     }
 
     public void EndOfTurn()
+    {
+        AbilitiesTick();
+    }
+
+    public void AbilitiesTick()
     {
         foreach (var abil in Abilities)
         {
@@ -140,12 +151,25 @@ public class Creature
     public void Summoned()
     {
         State = CreatureState.ONBOARD;
-        foreach (var abil in Abilities)
+        foreach (var abil in AllAbilities)
         {
             abil.AddOnboardTriggers();
             if (abil.GraveyardTriggerAdded)
                 abil.RemoveGraveyardTriggers();
             if(abil.ReserveTriggerAdded)
+                abil.RemoveReserveTriggers();
+        }
+    }
+
+    public void DeathTriggerChanges()
+    {
+        State = CreatureState.GRAVEYARD;
+        foreach (var abil in AllAbilities)
+        {
+            abil.AddGraveyardTriggers();
+            if (abil.OnboardTriggerAdded)
+                abil.RemoveOnboardTriggers();
+            if (abil.ReserveTriggerAdded)
                 abil.RemoveReserveTriggers();
         }
     }
@@ -166,7 +190,7 @@ public class Creature
     public void PutInReserve()
     {
         State = CreatureState.RESERVE;
-        foreach (var abil in Abilities)
+        foreach (var abil in AllAbilities)
         {
             abil.AddReserveTriggers();
             if (abil.GraveyardTriggerAdded)
@@ -174,6 +198,7 @@ public class Creature
             if (abil.OnboardTriggerAdded)
                 abil.RemoveOnboardTriggers();
         }
+        LeaveBoard();
     }
 
     public List<Creature> GetValidBasicAttackTargets()
@@ -194,7 +219,42 @@ public class Creature
 
     public bool HasTag(CreatureTag tag)
     {
-        return Tags.Where(x => x.TagType == tag).Any();
+        return WhereTag(tag).Any();
+    }
+
+    public IEnumerable<Tag> WhereTag(CreatureTag tag)
+    {
+        return Tags.Where(x => x.TagType == tag);
+    }
+
+    public void GainTag(CreatureTag tag)
+    {
+        GainTag(new Tag(tag));
+    }
+
+    public void GainTag(Tag tag)
+    {
+        Tags.Add(tag);
+    }
+
+    public void LoseTag(CreatureTag tag)
+    {
+        var toRemove = new List<Tag>();
+        toRemove.AddRange(Tags.Where(x => x.TagType == tag));
+        foreach (var targetTag in toRemove)
+        {
+            LoseTag(targetTag);
+        }
+    }
+
+    public void LoseTag(Tag tag)
+    {
+        Tags.Remove(tag);
+    }
+
+    public void SetController(Player p)
+    {
+        Controller = p;
     }
 
     public void BasicAttack(Creature target)
@@ -215,11 +275,14 @@ public class Creature
     {
         var dmgArgs = new TakingDamageArgs() { DamageAmount = damageAmount, DamageDealer = damageDealer };
         EventManager.Invoke("BeforeDamage", this, dmgArgs);
-        Health -= dmgArgs.DamageAmount;
-        EventManager.Invoke("AfterDamage", this, dmgArgs);
-        if(Health <= 0)
+        if (!HasTag(CreatureTag.IMMUNE))
         {
-            Die();
+            Health -= dmgArgs.DamageAmount;
+            EventManager.Invoke("AfterDamage", this, dmgArgs);
+            if (Health <= 0)
+            {
+                Die();
+            }
         }
     }
 
@@ -248,22 +311,32 @@ public class Creature
 
     public void Die()
     {
+        var deathSpot = MySpace;
         if(State == CreatureState.ONBOARD)
         {
             Controller.MyGame.GameGrid.CreatureLeavesSpace(this);
             Controller.OnBoardCreatures.Remove(this);
         }
         Controller.Graveyard.Add(this);
-        State = CreatureState.GRAVEYARD;
-        foreach (var abil in Abilities)
-        {
-            abil.RemoveOnboardTriggers();
-            abil.AddGraveyardTriggers();
-        }
-        EventManager.Invoke("CreatureDies", this, new EventArgs());
+        DeathTriggerChanges();
+
+        LeaveBoard();
+
+        EventManager.Invoke("CreatureDies", this, new CreatureDiesArgs() { CreatureDied = this, WhereItDied = deathSpot });
     }
 
-    public Creature CreateCopy()
+    public void LeaveBoard()
+    {
+        // On leaving board, lose all hidden abilities.
+        var tempList = new List<PassiveAbility>();
+        tempList.AddRange(HiddenAbilities);
+        foreach (var hAbil in tempList)
+        {
+            RemoveHiddenAbility(hAbil);
+        }
+    }
+
+    public Creature CreateCopy(bool keepPrime = false)
     {
         var copy = new Creature()
         {
@@ -272,15 +345,20 @@ public class Creature
             MaxHealth = MaxHealth,
             Health = Health,
             Speed = Speed,
+            SpeedLeft = SpeedLeft,
             Initiative = Initiative,
             DisplayName = DisplayName,
             State = State,
         };
 
+        copy.IsPrime = keepPrime ? IsPrime : false;
+
         foreach (var tag in Tags)
         {
-            copy.Tags.Add(new Tag(tag.TagType, tag.Data));
+            copy.Tags.Add(tag.Copy());
         }
+
+        // TODO: FIND WAY TO COPY ABILITIES!!!!!
 
         return copy;
     }
@@ -302,6 +380,20 @@ public class Creature
             abil.InitAbility();
             EventManager.Invoke("GainedAbility", this, new AbilityChangeArgs() { AbilityChanged = abil });
         }
+    }
+
+    public void GainHiddenAbility(PassiveAbility abil)
+    {
+        HiddenAbilities.Add(abil);
+        abil.Owner = this;
+        abil.InitAbility();
+    }
+
+    public void RemoveHiddenAbility(PassiveAbility abil)
+    {
+        HiddenAbilities.Remove(abil);
+        abil.Owner = null;
+        abil.ClearAllTriggers();
     }
 }
 
