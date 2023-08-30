@@ -470,9 +470,10 @@ MonoBehaviour:
   P1ReserveLoc: {fileID: 1659739796}
   P2ReserveLoc: {fileID: 859793795}
   P1Characters:
-  - {fileID: 11400000, guid: 1366e9fe58bf3ff46889f339c0682967, type: 2}
+  - {fileID: 11400000, guid: d66a5fe7abb58a94e8f0378d75588b6a, type: 2}
   - {fileID: 11400000, guid: 8ee64b186d063e245a0d803e5c0fa3dd, type: 2}
   - {fileID: 11400000, guid: 05cefb4b8f7b9524b914c191d120ec87, type: 2}
+  - {fileID: 11400000, guid: ed5b1d6e06b6fea4f8afdb414c10fb83, type: 2}
   P2Characters:
   - {fileID: 11400000, guid: 8ee64b186d063e245a0d803e5c0fa3dd, type: 2}
   - {fileID: 11400000, guid: 4f6dbb7d14f1a3043848d6602fda5295, type: 2}

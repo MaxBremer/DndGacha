@@ -10,7 +10,7 @@ public class Creature
     {
         if(baseToInit != null)
         {
-
+            MyCreatureBase = baseToInit;
         }
     }
 
@@ -31,6 +31,8 @@ public class Creature
     public int SpeedLeft;
 
     public List<Tag> Tags = new List<Tag>();
+
+    public HashSet<string> CreatureTypes = new HashSet<string>();
 
     public CreatureState State;
 
@@ -110,6 +112,11 @@ public class Creature
             Tags.Add(new Tag(tag));
         }
 
+        foreach (var type in MyCreatureBase.CreatureTypes)
+        {
+            CreatureTypes.Add(type);
+        }
+
         HiddenAbilities.Clear();
         // TODO: Hidden abilities in creature base? I don't think so but maybe.
 
@@ -178,13 +185,27 @@ public class Creature
     {
         var changeArgs = new StatChangeArgs() { AttackChange = AtkChg, HealthChange = HealthChg, SpeedChange = SpeedChg, InitChange = InitChg };
         EventManager.Invoke("BeforeCreatureStatsChange", this, changeArgs);
-        Attack += changeArgs.AttackChange;
-        MaxHealth += changeArgs.HealthChange;
-        Health += changeArgs.HealthChange;
-        Speed += changeArgs.SpeedChange;
-        SpeedLeft += changeArgs.SpeedChange;
-        Initiative += changeArgs.InitChange;
+        Attack = Math.Max(0, Attack + changeArgs.AttackChange);
+        MaxHealth = Math.Max(0, MaxHealth + changeArgs.HealthChange);
+        Health = Math.Max(0, Health + changeArgs.HealthChange);
+        Speed = Math.Max(0, Speed + changeArgs.SpeedChange);
+        SpeedLeft = Math.Max(0, SpeedLeft + changeArgs.SpeedChange);
+        Initiative = Math.Max(0, Initiative + changeArgs.InitChange);
         EventManager.Invoke("AfterCreatureStatsChange", this, changeArgs);
+
+        if (Health <= 0)
+        {
+            Die();
+        }
+    }
+
+    public void StatsSet(int AtkSet = -1, int HealthSet = -1, int SpeedSet = -1, int InitSet = -1)
+    {
+        int AtkChg = AtkSet < 0 ? 0 : AtkSet - Attack;
+        int HealthChg = HealthSet < 0 ? 0 : HealthSet - MaxHealth;
+        int SpdChg = SpeedSet < 0 ? 0 : SpeedSet - Speed;
+        int InitChg = InitSet < 0 ? 0 : InitSet - Initiative;
+        StatsChange(AtkChg, HealthChg, SpdChg, InitChg);
     }
 
     public void PutInReserve()
@@ -255,6 +276,14 @@ public class Creature
     public void SetController(Player p)
     {
         Controller = p;
+        if (IsOnBoard)
+        {
+            Controller.CreatureSummoned(this);
+        }
+        if (InReserve)
+        {
+            Controller.PutInReserve(this);
+        }
     }
 
     public void BasicAttack(Creature target)
@@ -312,17 +341,25 @@ public class Creature
     public void Die()
     {
         var deathSpot = MySpace;
-        if(State == CreatureState.ONBOARD)
+        EventManager.Invoke("BeforeCreatureDies", this, new CreatureDiesArgs() { CreatureDied = this, WhereItDied = deathSpot });
+
+        if (State == CreatureState.ONBOARD)
         {
             Controller.MyGame.GameGrid.CreatureLeavesSpace(this);
             Controller.OnBoardCreatures.Remove(this);
         }
-        Controller.Graveyard.Add(this);
-        DeathTriggerChanges();
+        Controller.PutInGraveyard(this);
 
         LeaveBoard();
 
-        EventManager.Invoke("CreatureDies", this, new CreatureDiesArgs() { CreatureDied = this, WhereItDied = deathSpot });
+        EventManager.Invoke("AfterCreatureDies", this, new CreatureDiesArgs() { CreatureDied = this, WhereItDied = deathSpot });
+        DeathTriggerChanges();
+
+        if (IsPrime)
+        {
+            IsPrime = false;
+            Controller.MyGame.GainPoint(Controller.MyGame.GetOpponents(Controller));
+        }
     }
 
     public void LeaveBoard()
@@ -358,7 +395,22 @@ public class Creature
             copy.Tags.Add(tag.Copy());
         }
 
-        // TODO: FIND WAY TO COPY ABILITIES!!!!!
+        foreach (var type in CreatureTypes)
+        {
+            copy.CreatureTypes.Add(type);
+        }
+
+        foreach (var abil in Abilities)
+        {
+            copy.GainAbility(abil.CreateCopy());
+        }
+
+        foreach (var abil in HiddenAbilities)
+        {
+            copy.GainHiddenAbility(abil.CreateCopy() as PassiveAbility);
+        }
+
+        copy.SetController(Controller);
 
         return copy;
     }
@@ -380,6 +432,11 @@ public class Creature
             abil.InitAbility();
             EventManager.Invoke("GainedAbility", this, new AbilityChangeArgs() { AbilityChanged = abil });
         }
+    }
+
+    public bool HasAbility(string Name)
+    {
+        return Abilities.Where(x => x.Name == Name).Any();
     }
 
     public void GainHiddenAbility(PassiveAbility abil)

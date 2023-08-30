@@ -16,9 +16,9 @@ public class TridentsSpeedAbility : MyTurnStartPassive
     {
         if(e is TurnStartArgs)
         {
-            var tempSchange = Owner.Speed - Owner.Attack;
-            var tempAchange = Owner.Attack - Owner.Speed;
-            Owner.StatsChange(AtkChg: tempSchange, SpeedChg: tempAchange);
+            var tempA = Owner.Attack;
+            var tempS = Owner.Speed;
+            Owner.StatsSet(AtkSet: tempS, SpeedSet: tempA);
         }
     }
 }

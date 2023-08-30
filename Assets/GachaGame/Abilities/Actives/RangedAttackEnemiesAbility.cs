@@ -8,6 +8,7 @@ public class RangedAttackEnemiesAbility : RangedAttackAbility
     public override void InitAbility()
     {
         base.InitAbility();
+        ChoicesNeeded.Clear();
         Func<Creature, bool> isValid = x => x != Owner && x.Controller != Owner.Controller && GachaGrid.IsInRange(Owner, x, Range);
         ChoicesNeeded.Add(new CreatureTargetChoice() { IsValidCreature = isValid, Caption = "Target" });
     }

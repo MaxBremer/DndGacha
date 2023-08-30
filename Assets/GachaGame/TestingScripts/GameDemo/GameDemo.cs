@@ -63,10 +63,6 @@ public class GameDemo : MonoBehaviour
         SubscribeToEvents();
         InitializeGameCharacters();
 
-        //REMOVE: Testing
-        MyGame.Players[1].Reserve[0].Initiative = 1;
-        MyGame.Players[1].Reserve[1].Initiative = 1;
-
         OnStartOfTurn(this, new TurnStartArgs { PlayerWhoseTurnIsStarting = 0 });
     }
 
@@ -120,7 +116,7 @@ public class GameDemo : MonoBehaviour
         EventManager.StartListening("CreatureLeavesReserve", OnCreatureLeavesReserve);
         EventManager.StartListening("CreatureEntersSpace", OnCreatureEntersSpace);
         EventManager.StartListening("StartOfTurn", OnStartOfTurn);
-        EventManager.StartListening("CreatureDies", OnCreatureDies);
+        EventManager.StartListening("AfterCreatureDies", OnCreatureDies);
     }
 
     // Update is called once per frame
@@ -128,18 +124,19 @@ public class GameDemo : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(1))
         {
-            if(MySelectState == GameDemoSelectState.BASICSELECT)
-            {
-                PotentialDeselect();
-            }
-            else if (MySelectState == GameDemoSelectState.TARGETSELECT)
-            {
-                ClearCreatureAbilityTargets();
-                ClearPointAbilityTargets();
-                ClearOptionAbilityTargets();
-                HighlightBasicActions(GetOnboardComponent(CurSelectedCreat));
-                MySelectState = GameDemoSelectState.BASICSELECT;
-            }
+            DecreaseSelectState();
+        }
+    }
+
+    public void DecreaseSelectState()
+    {
+        if (MySelectState == GameDemoSelectState.BASICSELECT)
+        {
+            PotentialDeselect();
+        }
+        else if (MySelectState == GameDemoSelectState.TARGETSELECT)
+        {
+            ClearAllTargets(true);
         }
     }
 
@@ -177,7 +174,7 @@ public class GameDemo : MonoBehaviour
         }
     }
 
-    private void HighlightBasicActions(GameDemoBoardChar boardCharComp)
+    internal void HighlightBasicActions(GameDemoBoardChar boardCharComp)
     {
         MyHighlightManager.HighlightValidMoves(CurSelectedCreat);
         if (boardCharComp.MyCreature.CanAct)
@@ -210,16 +207,28 @@ public class GameDemo : MonoBehaviour
             ClearSelChar(destroyInfoPanel);
 
         }
-        ClearAttackTargets();
-        ClearCreatureAbilityTargets();
-        ClearPointAbilityTargets();
-        ClearOptionAbilityTargets();
+        ClearAllTargets(true);
     }
 
     public void EndTurn()
     {
         MyGame.EndTurn();
         PotentialDeselect();
+    }
+
+    public void ClearAllTargets(bool cancelAbil)
+    {
+        ClearAttackTargets();
+        ClearCreatureAbilityTargets(false);
+        ClearPointAbilityTargets(false);
+        ClearOptionAbilityTargets(false);
+        if (CurSelectedCreat != null)
+        {
+            HighlightBasicActions(GetOnboardComponent(CurSelectedCreat));
+            MySelectState = GameDemoSelectState.BASICSELECT;
+        }
+
+        PotentiallyCancelActiveAbility(cancelAbil);
     }
 
     public List<GridSpace> GetPathTo(GridSpace space)
@@ -315,13 +324,16 @@ public class GameDemo : MonoBehaviour
     {
         if (cancelAbility)
         {
-            if (CurrentChoiceMakingAbility != null && CurrentChoiceMakingAbility is ActiveAbility activeAbil)
-            {
-                activeAbil.CancelActivation();
-            }
+            
+            var prevCurAbil = CurrentChoiceMakingAbility;
+
             CurrentChoiceMakingAbility = null;
 
             ClearActivePlayerChoices();
+            if (prevCurAbil != null && prevCurAbil is ActiveAbility activeAbil)
+            {
+                activeAbil.CancelActivation();
+            }
         }
     }
 
@@ -358,6 +370,7 @@ public class GameDemo : MonoBehaviour
         else
         {
             var infoPanel = Instantiate(InfoPanelPrefab, position - new Vector3(0, 0, 4), Quaternion.identity);
+            infoPanel.GetComponent<BaseInfoPanel>().MyGameDemo = this;
             infoPanel.GetComponent<BaseInfoPanel>().SetCreature(targetCreat, !allowAbilities);
             CurInfoPanel = infoPanel;
         }
@@ -424,10 +437,11 @@ public class GameDemo : MonoBehaviour
             if(CreatObjs.TryGetValue(cArgs.MyCreature, out GameObject gameObj) && gameObj.GetComponent<GameDemoBoardChar>() != null)
             {
                 gameObj.transform.position = new Vector3(cArgs.SpaceInvolved.XPos, cArgs.SpaceInvolved.YPos, 0);
-                if (CurSelectedCreat == cArgs.MyCreature)
+                if (CurSelectedCreat == cArgs.MyCreature && MySelectState == GameDemoSelectState.BASICSELECT)
                 {
                     ResetTilesToBase();
-                    SelOnboardChar(gameObj);
+                    HighlightBasicActions(gameObj.GetComponent<GameDemoBoardChar>());
+                    //SelOnboardChar(gameObj);
                 }
             }
             else
@@ -517,7 +531,7 @@ public class GameDemo : MonoBehaviour
     }
 
     // UTILITY METHODS
-    private void ResetTilesToBase()
+    public void ResetTilesToBase()
     {
         foreach (var gSquare in MyGame.GameGrid.GetAllGridSquares())
         {

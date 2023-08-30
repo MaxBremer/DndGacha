@@ -13,8 +13,16 @@ MonoBehaviour:
   m_Name: Arle
   m_EditorClassIdentifier: 
   CharName: Arle Bellclaire
+  CharDisplayName: Arle
+  FlavorText: The only one to survive becoming a Shard, and for good reason.
   rarity: 2
   CardTexture: {fileID: 0}
-  attack: 0
-  defense: 0
-  health: 0
+  Attack: 1
+  Health: 13
+  Speed: 3
+  Initiative: 3
+  Abilities:
+  - SparkheraldEquipment
+  - DeployTurret
+  - MajorUpgrade
+  Tags: 

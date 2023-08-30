@@ -9,8 +9,11 @@ public class GameDemoReserveChar : MonoBehaviour
 
     public Color defaultColor = Color.white;
     public Color selectedColor = Color.yellow;
+    public Color abilTargetColor = Color.magenta;
 
     private Renderer rend;
+
+    private bool isAbilTarget = false;
 
     // Start is called before the first frame update
     void Start()
@@ -32,8 +35,22 @@ public class GameDemoReserveChar : MonoBehaviour
 
     private void OnMouseDown()
     {
-        MyGameDemo.SelReserveChar(gameObject);
-        rend.material.color = selectedColor;
+        if (!isAbilTarget)
+        {
+            MyGameDemo.SelReserveChar(gameObject);
+            rend.material.color = selectedColor;
+        }
+        else
+        {
+            MyGameDemo.TriggerCreatureAbil(MyCreature);
+        }
+        
+    }
+
+    public void HighlightAbilTarget()
+    {
+        rend.material.color = abilTargetColor;
+        isAbilTarget = true;
     }
 
     public void Deselect()
@@ -43,5 +60,6 @@ public class GameDemoReserveChar : MonoBehaviour
             rend = GetComponent<Renderer>();
         }
         rend.material.color = defaultColor;
+        isAbilTarget = false;
     }
 }

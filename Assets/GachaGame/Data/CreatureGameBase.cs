@@ -12,6 +12,8 @@ public class CreatureGameBase
 
     public HashSet<CreatureTag> Tags = new HashSet<CreatureTag>();
 
+    public HashSet<string> CreatureTypes = new HashSet<string>();
+
     public int Attack = 1;
 
     public int Health = 1;

@@ -13,8 +13,17 @@ MonoBehaviour:
   m_Name: Issok
   m_EditorClassIdentifier: 
   CharName: Issok Verissy
+  CharDisplayName: Issok
+  FlavorText: Oh man, this Vornheim place is pretty big. Guys? Where'd you get off
+    to?
   rarity: 1
   CardTexture: {fileID: 0}
-  attack: 1
-  defense: 0
-  health: 5
+  Attack: 0
+  Health: 12
+  Speed: 2
+  Initiative: 1
+  Abilities:
+  - HealingWords
+  - IterativeEnhancement
+  - CallForAid
+  Tags: 

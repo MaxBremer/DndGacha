@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class MirrorImageAbility : RangedPointTargetAbility
+public class MirrorImageAbility : RangedUnblockedPointTargetAbility
 {
     public MirrorImageAbility()
     {

@@ -19,9 +19,9 @@ public class ActiveAbility : Ability
     }
 
     // This is like actually what happens when the player clicks the button for the ability.
-    public virtual void Activate()
+    public virtual void Activate(bool ignoreConditions = false)
     {
-        if(!IsActivateable())
+        if(!ignoreConditions && !IsActivateable())
         {
             Debug.LogWarning("WARNING: Attempted to Activate non-activateable ability. This shouldn't happen. Only make activateable abilities available to activate.");
         }
@@ -76,7 +76,7 @@ public class ActiveAbility : Ability
 
     public virtual bool IsActivateable()
     {
-        return Owner.CanAct && Cooldown == 0 && ChoiceManager.ValidChoicesExist(ChoicesNeeded);
+        return Owner.CanAct && Cooldown == 0 && ChoiceManager.ValidChoicesExist(ChoicesNeeded, this);
     }
 
     public override void PostExternalTrigger()

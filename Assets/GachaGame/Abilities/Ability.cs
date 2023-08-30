@@ -70,7 +70,12 @@ public class Ability
     {
         if (!AllChoicesMade())
         {
-            ChoiceManager.MakeChoicesRandomly(ChoicesNeeded);
+            ChoiceManager.MakeChoicesRandomly(ChoicesNeeded, this);
+            // If all choices still aren't made, then at least one has no valid choices and the trigger is cancelled.
+            if (!AllChoicesMade())
+            {
+                return;
+            }
         }
         var beforeArgs = new BeforeAbilityTriggerArgs();
         EventManager.Invoke("BeforeAbilityTrigger", this, beforeArgs);
@@ -114,6 +119,9 @@ public class Ability
         copy.Name = Name;
         copy.DisplayName = DisplayName;
         copy.Description = Description;
+        copy.Owner = Owner;
+
+        copy.InitAbility();
 
         return copy;
     }

@@ -29,7 +29,7 @@ public class Player
 
     public virtual void StartMakingChoices(Ability abil)
     {
-        ChoiceManager.MakeChoicesRandomly(abil.ChoicesNeeded);
+        ChoiceManager.MakeChoicesRandomly(abil.ChoicesNeeded, abil);
         ChoiceManager.AbilityChoicesMade(abil);
     }
 
@@ -47,11 +47,28 @@ public class Player
         }
     }
 
+    public virtual void CreatureSummoned(Creature creat)
+    {
+        if (!OnBoardCreatures.Contains(creat))
+        {
+            OnBoardCreatures.Add(creat);
+        }
+    }
+
+    public virtual void PutInGraveyard(Creature creat)
+    {
+        Graveyard.Add(creat);
+    }
+
     public void PutInReserve(Creature creat)
     {
         Reserve.Add(creat);
         creat.Controller = this;
         creat.PutInReserve();
+        if (!MyGame.AllCreatures.Contains(creat))
+        {
+            MyGame.AllCreatures.Add(creat);
+        }
         EventManager.Invoke("CreatureReserved", this, new CreatureReservedArgs() { BeingReserved = creat, ReserveOwner = this });
     }
 

@@ -8,10 +8,12 @@ public static class AbilityDatabase
     private static string[] _abilsNotToRandomlyGet = new[]
     {
         "PointTargetObstacle",
+        "TragicBackstory",
     };
 
     public static Dictionary<string, Type> AbilityDictionary = new Dictionary<string, Type>()
     {
+        // CAMPAIGN 2
         // Dot
         { "ExpensiveArmor", typeof(ExpensiveArmorAbility) },
         { "VariableOffense", typeof(VariableOffenseAbility) },
@@ -42,6 +44,38 @@ public static class AbilityDatabase
         { "EldritchBlast", typeof(EldritchBlastAbility) },
         { "AccursedSpectre", typeof(AccursedSpectreAbility) },
 
+        // Taran
+        { "MirrorImage", typeof(MirrorImageAbility) },
+        { "LunarVolley", typeof(LunarVolleyAbility) },
+        { "MoonsongsSurge", typeof(MoonsongsSurgeAbility) },
+
+        // Arle
+        { "SparkheraldEquipment", typeof(SparkheraldEquipmentAbility) },
+        { "DeployTurret", typeof(DeployTurretAbility) },
+        { "MajorUpgrade", typeof(MajorUpgradeAbility) },
+
+        // Issok
+        { "HealingWords", typeof(HealingWordsAbility) },
+        { "IterativeEnhancement", typeof(IterativeEnhancementAbility) },
+        { "CallForAid", typeof(CallForAidAbility) },
+
+        // Wrenn
+        { "Dash", typeof(DashAbility) },
+        { "SecondWind", typeof(SecondWindAbility) },
+        { "Amy", typeof(AmyAbility) },
+        { "TragicBackstory", typeof(TragicBackstoryAbility) },
+
+        // Smolder
+        { "FlamingCompanion", typeof(FlamingCompanionAbility) },
+        { "BurnTogetherSmolder", typeof(BurnTogetherSmolderAbility) },
+        { "FlameStrike", typeof(FlameStrikeAbility) },
+
+        // Buzz
+        { "BurnTogetherBuzz", typeof(BurnTogetherBuzzAbility) },
+        { "BlazingReincarnation", typeof(BlazingReincarnationAbility) },
+        { "FireBolt", typeof(FireBoltAbility) },
+
+        // CAMPAIGN 1
         // Kthellan
         { "TridentsSpeed", typeof(TridentsSpeedAbility) },
         { "WrathOfTheStorm", typeof(WrathOfTheStormAbility) },

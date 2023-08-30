@@ -9,6 +9,7 @@ public enum ChoiceType
     CREATURETARGET,
     POINTTARGET,
     OPTIONSELECT,
+    CONDOPTIONSELECT,
 }
 
 public abstract class Choice

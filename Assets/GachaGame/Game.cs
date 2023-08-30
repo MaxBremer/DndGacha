@@ -18,6 +18,8 @@ public class Game
 
     public int CurrentPlayerIndex;
 
+    public bool GameOngoing = true;
+
     public Player CurrentPlayer => Players[CurrentPlayerIndex];
 
     public int TurnCount;
@@ -80,8 +82,8 @@ public class Game
 
     public void CallCharacter(Creature called, GridSpace callLocation, Player caller)
     {
-        SummonCreature(called, callLocation);
         caller.CreatureCalled(called);
+        SummonCreature(called, callLocation);
         called.IsPrime = true;
         EventManager.Invoke("CreatureCalled", caller, new CreatureSummonArgs() { BeingSummoned = called, LocationOfSummon = callLocation });
     }
@@ -96,6 +98,10 @@ public class Game
 
         GameGrid.CreatureEntersSpace(summoned, location);
         summoned.Summoned();
+        if(summoned.Controller != null)
+        {
+            summoned.Controller.CreatureSummoned(summoned);
+        }
 
         if (!AllCreatures.Contains(summoned))
         {
@@ -116,10 +122,24 @@ public class Game
         }
     }
 
+    public void GainPoint(List<Player> players)
+    {
+        foreach (var p in players)
+        {
+            GainPoint(p);
+            if (!GameOngoing)
+            {
+                // TODO: Change this to allow potential draws?
+                break;
+            }
+        }
+    }
+
     public void Win(Player p)
     {
         EventManager.Invoke("GameOver", this, new GameOverArgs() { PlayerWhoWon = p });
         // Game over shenanigans.
+        GameOngoing = false;
     }
 
     public void EndTurn()
@@ -141,6 +161,20 @@ public class Game
         var SOTArgs = new TurnStartArgs() { PlayerWhoseTurnIsStarting = CurrentPlayerIndex };
         StartOfTurnSetup();
         EventManager.Invoke("StartOfTurn", this, SOTArgs);
+    }
+
+    public List<Player> GetOpponents(Player p)
+    {
+        var retList = new List<Player>();
+        foreach (var player in Players)
+        {
+            if(player != p)
+            {
+                retList.Add(player);
+            }
+        }
+
+        return retList;
     }
 
     private void EndOfTurnSetup()

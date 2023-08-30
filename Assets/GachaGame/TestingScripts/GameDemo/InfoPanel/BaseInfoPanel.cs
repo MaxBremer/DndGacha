@@ -39,10 +39,9 @@ public class BaseInfoPanel : MonoBehaviour
             UpdateAbilityBlock();
         }
 
-        if (forbidInteraction)
-        {
-            AbilityBlockObject.GetComponent<AbilBlock>().AllowInteraction = false;
-        }
+        var abilComp = AbilityBlockObject.GetComponent<AbilBlock>();
+        abilComp.AllowInteraction = !forbidInteraction;
+        abilComp.MyInfoPanel = this;
     }
 
     public void AbilChange(bool isLeft)

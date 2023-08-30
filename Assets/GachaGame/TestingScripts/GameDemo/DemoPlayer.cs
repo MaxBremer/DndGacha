@@ -90,6 +90,11 @@ public class DemoPlayer : Player
                 HandleOptionSelectChoice(currentOptionChoice);
                 break;
 
+            case ChoiceType.CONDOPTIONSELECT:
+                var condOptChoice = CurrentTargetChoice as ConditionalOptionSelectChoice;
+                HandleCondOptionSelectChoice(condOptChoice);
+                break;
+
             default:
                 Debug.LogError("Unknown choice type encountered");
                 break;
@@ -105,10 +110,23 @@ public class DemoPlayer : Player
         }
         else
         {
-            ChoiceManager.AbilityChoicesMade(CurrentTargetAbility);
-            MyGameDemo.PotentialDeselect();
+            var justFinishedChoices = CurrentTargetAbility;
+            MyGameDemo.ClearAllTargets(false);
             ChoicesToMake.Clear();
             CurrentTargetAbility = null;
+            ChoiceManager.AbilityChoicesMade(justFinishedChoices);
+
+            if(ChoiceManager.AbilityPending == null)
+            {
+                MyGameDemo.ResetTilesToBase();
+                MyGameDemo.ClearAllTargets(false);
+            }
+
+            /*if(MyGameDemo.CurSelectedCreat != null)
+            {
+                MyGameDemo.HighlightBasicActions(MyGameDemo.GetOnboardComponent(MyGameDemo.CurSelectedCreat));
+                MyGameDemo.MySelectState = GameDemoSelectState.BASICSELECT;
+            }*/
         }
     }
 
@@ -141,5 +159,22 @@ public class DemoPlayer : Player
             PotentialNextChoice();
         });
         MyGameDemo.MySelectState = GameDemoSelectState.TARGETSELECT;
+        MyGameDemo.CurrentChoiceMakingAbility = CurrentTargetAbility;
+    }
+
+    private void HandleCondOptionSelectChoice(ConditionalOptionSelectChoice choice)
+    {
+        MyGameDemo.DisplayOptionButtons(choice.ChoiceConditions.Keys.Where(x => choice.ChoiceConditions[x](CurrentTargetAbility)).ToList(), (selectedOption) =>
+        {
+            choice.ChosenOption = selectedOption;
+
+            // Call a function in GameDemo to remove the displayed buttons
+            MyGameDemo.ClearOptionAbilityTargets(false);
+
+            // Call the next choice
+            PotentialNextChoice();
+        });
+        MyGameDemo.MySelectState = GameDemoSelectState.TARGETSELECT;
+        MyGameDemo.CurrentChoiceMakingAbility = CurrentTargetAbility;
     }
 }

@@ -10,6 +10,8 @@ public class AbilBlock : MonoBehaviour
     public TextMeshPro InfoBoxText;
     public DragDrop PanelDragDrop;
 
+    public BaseInfoPanel MyInfoPanel;
+
     public Ability MyAbility;
 
     // Start is called before the first frame update
@@ -30,6 +32,10 @@ public class AbilBlock : MonoBehaviour
         {
             //Debug.Log("Activating");
             activeAbil.Activate();
+            if(activeAbil.ChoicesNeeded.Count < 1)
+            {
+                MyInfoPanel.MyGameDemo.PotentialDeselect();
+            }
         }
 
         /*if (MyAbility is ActiveAbility activeAbil2 && !activeAbil2.IsActivateable())
@@ -49,7 +55,7 @@ public class AbilBlock : MonoBehaviour
                 Debug.Log("COOLDOWN SOMEHOW LESS THAN ZERO");
             }
 
-            if (!ChoiceManager.ValidChoicesExist(activeAbil2.ChoicesNeeded))
+            if (!ChoiceManager.ValidChoicesExist(activeAbil2.ChoicesNeeded, activeAbil2))
             {
                 Debug.Log("Not enough valid choices");
             }

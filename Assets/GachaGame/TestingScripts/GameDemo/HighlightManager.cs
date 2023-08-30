@@ -37,9 +37,17 @@ public class HighlightManager
 
     public void HighlightCreatureAbilityTargets(Ability abil, Creature[] targets)
     {
+        gameDemo.ResetTilesToBase();
         foreach (var creat in targets)
         {
-            gameDemo.GetOnboardComponent(creat).HighlightAbilTarget();
+            if (creat.IsOnBoard)
+            {
+                gameDemo.GetOnboardComponent(creat).HighlightAbilTarget();
+            }
+            else if (creat.InReserve)
+            {
+                gameDemo.GetReserveComponent(creat).HighlightAbilTarget();
+            }
         }
         gameDemo.ValidCreatureAbilityTargets.AddRange(targets);
         gameDemo.CurrentChoiceMakingAbility = abil;
@@ -47,6 +55,7 @@ public class HighlightManager
 
     public void HighlightPointAbilityTargets(Ability abil, GridSpace[] targets)
     {
+        gameDemo.ResetTilesToBase();
         foreach (var square in targets)
         {
             gameDemo.GetBoardSpaceComponent(square).HighlightAbilityTarget();
@@ -71,7 +80,14 @@ public class HighlightManager
     {
         foreach (var creat in gameDemo.ValidCreatureAbilityTargets)
         {
-            gameDemo.GetOnboardComponent(creat).RevertHighlightToBase();
+            if (creat.IsOnBoard)
+            {
+                gameDemo.GetOnboardComponent(creat).RevertHighlightToBase();
+            }
+            else if (creat.InReserve)
+            {
+                gameDemo.GetReserveComponent(creat).Deselect();
+            }
         }
     }
 

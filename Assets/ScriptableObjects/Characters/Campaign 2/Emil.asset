@@ -13,8 +13,16 @@ MonoBehaviour:
   m_Name: Emil
   m_EditorClassIdentifier: 
   CharName: Emil Bastralle
+  CharDisplayName: Emil
+  FlavorText: Taran.
   rarity: 3
   CardTexture: {fileID: 2800000, guid: 9593f9df30375eb4f8811fdb120ba526, type: 3}
-  attack: 0
-  defense: 0
-  health: 0
+  Attack: 2
+  Health: 8
+  Speed: 2
+  Initiative: 1
+  Abilities:
+  - HexbladesCurse
+  - EldritchBlast
+  - AccursedSpectre
+  Tags: 

@@ -13,8 +13,16 @@ MonoBehaviour:
   m_Name: K'thellan
   m_EditorClassIdentifier: 
   CharName: K'thellan the Sparkbringer
-  rarity: 0
+  CharDisplayName: K'thellan
+  FlavorText: 'Faster than Nuruva, but only sometimes. '
+  rarity: 2
   CardTexture: {fileID: 0}
-  attack: 2
-  defense: 2
-  health: 5
+  Attack: 7
+  Health: 10
+  Speed: 1
+  Initiative: 4
+  Abilities:
+  - TridentsSpeed
+  - WrathOfTheStorm
+  - LightningsFlash
+  Tags: 

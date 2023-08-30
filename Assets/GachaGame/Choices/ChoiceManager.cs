@@ -25,7 +25,14 @@ public static class ChoiceManager
         if (_abilityPending == null)
         {
             _abilityPending = abil;
-            abil.Owner.Controller.StartMakingChoices(abil);
+            if(ValidChoicesExist(abil.ChoicesNeeded, abil))
+            {
+                abil.Owner.Controller.StartMakingChoices(abil);
+            }
+            else
+            {
+                CancelActiveChoiceAbility(_abilityPending);
+            }
         }
         else
         {
@@ -37,12 +44,19 @@ public static class ChoiceManager
     {
         if (_abilityPending != abil)
         {
+            if(_abilityPending == null)
+            {
+                Debug.Log("Ability pending was null");
+            }
+            Debug.Log("Abil pending is " + _abilityPending.Name);
+            Debug.Log("Called choices made on " + abil.Name);
             Debug.LogError("ERROR: Ability triggered 'choices made' in the wrong order!");
             return;
         }
 
         if (!_abilityPending.AllChoicesMade())
         {
+            Debug.Log("Abil pending choices was " + _abilityPending.Name);
             Debug.LogError("ERROR: NOT ALL CHOICES MADE BEFORE 'choices made' WAS TRIGGERED");
             return;
         }
@@ -55,19 +69,22 @@ public static class ChoiceManager
 
     public static void ChooseRandomlyAndTrigger(Ability abil, object sender)
     {
-        MakeChoicesRandomly(abil.ChoicesNeeded);
+        MakeChoicesRandomly(abil.ChoicesNeeded, abil);
         abil.ExternalTrigger(sender, new System.EventArgs());
     }
 
-    public static void MakeChoicesRandomly(IEnumerable<Choice> toMake)
+    public static void MakeChoicesRandomly(IEnumerable<Choice> toMake, Ability abilOfChoices)
     {
         foreach (var choice in toMake)
         {
-            MakeChoiceRandomly(choice);
+            if(ValidChoiceExists(choice, abilOfChoices))
+            {
+                MakeChoiceRandomly(choice, abilOfChoices);
+            }
         }
     }
 
-    public static void MakeChoiceRandomly(Choice choice)
+    public static void MakeChoiceRandomly(Choice choice, Ability abilOfChoice)
     {
         var r = new System.Random();
         switch (choice.Type)
@@ -96,6 +113,14 @@ public static class ChoiceManager
                     optChoice.ChosenOption = optChoice.Options[r.Next(optChoice.Options.Count)];
                 }
                 break;
+
+            case ChoiceType.CONDOPTIONSELECT:
+                if (choice is ConditionalOptionSelectChoice condChoice)
+                {
+                    var validOptions = condChoice.ChoiceConditions.Keys.Where(x => condChoice.ChoiceConditions[x](abilOfChoice)).ToList();
+                    condChoice.ChosenOption = validOptions[r.Next(validOptions.Count)];
+                }
+                break;
             default:
                 break;
         }
@@ -107,15 +132,14 @@ public static class ChoiceManager
         {
             return;
         }
-
         PotentiallyTriggerNextAbilInQueue();
     }
 
-    public static bool ValidChoicesExist(IEnumerable<Choice> choices)
+    public static bool ValidChoicesExist(IEnumerable<Choice> choices, Ability abilOfChoices)
     {
         foreach (var choice in choices)
         {
-            if (!ValidChoiceExists(choice))
+            if (!ValidChoiceExists(choice, abilOfChoices))
             {
                 return false;
             }
@@ -124,8 +148,12 @@ public static class ChoiceManager
         return true;
     }
 
-    public static bool ValidChoiceExists(Choice choice)
+    public static bool ValidChoiceExists(Choice choice, Ability abilOfChoice)
     {
+        if (!choice.ConditionOfPresentation())
+        {
+            return true;
+        }
         switch (choice.Type)
         {
             case ChoiceType.CREATURETARGET:
@@ -134,14 +162,20 @@ public static class ChoiceManager
                 return CurrentGame.GameGrid.GetAllGridSquares().Where(x => ((PointTargetChoice)choice).IsValidSpace(x)).Any();
             case ChoiceType.OPTIONSELECT:
                 return true;
+            case ChoiceType.CONDOPTIONSELECT:
+                return ((ConditionalOptionSelectChoice)choice).ChoiceConditions.Values.Where(x => x(abilOfChoice)).Any();
             case ChoiceType.NONE:
             default:
                 return false;
         }
     }
 
-    public static bool NumValidChoicesExist(Choice choice, int numReq)
+    public static bool NumValidChoicesExist(Choice choice, Ability abilOfChoice, int numReq)
     {
+        if (!choice.ConditionOfPresentation())
+        {
+            return true;
+        }
         switch (choice.Type)
         {
             case ChoiceType.CREATURETARGET:
@@ -150,6 +184,8 @@ public static class ChoiceManager
                 return CurrentGame.GameGrid.GetAllGridSquares().Where(x => ((PointTargetChoice)choice).IsValidSpace(x)).Count() >= numReq;
             case ChoiceType.OPTIONSELECT:
                 return true;
+            case ChoiceType.CONDOPTIONSELECT:
+                return ((ConditionalOptionSelectChoice)choice).ChoiceConditions.Values.Where(x => x(abilOfChoice)).Count() >= numReq;
             case ChoiceType.NONE:
             default:
                 return false;

@@ -17,7 +17,7 @@ public class WrathOfTheStormAbility : RangedTargetEnemyAbility
 
     public override void Trigger(object sender, EventArgs e)
     {
-        if(ChoicesNeeded.Where(x => x.Caption == "Target") is CreatureTargetChoice creatChoice && creatChoice.ChoiceMade)
+        if (ChoicesNeeded.Where(x => x.Caption == "Target").First() is CreatureTargetChoice creatChoice && creatChoice.ChoiceMade)
         {
             Owner.AttackTarget(creatChoice.TargetCreature, true);
             Owner.StatsChange(HealthChg: Owner.Speed);
