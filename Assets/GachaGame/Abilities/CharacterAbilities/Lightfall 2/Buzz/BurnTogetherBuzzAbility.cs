@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 public class BurnTogetherBuzzAbility : CreatureAffectingAuraWhileOnboardAbility
 {
@@ -28,6 +29,6 @@ public class BurnTogetherBuzzAbility : CreatureAffectingAuraWhileOnboardAbility
 
     public override bool ShouldCreatureBeEffected(Creature c)
     {
-        return c.DisplayName == "Smolder";
+        return c.DisplayName == "Smolder" && c.IsOnBoard;
     }
 }

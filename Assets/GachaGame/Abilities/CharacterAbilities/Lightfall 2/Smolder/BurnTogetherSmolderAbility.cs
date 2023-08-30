@@ -28,6 +28,6 @@ public class BurnTogetherSmolderAbility : CreatureAffectingAuraWhileOnboardAbili
 
     public override bool ShouldCreatureBeEffected(Creature c)
     {
-        return c.DisplayName == "Buzz";
+        return c.DisplayName == "Buzz" && c.IsOnBoard;
     }
 }

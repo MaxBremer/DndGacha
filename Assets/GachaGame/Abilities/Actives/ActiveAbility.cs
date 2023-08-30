@@ -29,14 +29,19 @@ public class ActiveAbility : Ability
         {
             MidActivation = true;
 
-            if (ChoicesNeeded.Count < 1)
-            {
-                ExternalTrigger(this, new EventArgs());
-            }
-            else
-            {
-                ChoiceManager.TriggerBasicPlayerDecision(this);
-            }
+            TrueActivation();
+        }
+    }
+
+    public virtual void TrueActivation()
+    {
+        if (ChoicesNeeded.Count < 1)
+        {
+            ExternalTrigger(this, new EventArgs());
+        }
+        else
+        {
+            ChoiceManager.TriggerBasicPlayerDecision(this);
         }
     }
 

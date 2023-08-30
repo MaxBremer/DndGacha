@@ -194,6 +194,7 @@ public class Game
         if (IsInitTurn)
         {
             Players[CurrentPlayerIndex].CanCallThisTurn = true;
+            //Players[CurrentPlayerIndex].NumCallsThisTurn += 1;
             CurrentInitiative = ((TurnCount - 1) / 2) + 1;
         }
     }

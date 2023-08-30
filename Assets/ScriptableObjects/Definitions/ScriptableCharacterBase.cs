@@ -19,4 +19,5 @@ public class ScriptableCharacterBase : ScriptableObject
 
     public List<string> Abilities;
     public List<CreatureTag> Tags;
+    public List<string> CreatureTypes;
 }

@@ -15,7 +15,7 @@ public class BlazingReincarnationAbility : AfterCreatureDiesWhileOnboardAbility
 
     public override void ConditionalTrigger(object sender, EventArgs e)
     {
-        if (e is CreatureDiesArgs dieArgs && dieArgs.CreatureDied == Owner && Owner.InGraveyard && Owner.MyGame.AllCreatures.Where(x => x.IsOnBoard && x.DisplayName == "Smolder").Any())
+        if (e is CreatureDiesArgs dieArgs && dieArgs.CreatureDied == Owner && Owner.InGraveyard && Owner.MyGame.AllCreatures.Where(x => x.IsOnBoard && x.DisplayName == "Smolder").Any() && dieArgs.WhereItDied.isBlocked == false)
         {
             ExternalTrigger(sender, e);
         }

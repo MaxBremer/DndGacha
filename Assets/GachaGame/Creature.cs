@@ -92,6 +92,7 @@ public class Creature
 
         Attack = MyCreatureBase.Attack;
         Speed = MyCreatureBase.Speed;
+        SpeedLeft = MyCreatureBase.Speed;
         Health = MyCreatureBase.Health;
         MaxHealth = MyCreatureBase.Health;
         Initiative = MyCreatureBase.Initiative;
@@ -142,6 +143,10 @@ public class Creature
     public void EndOfTurn()
     {
         AbilitiesTick();
+        if (HasTag(CreatureTag.SNOOZING))
+        {
+            LoseTag(CreatureTag.SNOOZING);
+        }
     }
 
     public void AbilitiesTick()
@@ -166,11 +171,14 @@ public class Creature
             if(abil.ReserveTriggerAdded)
                 abil.RemoveReserveTriggers();
         }
+
+        GainTag(CreatureTag.SNOOZING);
+        CanAct = false;
     }
 
     public void DeathTriggerChanges()
     {
-        State = CreatureState.GRAVEYARD;
+        //State = CreatureState.GRAVEYARD;
         foreach (var abil in AllAbilities)
         {
             abil.AddGraveyardTriggers();
@@ -340,6 +348,12 @@ public class Creature
 
     public void Die()
     {
+        if(State == CreatureState.GRAVEYARD)
+        {
+            // Already dead, don't do anything.
+            return;
+        }
+
         var deathSpot = MySpace;
         EventManager.Invoke("BeforeCreatureDies", this, new CreatureDiesArgs() { CreatureDied = this, WhereItDied = deathSpot });
 
@@ -352,6 +366,7 @@ public class Creature
 
         LeaveBoard();
 
+        State = CreatureState.GRAVEYARD;
         EventManager.Invoke("AfterCreatureDies", this, new CreatureDiesArgs() { CreatureDied = this, WhereItDied = deathSpot });
         DeathTriggerChanges();
 

@@ -10,4 +10,5 @@ public enum CreatureTag
     HEXBLADES_CURSE,
     CANT_ACT,
     ILLUSORY,
+    SNOOZING,
 }

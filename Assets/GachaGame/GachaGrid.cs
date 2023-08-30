@@ -185,7 +185,19 @@ public class GachaGrid
         return ret;
     }
 
-    public Dictionary<GridSpace, List<GridSpace>> GetValidMoves(Creature c) => GetValidMoves(c.MySpace, c.SpeedLeft, c.HasTag(CreatureTag.FREEMOVER));
+    public bool UnblockedAdjacentsExist(GridSpace gs, bool includeDiagonals)
+    {
+        return GetUnblockedAdjacents(gs, includeDiagonals).Count > 0;
+    }
+
+    public Dictionary<GridSpace, List<GridSpace>> GetValidMoves(Creature c) 
+    {
+        if (c.HasTag(CreatureTag.SNOOZING))
+        {
+            return new Dictionary<GridSpace, List<GridSpace>>();
+        }
+        return GetValidMoves(c.MySpace, c.SpeedLeft, c.HasTag(CreatureTag.FREEMOVER)); 
+    }
 
     public Dictionary<GridSpace, List<GridSpace>> GetValidMoves(int x, int y, int moveSpeed) => GetValidMoves(this[(x, y)], moveSpeed, false);
 

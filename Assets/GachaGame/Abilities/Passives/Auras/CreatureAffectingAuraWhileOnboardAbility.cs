@@ -12,17 +12,16 @@ public abstract class CreatureAffectingAuraWhileOnboardAbility : PassiveAbility
     {
         base.AddOnboardTriggers();
         EventManager.StartListening("CreatureSummoned", RefreshAura);
-        EventManager.StartListening("AfterCreatureDies", RefreshAura);
-        EventManager.StartListening("CreatureReserved", RefreshAura);
+        EventManager.StartListening("AfterCreatureDies", OnCreatureDeath);
+        EventManager.StartListening("CreatureReserved", OnCreatureReserved);
     }
 
     public override void RemoveOnboardTriggers()
     {
         base.RemoveOnboardTriggers();
         EventManager.StopListening("CreatureSummoned", RefreshAura);
-        EventManager.StopListening("AfterCreatureDies", RefreshAura);
-        EventManager.StopListening("CreatureReserved", RefreshAura);
-        ClearAura(null, null);
+        EventManager.StopListening("AfterCreatureDies", OnCreatureDeath);
+        EventManager.StopListening("CreatureReserved", OnCreatureReserved);
     }
 
     public virtual void RefreshAura(object sender, EventArgs e)
@@ -46,6 +45,30 @@ public abstract class CreatureAffectingAuraWhileOnboardAbility : PassiveAbility
             RemoveEffectFromCreature(c);
         }
         CurrentlyEffectedCreatures.Clear();
+    }
+
+    public virtual void OnCreatureDeath(object sender, EventArgs e)
+    {
+        if(e is CreatureDiesArgs dieArgs && dieArgs.CreatureDied == Owner && Owner.InGraveyard)
+        {
+            ClearAura(sender, e);
+        }
+        else
+        {
+            RefreshAura(sender, e);
+        }
+    }
+
+    public virtual void OnCreatureReserved(object sender, EventArgs e)
+    {
+        if (e is CreatureReservedArgs reserveArgs && reserveArgs.BeingReserved == Owner && Owner.InReserve)
+        {
+            ClearAura(sender, e);
+        }
+        else
+        {
+            RefreshAura(sender, e);
+        }
     }
 
     public abstract bool ShouldCreatureBeEffected(Creature c);

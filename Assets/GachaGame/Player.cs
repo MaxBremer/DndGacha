@@ -13,7 +13,10 @@ public class Player
 
     public int Points = 0;
 
+    //public bool CanCallThisTurn => NumCallsThisTurn >= 1;
     public bool CanCallThisTurn = false;
+
+    public int NumCallsThisTurn = 0;
 
     public PlayerType Type;
 
@@ -40,6 +43,7 @@ public class Player
             RemoveFromReserve(creat);
             OnBoardCreatures.Add(creat);
             CanCallThisTurn = false;
+            //NumCallsThisTurn -= 1;
         }
         else
         {

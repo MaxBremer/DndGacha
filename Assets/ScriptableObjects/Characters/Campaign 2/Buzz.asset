@@ -13,8 +13,19 @@ MonoBehaviour:
   m_Name: Buzz
   m_EditorClassIdentifier: 
   CharName: Buzz
+  CharDisplayName: Buzz
+  FlavorText: Aw yeah, I'll git 'im boss!
   rarity: 1
   CardTexture: {fileID: 0}
-  attack: 0
-  defense: 0
-  health: 0
+  Attack: 2
+  Health: 6
+  Speed: 2
+  Initiative: 1
+  Abilities:
+  - BurnTogetherBuzz
+  - BlazingReincarnation
+  - FireBolt
+  Tags: 00000000
+  CreatureTypes:
+  - Elemental
+  - Animal

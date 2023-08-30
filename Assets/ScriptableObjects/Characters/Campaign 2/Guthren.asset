@@ -13,9 +13,17 @@ MonoBehaviour:
   m_Name: Guthren
   m_EditorClassIdentifier: 
   CharName: Theodora Guthren
+  CharDisplayName: Guthren
   FlavorText: RIP
   rarity: 0
   CardTexture: {fileID: 0}
-  attack: 2
-  defense: 0
-  health: 2
+  Attack: 3
+  Health: 5
+  Speed: 1
+  Initiative: 2
+  Abilities:
+  - ResearchTheLost
+  - SageAdvice
+  - BestOfABadThing
+  Tags: 
+  CreatureTypes: []

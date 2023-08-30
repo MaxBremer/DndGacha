@@ -75,6 +75,23 @@ public static class AbilityDatabase
         { "BlazingReincarnation", typeof(BlazingReincarnationAbility) },
         { "FireBolt", typeof(FireBoltAbility) },
 
+        // Mitchell Katan
+        { "MightOfTheDead", typeof(MightOfTheDeadAbility) },
+        { "LifespunArtifact", typeof(LifespunArtifactAbility) },
+        { "DeathspunArtifact", typeof(DeathspunArtifactAbility) },
+        { "ArtifactSummonHound", typeof(ArtifactSummonHoundAbility) },
+        { "ArtifactLifeBuff", typeof(ArtifactLifeBuffAbility) },
+
+        // Metha
+        { "Agriculture", typeof(AgricultureAbility) },
+        { "Horticulture", typeof(HorticultureAbility) },
+        { "BotanistsFury", typeof(BotanistsFuryAbility) },
+
+        // Guthren
+        { "ResearchTheLost", typeof(ResearchTheLostAbility) },
+        { "SageAdvice", typeof(SageAdviceAbility) },
+        { "BestOfABadThing", typeof(BestOfABadThingAbility) },
+
         // CAMPAIGN 1
         // Kthellan
         { "TridentsSpeed", typeof(TridentsSpeedAbility) },
