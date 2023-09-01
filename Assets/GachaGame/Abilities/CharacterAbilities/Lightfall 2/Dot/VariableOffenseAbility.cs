@@ -18,12 +18,17 @@ public class VariableOffenseAbility : BeforeIAttackAbility
 
     public override void Trigger(object sender, EventArgs e)
     {
-        base.Trigger(sender, e);
-        var r = new System.Random();
-        var AttackGained = r.Next(1, UPPER_END_ATK_RANGE + 1);
-        Owner.StatsChange(AtkChg: AttackGained);
-        var tClass = new TempAtkRemover(AttackGained, Owner);
-        EventManager.StartListening("AfterAttack", tClass.RemoveAttack);
+        if(e is AttackArgs atkArgs)
+        {
+            var r = new System.Random();
+            var AttackGained = r.Next(1, UPPER_END_ATK_RANGE + 1);
+            //TODO: What if damage nullified before this trigger? This completely undoes that. Figure out solution.
+            Owner.StatsChange(AtkChg: AttackGained);
+            atkArgs.DamageToDeal = Owner.Attack;
+            var tClass = new TempAtkRemover(AttackGained, Owner);
+            EventManager.StartListening("AfterAttack", tClass.RemoveAttack);
+        }
+        
     }
 }
 

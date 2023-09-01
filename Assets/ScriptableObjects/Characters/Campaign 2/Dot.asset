@@ -24,5 +24,6 @@ MonoBehaviour:
   Abilities:
   - ExpensiveArmor
   - VariableOffense
-  - PointTargetObstacle
+  - OverallCompetence
   Tags: 
+  CreatureTypes: []

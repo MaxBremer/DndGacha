@@ -92,11 +92,91 @@ public static class AbilityDatabase
         { "SageAdvice", typeof(SageAdviceAbility) },
         { "BestOfABadThing", typeof(BestOfABadThingAbility) },
 
+        // Wilfina
+        { "Towerlocked", typeof(TowerlockedAbility) },
+        { "Towerwarp", typeof(TowerwarpAbility) },
+        { "MedivhsDisciples", typeof(MedivhsDisciplesAbility) },
+        { "DustGraftedBody", typeof(DustGraftedBodyAbility) },
+
+        // Alexander
+        { "PaleReincarnation", typeof(PaleReincarnationAbility) },
+        { "DeathAffinity", typeof(DeathAffinityAbility) },
+        { "MrSandman", typeof(MrSandmanAbility) },
+
+        // Dobondell
+        { "PayUp", typeof(PayUpAbility) },
+        { "UnpredictableRage", typeof(UnpredictableRageAbility) },
+        { "UncannyResillience", typeof(UncannyResilienceAbility) },
+
         // CAMPAIGN 1
         // Kthellan
         { "TridentsSpeed", typeof(TridentsSpeedAbility) },
         { "WrathOfTheStorm", typeof(WrathOfTheStormAbility) },
         { "LightningsFlash", typeof(LightningsFlashAbility) },
+
+        // JOE CAMPAIGN
+        // Bilbis
+        { "Dirtshaper", typeof(DirtshaperAbility) },
+        { "HoldPerson", typeof(HoldPersonAbility) },
+        { "CallLightning", typeof(CallLightningAbility) },
+
+        // Hiro
+        { "FubikianLongbow", typeof(FubikianLongbowAbility) },
+        { "SeizingOpportunity", typeof(SeizingOpportunityAbility) },
+        { "RacistDogma", typeof(RacistDogmaAbility) },
+
+        // Poe
+        { "SeverFromReality", typeof(SeverFromRealityAbility) },
+        { "Banish", typeof(BanishAbility) },
+        { "AspectOfDust", typeof(AspectOfDustAbility) },
+
+        // Burk
+        { "StandingLeap", typeof(StandingLeapAbility) },
+        { "TongueOfWarriors", typeof(TongueOfWarriorsAbility) },
+        { "OcarinaPlayer", typeof(OcarinaPlayerAbility) },
+
+        // Albert Foxe
+        { "KnowThyEnemy", typeof(KnowThyEnemyAbility) },
+        { "KnowThyself", typeof(KnowThyselfAbility) },
+        { "EasilyFrightened", typeof(EasilyFrightenedAbility) },
+
+        // Stone Golem
+        { "GentleGiant", typeof(GentleGiantAbility) },
+        { "StonySkin", typeof(StonySkinAbility) },
+        { "CrushingStep", typeof(CrushingStepAbility) },
+
+        // Obsidian Goldm
+        { "Fragile", typeof(FragileAbility) },
+        { "ObsidianSkin", typeof(ObsidianSkinAbility) },
+
+        // Alan
+        { "LearningMagic", typeof(LearningMagicAbility) },
+        { "LightningOfTheBeholder", typeof(LightningOfTheBeholderAbility) },
+        { "NobleFriend", typeof(NobleFriendAbility) },
+
+        // James Hunter:
+        { "SparkstoneRifle", typeof(SparkstoneRifleAbility) },
+        { "Resourceful", typeof(ResourcefulAbility) },
+
+        // Overseer
+        { "HarshLeadership", typeof(HarshLeadershipAbility) },
+        { "StrictOversight", typeof(StrictOversightAbility) },
+        { "DualDaggers", typeof(DualDaggersAbility) },
+
+        // The Eye
+        { "Methodical", typeof(MethodicalAbility) },
+        { "AuraOfNightmares", typeof(AuraOfNightmaresAbility) },
+        { "Enthrall", typeof(EnthrallAbility) },
+
+        // The Worldwatchers Idol
+        { "SkinOfEyes", typeof(SkinOfEyesAbility) },
+        { "LuringPupils", typeof(LuringPupilsAbility) },
+        { "RealityIsMine", typeof(RealityIsMineAbility) },
+
+        // Agmal
+        { "LimbOfChains", typeof(LimbOfChainsAbility) },
+        { "LetsMakeADeal", typeof(LetsMakeADealAbility) },
+        { "FoldingReality", typeof(FoldingRealityAbility) },
 
         // TEST ABILITIES
         { "PointTargetObstacle", typeof(PointTargetObstacle) },

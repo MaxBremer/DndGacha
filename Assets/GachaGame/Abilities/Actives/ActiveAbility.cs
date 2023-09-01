@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class ActiveAbility : Ability
 {
-    private bool _activatedThisTurn = false;
+    protected bool _activatedThisTurn = false;
     
     public int MaxCooldown;
     public int Cooldown;
@@ -62,10 +62,17 @@ public class ActiveAbility : Ability
 
     public void LowerCooldown(int amount)
     {
-        Cooldown = Math.Max(0, Cooldown - amount);
+        var args = new CooldownEventArgs() { CooldownAmount = amount, AbilityCooled = this, AbilityOwner = Owner };
+        EventManager.Invoke("AbilityCooldownLower", this, args);
+        Cooldown = Math.Max(0, Cooldown - args.CooldownAmount);
     }
 
-    public void PostActivation()
+    public void SetCurrentCooldownTo(int amount)
+    {
+        Cooldown = amount;
+    }
+
+    public virtual void PostActivation()
     {
         MidActivation = false;
         Cooldown = MaxCooldown;

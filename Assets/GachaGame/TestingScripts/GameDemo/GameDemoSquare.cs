@@ -15,7 +15,6 @@ public class GameDemoSquare : MonoBehaviour
     void OnMouseDown()
     {
         Creature selectedCreature = MyGameDemo.CurSelectedCreat;
-
         if (selectedCreature != null)
         {
             switch (MyState)
@@ -26,7 +25,7 @@ public class GameDemoSquare : MonoBehaviour
                         Player currentPlayer = selectedCreature.Controller;
                         Game game = currentPlayer.MyGame;
 
-                        if (GameUtils.CanCallCreatureToGridSpace(selectedCreature, currentPlayer, game, MyGridSpace))
+                        if (GameUtils.CanCallCreatureToGridSpace(selectedCreature, currentPlayer, game, MyGridSpace) || MyGameDemo.TestGame)
                         {
                             game.CallCharacter(selectedCreature, MyGridSpace, currentPlayer);
                         }
@@ -42,6 +41,13 @@ public class GameDemoSquare : MonoBehaviour
                 default:
                     Debug.LogError("ERROR: Unrecognized square state clicked.");
                     break;
+            }
+        }
+        else
+        {
+            if (MyState == SquareState.AbilTarget)
+            {
+                MyGameDemo.TriggerPointAbil(MyGridSpace);
             }
         }
     }

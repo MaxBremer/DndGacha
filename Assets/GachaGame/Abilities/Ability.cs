@@ -112,6 +112,10 @@ public class Ability
 
     public virtual void RemoveGraveyardTriggers() { GraveyardTriggerAdded = false; }
 
+    public virtual void OnGained() { }
+
+    public virtual void OnLost() { }
+
     public virtual Ability CreateCopy()
     {
         var copy = (Ability)Activator.CreateInstance(this.GetType());

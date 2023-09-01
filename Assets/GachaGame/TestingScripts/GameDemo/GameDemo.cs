@@ -23,6 +23,8 @@ public class GameDemo : MonoBehaviour
     public Game MyGame;
     public GameDemoSelectState MySelectState = GameDemoSelectState.UNSELECTED;
 
+    public bool TestGame;
+
     internal HighlightManager MyHighlightManager;
 
     //Prefabs and set references
@@ -87,6 +89,14 @@ public class GameDemo : MonoBehaviour
             creat.InitFromBase(ScriptableCreatureConverter.GameBaseFromScriptableCharacter(charBase));
             MyGame.Players[1].PutInReserve(creat);
         }
+
+        if (TestGame)
+        {
+            foreach (var creat in MyGame.AllCreatures)
+            {
+                creat.Initiative = 1;
+            }
+        }
     }
 
     private void InitializeUI()
@@ -117,6 +127,7 @@ public class GameDemo : MonoBehaviour
         EventManager.StartListening("CreatureEntersSpace", OnCreatureEntersSpace);
         EventManager.StartListening("StartOfTurn", OnStartOfTurn);
         EventManager.StartListening("AfterCreatureDies", OnCreatureDies);
+        EventManager.StartListening("CreatureRemoved", OnCreatureDies);
     }
 
     // Update is called once per frame
@@ -440,6 +451,7 @@ public class GameDemo : MonoBehaviour
                 if (CurSelectedCreat == cArgs.MyCreature && MySelectState == GameDemoSelectState.BASICSELECT)
                 {
                     ResetTilesToBase();
+                    ClearAttackTargets();
                     HighlightBasicActions(gameObj.GetComponent<GameDemoBoardChar>());
                     //SelOnboardChar(gameObj);
                 }
@@ -455,6 +467,11 @@ public class GameDemo : MonoBehaviour
     {
         if (e is CreatureReservedArgs cArgs)
         {
+            if (CreatObjs.ContainsKey(cArgs.BeingReserved))
+            {
+                RemoveFromField(cArgs.BeingReserved);
+            }
+
             var offsetAmount = cArgs.ReserveOwner.MyPlayerIndex == 0 ? CurP1ReserveOffset = CurP1ReserveOffset + RESERVE_OFFSET_AMOUNT : CurP2ReserveOffset = CurP2ReserveOffset + RESERVE_OFFSET_AMOUNT;
             var locForReserve = (cArgs.ReserveOwner.MyPlayerIndex == 0 ? P1ReserveLoc.transform.position : P2ReserveLoc.transform.position) + new Vector3(0, offsetAmount, 0);
             var creat = Instantiate(ReserveCharPrefab, locForReserve, Quaternion.Euler(270, 0, 0));
@@ -501,13 +518,21 @@ public class GameDemo : MonoBehaviour
     {
         if(sender is Creature dead)
         {
-            if(CurSelectedCreat == dead)
-            {
-                PotentialDeselect();
-            }
+            RemoveFromField(dead);
+        }
+    }
 
-            var cObj = CreatObjs[dead];
-            CreatObjs.Remove(dead);
+    private void RemoveFromField(Creature c)
+    {
+        if (CurSelectedCreat == c)
+        {
+            PotentialDeselect();
+        }
+
+        if (CreatObjs.ContainsKey(c))
+        {
+            var cObj = CreatObjs[c];
+            CreatObjs.Remove(c);
             Destroy(cObj);
         }
     }

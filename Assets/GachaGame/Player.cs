@@ -59,6 +59,22 @@ public class Player
         }
     }
 
+    public virtual void CreatureRemoved(Creature c)
+    {
+        if (OnBoardCreatures.Contains(c))
+        {
+            OnBoardCreatures.Remove(c);
+        }
+        else if (Reserve.Contains(c))
+        {
+            Reserve.Remove(c);
+        }
+        else if (Graveyard.Contains(c))
+        {
+            Graveyard.Remove(c);
+        }
+    }
+
     public virtual void PutInGraveyard(Creature creat)
     {
         Graveyard.Add(creat);
@@ -66,6 +82,7 @@ public class Player
 
     public void PutInReserve(Creature creat)
     {
+        CreatureRemoved(creat);
         Reserve.Add(creat);
         creat.Controller = this;
         creat.PutInReserve();

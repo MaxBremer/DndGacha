@@ -24,4 +24,13 @@ public class GridSpace
     }
 
     public bool isBlocked => Obstacle || Occupant != null;
+
+    public HashSet<SpaceTag> Tags = new HashSet<SpaceTag>();
+}
+
+public enum SpaceTag
+{
+    AZURETOWER,
+    WATER,
+    LAVA,
 }

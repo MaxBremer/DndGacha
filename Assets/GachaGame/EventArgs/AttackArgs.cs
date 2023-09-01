@@ -7,4 +7,6 @@ public class AttackArgs : EventArgs
 {
     public Creature Target;
     public bool IsRanged;
+    public int DamageToDeal;
+    public int DamageToTake;
 }

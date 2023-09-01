@@ -9,6 +9,7 @@ public enum CreatureTag
     DEFENSELESS,
     HEXBLADES_CURSE,
     CANT_ACT,
+    CANT_MOVE,
     ILLUSORY,
     SNOOZING,
 }

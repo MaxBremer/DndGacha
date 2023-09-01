@@ -6,6 +6,8 @@ using UnityEngine;
 
 public class Creature
 {
+    private bool _canAct;
+
     public Creature(CreatureGameBase baseToInit = null)
     {
         if(baseToInit != null)
@@ -36,7 +38,18 @@ public class Creature
 
     public CreatureState State;
 
-    public bool CanAct;
+    public bool CanAct
+    {
+        get => _canAct && (!HasTag(CreatureTag.CANT_ACT));
+        set
+        {
+            _canAct = value;
+            if (!_canAct)
+            {
+                EventManager.Invoke("CreatureActed", this, new EventArgs());
+            }
+        }
+    }
 
     public bool IsCharacter;
 
@@ -160,6 +173,17 @@ public class Creature
         }
     }
 
+    public void LowerAbilityCooldownsAmount(int num)
+    {
+        foreach (var abil in Abilities)
+        {
+            if (abil is ActiveAbility active)
+            {
+                active.LowerCooldown(num);
+            }
+        }
+    }
+
     public void Summoned()
     {
         State = CreatureState.ONBOARD;
@@ -186,6 +210,16 @@ public class Creature
                 abil.RemoveOnboardTriggers();
             if (abil.ReserveTriggerAdded)
                 abil.RemoveReserveTriggers();
+        }
+    }
+
+    public void RemoveAllTriggers()
+    {
+        foreach (var abil in AllAbilities)
+        {
+            abil.RemoveGraveyardTriggers();
+            abil.RemoveOnboardTriggers();
+            abil.RemoveReserveTriggers();
         }
     }
 
@@ -227,13 +261,22 @@ public class Creature
             if (abil.OnboardTriggerAdded)
                 abil.RemoveOnboardTriggers();
         }
+
+        if (IsOnBoard)
+        {
+            MyGame.GameGrid.CreatureLeavesSpace(this);
+        }
+
         LeaveBoard();
     }
 
     public List<Creature> GetValidBasicAttackTargets()
     {
         Func<Creature, bool> isValid = x => x != this && GachaGrid.IsInRange(this, x, 1) && x.Controller != Controller;
-        return MyGame.AllCreatures.Where(isValid).ToList();
+        var candidates = MyGame.AllCreatures.Where(isValid).ToList();
+        var args = new BasicAttackTargetingArgs() { ValidAttackTargets = candidates, CreatureAttacking = this, };
+        EventManager.Invoke("CreatureSelectingAttackTargets", this, args);
+        return args.ValidAttackTargets;
     }
 
     public bool CanActivateAbility(Ability abil)
@@ -268,9 +311,16 @@ public class Creature
 
     public void LoseTag(CreatureTag tag)
     {
-        var toRemove = new List<Tag>();
+        // TODO: Only lose first tag?
+        /*var toRemove = new List<Tag>();
         toRemove.AddRange(Tags.Where(x => x.TagType == tag));
         foreach (var targetTag in toRemove)
+        {
+            LoseTag(targetTag);
+        }*/
+
+        var targetTag = Tags.Where(x => x.TagType == tag).FirstOrDefault();
+        if(targetTag != null)
         {
             LoseTag(targetTag);
         }
@@ -315,11 +365,11 @@ public class Creature
         if (!HasTag(CreatureTag.IMMUNE))
         {
             Health -= dmgArgs.DamageAmount;
-            EventManager.Invoke("AfterDamage", this, dmgArgs);
             if (Health <= 0)
             {
                 Die();
             }
+            EventManager.Invoke("AfterDamage", this, dmgArgs);
         }
     }
 
@@ -333,14 +383,14 @@ public class Creature
 
     public void AttackTarget(Creature target, bool ranged = false)
     {
-        var atkArgs = new AttackArgs() { Target = target, IsRanged = ranged };
+        var atkArgs = new AttackArgs() { Target = target, IsRanged = ranged, DamageToDeal = Attack, DamageToTake = target.Attack };
         EventManager.Invoke("BeforeAttack", this, atkArgs);
         if (atkArgs.Target != null)
         {
-            atkArgs.Target.TakeDamage(Attack, this);
+            atkArgs.Target.TakeDamage(atkArgs.DamageToDeal, this);
             if (!atkArgs.IsRanged && !atkArgs.Target.HasTag(CreatureTag.DEFENSELESS))
             {
-                TakeDamage(atkArgs.Target.Attack, atkArgs.Target);
+                TakeDamage(atkArgs.DamageToTake, atkArgs.Target);
             }
             EventManager.Invoke("AfterAttack", this, atkArgs);
         }
@@ -386,6 +436,8 @@ public class Creature
         {
             RemoveHiddenAbility(hAbil);
         }
+
+        EventManager.Invoke("CreatureLeavesBoard", this, new EventArgs());
     }
 
     public Creature CreateCopy(bool keepPrime = false)
@@ -433,6 +485,7 @@ public class Creature
     public void RemoveAbility(Ability abil)
     {
         Abilities.Remove(abil);
+        abil.OnLost();
         abil.Owner = null;
         abil.ClearAllTriggers();
         EventManager.Invoke("LostAbility", this, new AbilityChangeArgs() { AbilityChanged = abil });
@@ -446,6 +499,16 @@ public class Creature
         {
             abil.InitAbility();
             EventManager.Invoke("GainedAbility", this, new AbilityChangeArgs() { AbilityChanged = abil });
+        }
+        abil.OnGained();
+    }
+
+    public void GainAbility(string abil, bool initAbil = false)
+    {
+        var a = Activator.CreateInstance(AbilityDatabase.AbilityDictionary[abil]);
+        if(a is Ability ability)
+        {
+            GainAbility(ability, initAbil);
         }
     }
 

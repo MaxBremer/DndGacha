@@ -13,9 +13,17 @@ MonoBehaviour:
   m_Name: Alexander
   m_EditorClassIdentifier: 
   CharName: Alexander "Sandman"  De Venicia
+  CharDisplayName: Alexander de Venecia
   FlavorText: For fucks sake, someone just bring him a dream so he'll shut up.
   rarity: 2
   CardTexture: {fileID: 0}
-  attack: 0
-  defense: 0
-  health: 0
+  Attack: 1
+  Health: 10
+  Speed: 2
+  Initiative: 3
+  Abilities:
+  - PaleReincarnation
+  - DeathAffinity
+  - MrSandman
+  Tags: 
+  CreatureTypes: []

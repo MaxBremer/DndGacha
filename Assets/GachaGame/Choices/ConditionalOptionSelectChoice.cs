@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 public class ConditionalOptionSelectChoice : Choice
 {
@@ -12,8 +13,6 @@ public class ConditionalOptionSelectChoice : Choice
     {
         Type = ChoiceType.CONDOPTIONSELECT;
     }
-
-    public string OptionSelected;
 
     public Dictionary<string, Func<Ability, bool>> ChoiceConditions = new Dictionary<string, Func<Ability, bool>>();
 

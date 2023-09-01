@@ -32,7 +32,7 @@ public class AbilBlock : MonoBehaviour
         {
             //Debug.Log("Activating");
             activeAbil.Activate();
-            if(activeAbil.ChoicesNeeded.Count < 1)
+            if(activeAbil.ChoicesNeeded.Count < 1 && ChoiceManager.AbilityPending == null)
             {
                 MyInfoPanel.MyGameDemo.PotentialDeselect();
             }

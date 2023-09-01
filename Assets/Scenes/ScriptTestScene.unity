@@ -461,6 +461,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MySelectState: 0
+  TestGame: 1
   gridSquarePrefab: {fileID: 7263189157821394348, guid: bb7511324c4c4cf4aaf02d8e96ba774b, type: 3}
   ReserveCharPrefab: {fileID: 6358010715277065038, guid: ea24a97e72217d24186d2742fe3a5639, type: 3}
   BoardCharPrefab: {fileID: 2523191262594325922, guid: 80651676d5320ba47a2986ea715f145e, type: 3}
@@ -470,14 +471,19 @@ MonoBehaviour:
   P1ReserveLoc: {fileID: 1659739796}
   P2ReserveLoc: {fileID: 859793795}
   P1Characters:
-  - {fileID: 11400000, guid: dbc4fb67b12097547a97cf453603762f, type: 2}
-  - {fileID: 11400000, guid: 8ee64b186d063e245a0d803e5c0fa3dd, type: 2}
+  - {fileID: 11400000, guid: 2cf3ff5ddd8308d4485e3736c6c1c09e, type: 2}
   - {fileID: 11400000, guid: cbfd722b06116404cb4514d35fc2b71f, type: 2}
-  - {fileID: 11400000, guid: de1ff4d9cf3a75842b761a5b9dbbcef7, type: 2}
+  - {fileID: 11400000, guid: d66a5fe7abb58a94e8f0378d75588b6a, type: 2}
+  - {fileID: 11400000, guid: e1614f4b29dee8f4ba7f0e83d93ac0d5, type: 2}
+  - {fileID: 11400000, guid: 7ef3a63da62be8a4d822367d2301afdc, type: 2}
+  - {fileID: 11400000, guid: 05cefb4b8f7b9524b914c191d120ec87, type: 2}
   P2Characters:
+  - {fileID: 11400000, guid: 7a840f13ce7c9d147836ecd76cdfd694, type: 2}
+  - {fileID: 11400000, guid: de1ff4d9cf3a75842b761a5b9dbbcef7, type: 2}
+  - {fileID: 11400000, guid: de1ff4d9cf3a75842b761a5b9dbbcef7, type: 2}
+  - {fileID: 11400000, guid: b80d7f2d769bfdf4d9029901e12544ad, type: 2}
+  - {fileID: 11400000, guid: 63a27d3ab1c9b6046a38837cc91da1f3, type: 2}
   - {fileID: 11400000, guid: 8ee64b186d063e245a0d803e5c0fa3dd, type: 2}
-  - {fileID: 11400000, guid: 4f6dbb7d14f1a3043848d6602fda5295, type: 2}
-  - {fileID: 11400000, guid: cbfd722b06116404cb4514d35fc2b71f, type: 2}
   NeededColors:
   - {r: 0.6603774, g: 0.5850818, b: 0.52124125, a: 0}
   - {r: 0.9056604, g: 0.32455292, b: 0.31327868, a: 0}

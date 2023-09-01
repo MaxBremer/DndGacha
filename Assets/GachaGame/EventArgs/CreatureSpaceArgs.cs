@@ -7,4 +7,9 @@ public class CreatureSpaceArgs : EventArgs
 {
     public Creature MyCreature;
     public GridSpace SpaceInvolved;
+
+    public CreatureSpaceArgs CreateCopy()
+    {
+        return new CreatureSpaceArgs() { MyCreature = MyCreature, SpaceInvolved = SpaceInvolved };
+    }
 }

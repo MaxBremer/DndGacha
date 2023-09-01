@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class MightOfTheDeadAbility : FriendlyCreatureSummonedPassive
+public class MightOfTheDeadAbility : FriendlyNonselfCreatureSummonedPassive
 {
     private bool _affectingHealth = true;
 

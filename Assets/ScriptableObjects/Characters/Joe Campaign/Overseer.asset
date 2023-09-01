@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 876edf0a239a40643beaf9d65bf9d9fd, type: 3}
+  m_Name: Overseer
+  m_EditorClassIdentifier: 
+  CharName: The Overseer
+  CharDisplayName: The Overseer
+  FlavorText: The City Adrift runs on order.
+  rarity: 1
+  CardTexture: {fileID: 0}
+  Attack: 3
+  Health: 16
+  Speed: 3
+  Initiative: 3
+  Abilities:
+  - HarshLeadership
+  - StrictOversight
+  - DualDaggers
+  Tags: 
+  CreatureTypes: []

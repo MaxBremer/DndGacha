@@ -112,6 +112,25 @@ public class Game
         EventManager.Invoke("CreatureSummoned", this, summonArgs);
     }
 
+    public void RemoveCreature(Creature c)
+    {
+        if(c == null || !AllCreatures.Contains(c))
+        {
+            return;
+        }
+
+        c.Controller.CreatureRemoved(c);
+        if (c.IsOnBoard)
+        {
+            GameGrid.CreatureLeavesSpace(c);
+            c.LeaveBoard();
+        }
+
+        AllCreatures.Remove(c);
+
+        EventManager.Invoke("CreatureRemoved", this, new CreatureDiesArgs() { CreatureDied = c, });
+    }
+
     public void GainPoint(Player p)
     {
         p.Points++;

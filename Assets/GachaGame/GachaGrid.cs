@@ -57,15 +57,17 @@ public class GachaGrid
         }
         mover.SpeedLeft -= path.Count - 1;
         CreatureEntersSpace(mover, destination);
+        EventManager.Invoke("CreatureMoved", mover, new System.EventArgs());
     }
 
     public void CreatureLeavesSpace(Creature leaver)
     {
         if(leaver.MySpace != null)
         {
-            EventManager.Invoke("CreatureLeavesSpace", this, new CreatureSpaceArgs() { MyCreature = leaver, SpaceInvolved = leaver.MySpace });
+            var leaveArgs = new CreatureSpaceArgs() { MyCreature = leaver, SpaceInvolved = leaver.MySpace };
             leaver.MySpace.Occupant = null;
             leaver.MySpace = null;
+            EventManager.Invoke("CreatureLeavesSpace", this, leaveArgs);
         }
     }
 
@@ -99,6 +101,17 @@ public class GachaGrid
     {
         return Mathf.Abs(to.XPos - from.XPos) + Mathf.Abs(to.YPos - from.YPos) <= range;
     }
+
+    public static int DistanceBetween(Creature from, Creature to)
+    {
+        if((!from.IsOnBoard) || (!to.IsOnBoard))
+        {
+            return -1;
+        }
+        return DistanceBetween(from.MySpace, to.MySpace);
+    }
+
+    public static int DistanceBetween(GridSpace from, GridSpace to) => Mathf.Abs(to.XPos - from.XPos) + Mathf.Abs(to.YPos - from.YPos);
 
     public GridSpace GetRandomAdjacent(GridSpace point, bool onlyUnblocked = false, bool includeDiagonals = false)
     {
@@ -192,11 +205,15 @@ public class GachaGrid
 
     public Dictionary<GridSpace, List<GridSpace>> GetValidMoves(Creature c) 
     {
-        if (c.HasTag(CreatureTag.SNOOZING))
+        if (c.HasTag(CreatureTag.SNOOZING) || c.HasTag(CreatureTag.CANT_MOVE))
         {
             return new Dictionary<GridSpace, List<GridSpace>>();
         }
-        return GetValidMoves(c.MySpace, c.SpeedLeft, c.HasTag(CreatureTag.FREEMOVER)); 
+        var potentialMoves = GetValidMoves(c.MySpace, c.SpeedLeft, c.HasTag(CreatureTag.FREEMOVER));
+
+        EventManager.Invoke("CreatureMovesFound", this, new ValidMovesFoundForCreatArgs() { ValidMovesWithPaths = potentialMoves, CreatureMoving = c });
+
+        return potentialMoves;
     }
 
     public Dictionary<GridSpace, List<GridSpace>> GetValidMoves(int x, int y, int moveSpeed) => GetValidMoves(this[(x, y)], moveSpeed, false);

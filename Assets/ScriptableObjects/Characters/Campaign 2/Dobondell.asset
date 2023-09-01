@@ -13,8 +13,17 @@ MonoBehaviour:
   m_Name: Dobondell
   m_EditorClassIdentifier: 
   CharName: Louie Dobondell
+  CharDisplayName: Louie Dobondell
+  FlavorText: AAAAAAAAAAAAAAAAAAAAAA
   rarity: 0
   CardTexture: {fileID: 2800000, guid: a8fbe44e5b66e3347affcc5731985013, type: 3}
-  attack: 1
-  defense: 0
-  health: 3
+  Attack: 2
+  Health: 7
+  Speed: 2
+  Initiative: 1
+  Abilities:
+  - PayUp
+  - UnpredictableRage
+  - UncannyResillience
+  Tags: 
+  CreatureTypes: []
