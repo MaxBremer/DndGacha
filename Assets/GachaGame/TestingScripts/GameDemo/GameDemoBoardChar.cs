@@ -49,20 +49,12 @@ public class GameDemoBoardChar : MonoBehaviour
 
     public void Select()
     {
-        if (rend == null)
-        {
-            rend = GetComponent<Renderer>();
-        }
-        rend.material.color = selectedColor;
+        SetColor(selectedColor);
 
     }
 
     public void Deselect()
     {
-        if(rend == null)
-        {
-            rend = GetComponent<Renderer>();
-        }
         RevertHighlightToBase();
     }
 
@@ -73,20 +65,29 @@ public class GameDemoBoardChar : MonoBehaviour
 
     public void HighlightAttackTarget()
     {
-        rend.material.color = attackTargetColor;
+        SetColor(attackTargetColor);
         MySelectMode = BoardCharSelMode.ATTACK;
     }
 
     public void HighlightAbilTarget()
     {
-        rend.material.color = abilityTargetColor;
+        SetColor(abilityTargetColor);
         MySelectMode = BoardCharSelMode.ABIL;
     }
 
     public void RevertHighlightToBase()
     {
-        rend.material.color = defaultColor;
+        SetColor(defaultColor);
         MySelectMode = BoardCharSelMode.NORMAL;
+    }
+
+    private void SetColor(Color col)
+    {
+        if (rend == null)
+        {
+            rend = GetComponent<Renderer>();
+        }
+        rend.material.color = col;
     }
 }
 

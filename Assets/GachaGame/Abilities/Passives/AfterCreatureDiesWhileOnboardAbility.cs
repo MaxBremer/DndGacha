@@ -12,7 +12,7 @@ public class AfterCreatureDiesWhileOnboardAbility : PassiveAbility
 
     public override void RemoveOnboardTriggers()
     {
-        base.RemoveGraveyardTriggers();
+        base.RemoveOnboardTriggers();
         EventManager.StopListening("AfterCreatureDies", ConditionalTrigger);
     }
 }

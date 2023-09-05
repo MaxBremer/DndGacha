@@ -10,7 +10,7 @@ public class SkinOfEyesAbility : MyTurnStartPassive
     {
         Name = "SkinOfEyes";
         DisplayName = "Skin of Eyes";
-        Description = "At the start of your turn, this character makes a ranged attack on each creature in Range 3.";
+        Description = "At the start of your turn, this character makes a ranged attack on each enemy creature in Range 3.";
     }
 
     public override void ConditionalTrigger(object sender, EventArgs e)
@@ -31,6 +31,6 @@ public class SkinOfEyesAbility : MyTurnStartPassive
 
     private IEnumerable<Creature> GetCandidates()
     {
-        return Owner.MyGame.AllCreatures.Where(x => x.IsOnBoard && x != Owner && GachaGrid.IsInRange(x, Owner, 3));
+        return Owner.MyGame.AllCreatures.Where(x => x.IsOnBoard && x.Controller != Owner.Controller && GachaGrid.IsInRange(x, Owner, 3));
     }
 }

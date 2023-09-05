@@ -73,7 +73,7 @@ public class AbilBlock : MonoBehaviour
 
     void OnMouseEnter()
     {
-        if (!PanelDragDrop.IsDragging)
+        if (MyAbility != null && !PanelDragDrop.IsDragging)
         {
             ShowTooltip();
         }

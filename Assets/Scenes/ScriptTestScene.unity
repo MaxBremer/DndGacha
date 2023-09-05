@@ -471,12 +471,12 @@ MonoBehaviour:
   P1ReserveLoc: {fileID: 1659739796}
   P2ReserveLoc: {fileID: 859793795}
   P1Characters:
-  - {fileID: 11400000, guid: 2cf3ff5ddd8308d4485e3736c6c1c09e, type: 2}
+  - {fileID: 11400000, guid: b3149fb5b3cd39b48b4f785f997bc526, type: 2}
   - {fileID: 11400000, guid: cbfd722b06116404cb4514d35fc2b71f, type: 2}
   - {fileID: 11400000, guid: d66a5fe7abb58a94e8f0378d75588b6a, type: 2}
   - {fileID: 11400000, guid: e1614f4b29dee8f4ba7f0e83d93ac0d5, type: 2}
   - {fileID: 11400000, guid: 7ef3a63da62be8a4d822367d2301afdc, type: 2}
-  - {fileID: 11400000, guid: 05cefb4b8f7b9524b914c191d120ec87, type: 2}
+  - {fileID: 11400000, guid: 8ee64b186d063e245a0d803e5c0fa3dd, type: 2}
   P2Characters:
   - {fileID: 11400000, guid: 7a840f13ce7c9d147836ecd76cdfd694, type: 2}
   - {fileID: 11400000, guid: de1ff4d9cf3a75842b761a5b9dbbcef7, type: 2}

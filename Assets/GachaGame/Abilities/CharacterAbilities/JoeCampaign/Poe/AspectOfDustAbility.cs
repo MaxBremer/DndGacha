@@ -10,14 +10,14 @@ public class AspectOfDustAbility : AfterMyDeathPassive
     {
         Name = "AspectOfDust";
         DisplayName = "Aspect of Dust";
-        Description = "When this creture would be killed, instead it is resummoned at one health, loses Aspect of Dust, and its attack and speed are doubled.";
+        Description = "When this creture would be killed, instead it is healed for 1 and resummoned, loses Aspect of Dust, and its attack and speed are doubled.";
     }
 
     public override void Trigger(object sender, EventArgs e)
     {
         if (e is CreatureDiesArgs dieArgs)
         {
-            Owner.StatsSet(HealthSet: 1);
+            Owner.Heal(1);
             Owner.StatsChange(AtkChg: Owner.Attack, SpeedChg: Owner.Speed);
             Owner.MyGame.SummonCreature(Owner, dieArgs.WhereItDied);
             Owner.RemoveAbility(this);

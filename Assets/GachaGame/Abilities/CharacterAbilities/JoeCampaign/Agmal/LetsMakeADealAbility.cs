@@ -33,7 +33,7 @@ public class LetsMakeADealAbility : ActiveAbility
             ReceivedDeal.Add(creatChoice.TargetCreature);
             var promise = new AgmalsPromiseAbility();
             promise.PromiseGiver = Owner;
-            creatChoice.TargetCreature.GainAbility(promise);
+            creatChoice.TargetCreature.GainAbility(promise, true);
         }
     }
 }

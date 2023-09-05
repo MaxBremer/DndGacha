@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class BlazingReincarnationAbility : AfterCreatureDiesWhileOnboardAbility
+public class BlazingReincarnationAbility : AfterCreatureDiesWhileGraveyardAbility
 {
     public BlazingReincarnationAbility()
     {

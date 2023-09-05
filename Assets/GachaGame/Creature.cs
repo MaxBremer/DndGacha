@@ -228,14 +228,36 @@ public class Creature
         var changeArgs = new StatChangeArgs() { AttackChange = AtkChg, HealthChange = HealthChg, SpeedChange = SpeedChg, InitChange = InitChg };
         EventManager.Invoke("BeforeCreatureStatsChange", this, changeArgs);
         Attack = Math.Max(0, Attack + changeArgs.AttackChange);
-        MaxHealth = Math.Max(0, MaxHealth + changeArgs.HealthChange);
-        Health = Math.Max(0, Health + changeArgs.HealthChange);
+        
         Speed = Math.Max(0, Speed + changeArgs.SpeedChange);
         SpeedLeft = Math.Max(0, SpeedLeft + changeArgs.SpeedChange);
         Initiative = Math.Max(0, Initiative + changeArgs.InitChange);
+
+        var healthMaxDiff = MaxHealth - Health;
+        if (changeArgs.HealthChange > 0)
+        {
+            MaxHealth += changeArgs.HealthChange;
+            Health += changeArgs.HealthChange;
+        }else if(changeArgs.HealthChange < 0)
+        {
+            var amtLost = changeArgs.HealthChange * -1;
+            if (amtLost <= healthMaxDiff)
+            {
+                MaxHealth += changeArgs.HealthChange;
+            }
+            else
+            {
+                MaxHealth += changeArgs.HealthChange;
+                var amtHealthLost = amtLost - healthMaxDiff;
+                Health -= amtHealthLost;
+            }
+        }
+        MaxHealth = Math.Max(0, MaxHealth);
+        Health = Math.Max(0, Health);
+
         EventManager.Invoke("AfterCreatureStatsChange", this, changeArgs);
 
-        if (Health <= 0)
+        if (Health == 0)
         {
             Die();
         }
@@ -243,11 +265,13 @@ public class Creature
 
     public void StatsSet(int AtkSet = -1, int HealthSet = -1, int SpeedSet = -1, int InitSet = -1)
     {
-        int AtkChg = AtkSet < 0 ? 0 : AtkSet - Attack;
-        int HealthChg = HealthSet < 0 ? 0 : HealthSet - MaxHealth;
-        int SpdChg = SpeedSet < 0 ? 0 : SpeedSet - Speed;
-        int InitChg = InitSet < 0 ? 0 : InitSet - Initiative;
-        StatsChange(AtkChg, HealthChg, SpdChg, InitChg);
+        Attack = AtkSet > 0 ? AtkSet : Attack;
+        Health = HealthSet > 0 ? HealthSet : Health;
+        MaxHealth = HealthSet > 0 ? HealthSet : Health;
+        Initiative = InitSet > 0 ? InitSet : Initiative;
+        Speed = SpeedSet > 0 ? SpeedSet : Speed;
+        SpeedLeft = SpeedSet > 0 ? SpeedSet : Speed;
+        //TODO: Stats set event maybe?
     }
 
     public void PutInReserve()
@@ -367,6 +391,7 @@ public class Creature
             Health -= dmgArgs.DamageAmount;
             if (Health <= 0)
             {
+                Health = 0;
                 Die();
             }
             EventManager.Invoke("AfterDamage", this, dmgArgs);
@@ -417,8 +442,8 @@ public class Creature
         LeaveBoard();
 
         State = CreatureState.GRAVEYARD;
-        EventManager.Invoke("AfterCreatureDies", this, new CreatureDiesArgs() { CreatureDied = this, WhereItDied = deathSpot });
         DeathTriggerChanges();
+        EventManager.Invoke("AfterCreatureDies", this, new CreatureDiesArgs() { CreatureDied = this, WhereItDied = deathSpot });
 
         if (IsPrime)
         {

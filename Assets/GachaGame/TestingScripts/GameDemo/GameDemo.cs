@@ -95,6 +95,13 @@ public class GameDemo : MonoBehaviour
             foreach (var creat in MyGame.AllCreatures)
             {
                 creat.Initiative = 1;
+                foreach (var abil in creat.Abilities)
+                {
+                    if(abil is ActiveAbility active)
+                    {
+                        active.Cooldown = 0;
+                    }
+                }
             }
         }
     }
@@ -483,6 +490,12 @@ public class GameDemo : MonoBehaviour
             {
                 P2Reserves.Add(creat);
             }
+
+            if(MyGame.CurrentPlayerIndex != cArgs.ReserveOwner.MyPlayerIndex)
+            {
+                creat.SetActive(false);
+            }
+
             var gameComp = creat.GetComponent<GameDemoReserveChar>();
             gameComp.SetCreat(cArgs.BeingReserved);
             CreatObjs.Add(cArgs.BeingReserved, creat);
@@ -516,9 +529,9 @@ public class GameDemo : MonoBehaviour
 
     public void OnCreatureDies(object sender, EventArgs e)
     {
-        if(sender is Creature dead)
+        if(e is CreatureDiesArgs dieArgs)
         {
-            RemoveFromField(dead);
+            RemoveFromField(dieArgs.CreatureDied);
         }
     }
 

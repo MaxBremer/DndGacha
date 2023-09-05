@@ -12,6 +12,8 @@ public class GameDemoSquare : MonoBehaviour
     public Color HighlightColor;
     public Color AbilTargetColor = Color.magenta;
 
+    public bool MovableTo = false;
+
     void OnMouseDown()
     {
         Creature selectedCreature = MyGameDemo.CurSelectedCreat;
@@ -72,7 +74,15 @@ public class GameDemoSquare : MonoBehaviour
             List<GridSpace> path = MyGameDemo.GetPathTo(MyGridSpace);
             foreach (var space in path)
             {
-                MyGameDemo.GridObjs[space].square.Highlight();
+                var sq = MyGameDemo.GridObjs[space].square;
+                if (sq.MovableTo)
+                {
+                    sq.Highlight();
+                }
+                else
+                {
+                    sq.UnHighlight();
+                }
             }
         }
     }
@@ -80,6 +90,7 @@ public class GameDemoSquare : MonoBehaviour
     public void Highlight()
     {
         MyState = SquareState.MoveHighlight;
+        MovableTo = true;
         SetColor(HighlightColor);
     }
 
@@ -92,6 +103,7 @@ public class GameDemoSquare : MonoBehaviour
     public void UnHighlight()
     {
         MyState = SquareState.Base;
+        MovableTo = false;
         SetColor(BaseColor);
     }
 

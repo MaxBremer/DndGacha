@@ -120,15 +120,17 @@ public class Game
         }
 
         c.Controller.CreatureRemoved(c);
+        GridSpace gs = null;
         if (c.IsOnBoard)
         {
+            gs = c.MySpace;
             GameGrid.CreatureLeavesSpace(c);
             c.LeaveBoard();
         }
 
         AllCreatures.Remove(c);
 
-        EventManager.Invoke("CreatureRemoved", this, new CreatureDiesArgs() { CreatureDied = c, });
+        EventManager.Invoke("CreatureRemoved", this, new CreatureDiesArgs() { CreatureDied = c, WhereItDied = gs });
     }
 
     public void GainPoint(Player p)
