@@ -223,9 +223,9 @@ public class Creature
         }
     }
 
-    public void StatsChange(int AtkChg = 0, int HealthChg = 0, int SpeedChg = 0, int InitChg = 0)
+    public void StatsChange(int AtkChg = 0, int HealthChg = 0, int SpeedChg = 0, int InitChg = 0, bool arePermanentStats = true)
     {
-        var changeArgs = new StatChangeArgs() { AttackChange = AtkChg, HealthChange = HealthChg, SpeedChange = SpeedChg, InitChange = InitChg };
+        var changeArgs = new StatChangeArgs() { AttackChange = AtkChg, HealthChange = HealthChg, SpeedChange = SpeedChg, InitChange = InitChg, AreStatsPermanent = arePermanentStats };
         EventManager.Invoke("BeforeCreatureStatsChange", this, changeArgs);
         Attack = Math.Max(0, Attack + changeArgs.AttackChange);
         
@@ -462,7 +462,7 @@ public class Creature
             RemoveHiddenAbility(hAbil);
         }
 
-        EventManager.Invoke("CreatureLeavesBoard", this, new EventArgs());
+        EventManager.Invoke("CreatureLeavesBoard", this, new CreatureDiesArgs() { CreatureDied = this });
     }
 
     public Creature CreateCopy(bool keepPrime = false)

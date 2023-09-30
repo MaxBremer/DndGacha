@@ -7,7 +7,16 @@ public static class EventManager
 {
     private const int LAYER_LIMIT = 100;
 
-    private static Dictionary<string, EventHandler> _events;
+    // So for priorities:
+    // LOWER priority means it will be called BEFORE other calls.
+    // HIGHER priority means it will be called AFTER other calls.
+    // For example: passive that negates damage in certain scenarios should have HIGH priority, meaning it negates any other dmg modifiers that came before.
+    // passive that only multiplies base damage of an attack should have LOW priority, meaning it will trigger before other stat changes are made.
+    // 0 is default priority.
+    private const int MIN_PRIORITY = -5;
+    private const int MAX_PRIORITY = 5;
+
+    private static Dictionary<string, EventHandler> _basePriorityEvents;
     private static Dictionary<string, int> _layersDeep;
 
     public static Game CurrentGame;
@@ -25,15 +34,15 @@ public static class EventManager
             _layersDeep.Clear();
         }
 
-        if (_events == null)
+        if (_basePriorityEvents == null)
         {
-            _events = new Dictionary<string, EventHandler>();
+            _basePriorityEvents = new Dictionary<string, EventHandler>();
         }
 
         List<(string, EventHandler)> toDelete = new List<(string, EventHandler)>();
-        foreach (var key in _events.Keys)
+        foreach (var key in _basePriorityEvents.Keys)
         {
-            var invList = _events[key].GetInvocationList();
+            var invList = _basePriorityEvents[key].GetInvocationList();
             foreach (EventHandler item in invList)
             {
                 //_events[key] -= (EventHandler)item;
@@ -43,10 +52,10 @@ public static class EventManager
 
         foreach (var item in toDelete)
         {
-            _events[item.Item1] -= item.Item2;
+            _basePriorityEvents[item.Item1] -= item.Item2;
         }
 
-        _events.Clear();
+        _basePriorityEvents.Clear();
 
         CurrentGame = null;
     }
@@ -59,30 +68,30 @@ public static class EventManager
 
     public static void StartListening(string eventName, EventHandler listener)
     {
-        if (_events.TryGetValue(eventName, out EventHandler eventH))
+        if (_basePriorityEvents.TryGetValue(eventName, out EventHandler eventH))
         {
             eventH += listener;
-            _events[eventName] = eventH;
+            _basePriorityEvents[eventName] = eventH;
         } else
         {
             eventH += listener;
-            _events.Add(eventName, eventH);
+            _basePriorityEvents.Add(eventName, eventH);
             _layersDeep.Add(eventName, 0);
         }
     }
 
     public static void StopListening(string eventName, EventHandler listener)
     {
-        if (_events.TryGetValue(eventName, out EventHandler eventT))
+        if (_basePriorityEvents.TryGetValue(eventName, out EventHandler eventT))
         {
             eventT -= listener;
-            _events[eventName] = eventT;
+            _basePriorityEvents[eventName] = eventT;
         }
     }
 
     public static void Invoke(string eventName, object cause, EventArgs args)
     {
-        if (!_events.ContainsKey(eventName))
+        if (!_basePriorityEvents.ContainsKey(eventName))
         {
             //Debug.LogWarning("WARNING: Invoked event '" + eventName + "' that either has no listeners or was not initialized correctly");
             return;
@@ -91,7 +100,7 @@ public static class EventManager
         {
             TotalInvokeLayers++;
             _layersDeep[eventName]++;
-            _events[eventName]?.Invoke(cause, args);
+            _basePriorityEvents[eventName]?.Invoke(cause, args);
             _layersDeep[eventName]--;
             TotalInvokeLayers--;
         }
@@ -102,6 +111,7 @@ public static class EventManager
     }
 }
 
+// So the issue behind switching to enum is many custom events. Often abilities require a custom invoke/listen for their own special purposes.
 public enum GachaEventType
 {
     StartOfTurn,

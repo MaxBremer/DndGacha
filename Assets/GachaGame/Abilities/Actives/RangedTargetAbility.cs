@@ -4,10 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class RangedTargetAbility : ActiveAbility
+public class RangedTargetAbility : RangedActiveAbility
 {
-    public int Range = 0;
-
     public override void InitAbility()
     {
         base.InitAbility();

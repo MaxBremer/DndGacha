@@ -23,7 +23,7 @@ public class DivineSmiteAbility : ActiveAbility
 
     private void IncreaseDamage(object sender, EventArgs e)
     {
-        if(e is TakingDamageArgs dmgArgs && dmgArgs.DamageDealer == Owner)
+        if(e is TakingDamageArgs dmgArgs && dmgArgs.DamageDealer == Owner && dmgArgs.DamageAmount > 0)
         {
             dmgArgs.DamageAmount += INCREASE_AMOUNT;
             EventManager.StopListening("BeforeDamage", IncreaseDamage);

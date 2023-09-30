@@ -15,12 +15,12 @@ public class ArtifactLifeBuffAbility : CreatureAffectingAuraWhileOnboardAbility
 
     public override void ApplyEffectToCreature(Creature c)
     {
-        c.StatsChange(AtkChg: 1, HealthChg: 5, SpeedChg: 1);
+        c.StatsChange(AtkChg: 1, HealthChg: 5, SpeedChg: 1, arePermanentStats: false);
     }
 
     public override void RemoveEffectFromCreature(Creature c)
     {
-        c.StatsChange(AtkChg: -1, HealthChg: -5, SpeedChg: -1);
+        c.StatsChange(AtkChg: -1, HealthChg: -5, SpeedChg: -1, arePermanentStats: false);
     }
 
     public override bool ShouldCreatureBeEffected(Creature c)

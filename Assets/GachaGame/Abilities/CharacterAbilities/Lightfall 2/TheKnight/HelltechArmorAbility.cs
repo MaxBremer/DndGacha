@@ -9,13 +9,13 @@ public class HelltechArmorAbility : BeforeMyStatsChangeAbility
     {
         Name = "HelltechArmor";
         DisplayName = "Helltech Armor";
-        Description = "Whenever this creature gains stats, it gains twice as much.";
+        Description = "Whenever this creature gains non-aura stats, it gains twice as much.";
     }
 
     public override void Trigger(object sender, EventArgs e)
     {
         base.Trigger(sender, e);
-        if(e is StatChangeArgs chgArgs)
+        if(e is StatChangeArgs chgArgs && chgArgs.AreStatsPermanent)
         {
             chgArgs.AttackChange = chgArgs.AttackChange > 0 ? chgArgs.AttackChange * 2 : chgArgs.AttackChange;
             chgArgs.HealthChange = chgArgs.HealthChange > 0 ? chgArgs.HealthChange * 2 : chgArgs.HealthChange;

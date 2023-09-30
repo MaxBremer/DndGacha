@@ -4,10 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class RangedAttackAbility : ActiveAbility
+public class RangedAttackAbility : RangedActiveAbility
 {
-    public int Range = 1;
-
     public override void InitAbility()
     {
         base.InitAbility();

@@ -9,4 +9,5 @@ public class StatChangeArgs : EventArgs
     public int HealthChange;
     public int SpeedChange;
     public int InitChange;
+    public bool AreStatsPermanent;
 }

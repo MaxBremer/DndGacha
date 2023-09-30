@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public abstract class CreatureAffectingAuraWhileOnboardAbility : PassiveAbility
+public abstract class CreatureAffectingAuraWhileOnboardAbility : AuraAbility
 {
     public List<Creature> CurrentlyEffectedCreatures = new List<Creature>();
 
@@ -12,28 +12,32 @@ public abstract class CreatureAffectingAuraWhileOnboardAbility : PassiveAbility
     {
         base.AddOnboardTriggers();
         EventManager.StartListening("CreatureSummoned", RefreshAura);
-        EventManager.StartListening("AfterCreatureDies", OnCreatureDeath);
-        EventManager.StartListening("CreatureReserved", OnCreatureReserved);
+        EventManager.StartListening("CreatureLeavesBoard", OnCreatureLeavesBoard);
     }
 
     public override void RemoveOnboardTriggers()
     {
         base.RemoveOnboardTriggers();
         EventManager.StopListening("CreatureSummoned", RefreshAura);
-        EventManager.StopListening("AfterCreatureDies", OnCreatureDeath);
-        EventManager.StopListening("CreatureReserved", OnCreatureReserved);
+        EventManager.StopListening("CreatureLeavesBoard", OnCreatureLeavesBoard);
     }
 
     public virtual void RefreshAura(object sender, EventArgs e)
     {
-        ClearAura(sender, e);
-
-        foreach (var c in Owner.MyGame.AllCreatures)
+        foreach (var creat in CurrentlyEffectedCreatures)
         {
-            if (ShouldCreatureBeEffected(c))
+            if (!ShouldCreatureBeEffected(creat))
             {
-                ApplyEffectToCreature(c);
-                CurrentlyEffectedCreatures.Add(c);
+                RemoveEffectFromCreature(creat);
+            }
+        }
+
+        foreach (var creat in Owner.MyGame.AllCreatures)
+        {
+            if(!CurrentlyEffectedCreatures.Contains(creat) && ShouldCreatureBeEffected(creat))
+            {
+                ApplyEffectToCreature(creat);
+                CurrentlyEffectedCreatures.Add(creat);
             }
         }
     }
@@ -47,21 +51,9 @@ public abstract class CreatureAffectingAuraWhileOnboardAbility : PassiveAbility
         CurrentlyEffectedCreatures.Clear();
     }
 
-    public virtual void OnCreatureDeath(object sender, EventArgs e)
+    public virtual void OnCreatureLeavesBoard(object sender, EventArgs e)
     {
-        if(e is CreatureDiesArgs dieArgs && dieArgs.CreatureDied == Owner && Owner.InGraveyard)
-        {
-            ClearAura(sender, e);
-        }
-        else
-        {
-            RefreshAura(sender, e);
-        }
-    }
-
-    public virtual void OnCreatureReserved(object sender, EventArgs e)
-    {
-        if (e is CreatureReservedArgs reserveArgs && reserveArgs.BeingReserved == Owner && Owner.InReserve)
+        if(e is CreatureDiesArgs leftArgs && leftArgs.CreatureDied == Owner && Owner.InGraveyard)
         {
             ClearAura(sender, e);
         }

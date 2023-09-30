@@ -4,9 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class RangedMultiplePointTargetAbility : ActiveAbility
+public class RangedMultiplePointTargetAbility : RangedActiveAbility
 {
-    public int Range = 0;
     public int NumTargets = 1;
 
     public override void InitAbility()
