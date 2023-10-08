@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 public class GameDemoUIManager : MonoBehaviour
 {
+    private const int UI_UPDATE_PRIORITY = 5;
     public Game MyGame; // Reference to the Game script
     public TMP_Text PlayerTurnText; // Use TMP_Text for TextMeshPro
     public TMP_Text InitiativeCountText; // Use TMP_Text for TextMeshPro
@@ -15,7 +16,7 @@ public class GameDemoUIManager : MonoBehaviour
     public void InitUIManagement(Game game)
     {
         MyGame = game;
-        EventManager.StartListening("StartOfTurn", UpdateUI);
+        EventManager.StartListening(GachaEventType.StartOfTurn, UpdateUI, UI_UPDATE_PRIORITY);
         UpdateUI(this, new TurnStartArgs { PlayerWhoseTurnIsStarting = 0 });
     }
 

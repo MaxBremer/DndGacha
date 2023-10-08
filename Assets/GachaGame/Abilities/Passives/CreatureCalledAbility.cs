@@ -7,12 +7,12 @@ public class CreatureCalledAbility : PassiveAbility
     public override void AddOnboardTriggers()
     {
         base.AddOnboardTriggers();
-        EventManager.StartListening("CreatureCalled", ConditionalTrigger);
+        EventManager.StartListening(GachaEventType.CreatureCalled, ConditionalTrigger, Priority);
     }
 
     public override void RemoveOnboardTriggers()
     {
         base.RemoveOnboardTriggers();
-        EventManager.StopListening("CreatureCalled", ConditionalTrigger);
+        EventManager.StopListening(GachaEventType.CreatureCalled, ConditionalTrigger, Priority);
     }
 }

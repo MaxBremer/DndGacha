@@ -9,12 +9,12 @@ public class TurnStartPassive : PassiveAbility
     public override void AddOnboardTriggers()
     {
         base.AddOnboardTriggers();
-        EventManager.StartListening("StartOfTurn", ConditionalTrigger);
+        EventManager.StartListening(GachaEventType.StartOfTurn, ConditionalTrigger, Priority);
     }
 
     public override void RemoveOnboardTriggers()
     {
         base.RemoveOnboardTriggers();
-        EventManager.StopListening("StartOfTurn", ConditionalTrigger);
+        EventManager.StopListening(GachaEventType.StartOfTurn, ConditionalTrigger, Priority);
     }
 }

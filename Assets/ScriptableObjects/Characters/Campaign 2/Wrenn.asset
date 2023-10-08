@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CharName: Wrenn, Son of the Pure
   CharDisplayName: Wrenn
-  FlavorText: He's mastered Dea's innocence, not her stoicism.
+  FlavorText: A picture of Dea's innocence, but not her stoicism.
   rarity: 1
   CardTexture: {fileID: 0}
   Attack: 5
@@ -26,3 +26,4 @@ MonoBehaviour:
   - SecondWind
   - Amy
   Tags: 
+  CreatureTypes: []

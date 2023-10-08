@@ -13,6 +13,8 @@ public class Ability
 
     public string Description;
 
+    public int Priority = 0;
+
     public Creature Owner;
 
     public List<Choice> ChoicesNeeded;
@@ -78,13 +80,13 @@ public class Ability
             }
         }
         var beforeArgs = new BeforeAbilityTriggerArgs();
-        EventManager.Invoke("BeforeAbilityTrigger", this, beforeArgs);
+        EventManager.Invoke(GachaEventType.BeforeAbilityTrigger, this, beforeArgs);
         if (!beforeArgs.Countered)
         {
             for (int i = 0; i < beforeArgs.NumberOfTriggers; i++)
             {
                 Trigger(sender, e);
-                EventManager.Invoke("AfterAbilityTrigger", this, new EventArgs());
+                EventManager.Invoke(GachaEventType.AfterAbilityTrigger, this, new EventArgs());
             }
         }
         PostExternalTrigger();

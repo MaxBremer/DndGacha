@@ -7,12 +7,12 @@ public class AfterCreatureDiesWhileOnboardAbility : PassiveAbility
     public override void AddOnboardTriggers()
     {
         base.AddOnboardTriggers();
-        EventManager.StartListening("AfterCreatureDies", ConditionalTrigger);
+        EventManager.StartListening(GachaEventType.AfterCreatureDies, ConditionalTrigger, Priority);
     }
 
     public override void RemoveOnboardTriggers()
     {
         base.RemoveOnboardTriggers();
-        EventManager.StopListening("AfterCreatureDies", ConditionalTrigger);
+        EventManager.StopListening(GachaEventType.AfterCreatureDies, ConditionalTrigger, Priority);
     }
 }

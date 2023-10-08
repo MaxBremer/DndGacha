@@ -41,7 +41,7 @@ public class EnthralledAbility : PassiveAbility
     public override void AddOnboardTriggers()
     {
         base.AddOnboardTriggers();
-        EventManager.StartListening("StartOfTurn", CheckForEnd);
+        EventManager.StartListening(GachaEventType.StartOfTurn, CheckForEnd, Priority);
     }
 
     private void CheckForEnd(object sender, EventArgs e)
@@ -55,7 +55,7 @@ public class EnthralledAbility : PassiveAbility
     public override void RemoveOnboardTriggers()
     {
         base.RemoveOnboardTriggers();
-        EventManager.StopListening("StartOfTurn", CheckForEnd);
+        EventManager.StopListening(GachaEventType.StartOfTurn, CheckForEnd, Priority);
     }
 
     public override void OnGained()

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 public class HoldPersonAbility : RangedTargetEnemyAbility
 {
@@ -29,7 +30,7 @@ public class HoldPersonAbility : RangedTargetEnemyAbility
 
     public override void Trigger(object sender, EventArgs e)
     {
-        if(ChoicesNeeded.Where(x => x.Caption == "Target").FirstOrDefault() is CreatureTargetChoice creatChoice && creatChoice.ChoiceMade && !creatChoice.TargetCreature.HasTag(CreatureTag.CANT_MOVE))
+        if(ChoicesNeeded.Where(x => x.Caption == "Target").FirstOrDefault() is CreatureTargetChoice creatChoice && creatChoice.ChoiceMade)// && !creatChoice.TargetCreature.HasTag(CreatureTag.CANT_MOVE))
         {
             creatChoice.TargetCreature.GainTag(CreatureTag.CANT_MOVE);
             creatChoice.TargetCreature.GainHiddenAbility(new RemoveCantMoveEndOfTurn());
@@ -41,8 +42,9 @@ public class RemoveCantMoveEndOfTurn : MyTurnEndPassive
 {
     public RemoveCantMoveEndOfTurn()
     {
-        Name = "RemoveCantMove";
-        Description = "Shouldn't see this.";
+        Name = "PersonHeld";
+        DisplayName = "Held";
+        Description = "Cannot move until the end of my next turn.";
     }
 
     public override void Trigger(object sender, EventArgs e)

@@ -20,13 +20,13 @@ public class DashAbility : ActiveAbility
     {
         _lastSpeed = Owner.Speed;
         Owner.StatsChange(SpeedChg: _lastSpeed);
-        EventManager.StartListening("EndOfTurn", LoseSpeed);
+        EventManager.StartListening(GachaEventType.EndOfTurn, LoseSpeed, Priority);
     }
 
     private void LoseSpeed(object sender, EventArgs e)
     {
         Owner.StatsChange(SpeedChg: -1 * _lastSpeed);
         _lastSpeed = 0;
-        EventManager.StopListening("EndOfTurn", LoseSpeed);
+        EventManager.StopListening(GachaEventType.EndOfTurn, LoseSpeed, Priority);
     }
 }

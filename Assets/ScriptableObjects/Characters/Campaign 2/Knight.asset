@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CharName: Knight
   CharDisplayName: The Knight
-  FlavorText: The brothers two both had Gargauth's blood in their veins. But while
-    Emil had his looks, the Knight had his skill.
+  FlavorText: The brothers both had Gargauth's blood in their veins. But while Emil
+    had his looks, the Knight had his skill.
   rarity: 3
   CardTexture: {fileID: 0}
   Attack: 2
@@ -27,3 +27,4 @@ MonoBehaviour:
   - HelltechArmor
   - GargauthBlessing
   Tags: 
+  CreatureTypes: []

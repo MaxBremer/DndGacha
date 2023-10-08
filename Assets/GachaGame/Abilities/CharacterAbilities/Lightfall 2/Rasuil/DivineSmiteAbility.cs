@@ -18,7 +18,7 @@ public class DivineSmiteAbility : ActiveAbility
 
     public override void Trigger(object sender, EventArgs e)
     {
-        EventManager.StartListening("BeforeDamage", IncreaseDamage);
+        EventManager.StartListening(GachaEventType.BeforeDamage, IncreaseDamage, Priority);
     }
 
     private void IncreaseDamage(object sender, EventArgs e)
@@ -26,7 +26,7 @@ public class DivineSmiteAbility : ActiveAbility
         if(e is TakingDamageArgs dmgArgs && dmgArgs.DamageDealer == Owner && dmgArgs.DamageAmount > 0)
         {
             dmgArgs.DamageAmount += INCREASE_AMOUNT;
-            EventManager.StopListening("BeforeDamage", IncreaseDamage);
+            EventManager.StopListening(GachaEventType.BeforeDamage, IncreaseDamage, Priority);
         }
     }
 }

@@ -9,12 +9,12 @@ public class AfterDamageAbility : PassiveAbility
     public override void AddOnboardTriggers()
     {
         base.AddOnboardTriggers();
-        EventManager.StartListening("AfterDamage", ConditionalTrigger);
+        EventManager.StartListening(GachaEventType.AfterDamage, ConditionalTrigger, Priority);
     }
 
     public override void RemoveOnboardTriggers()
     {
         base.RemoveOnboardTriggers();
-        EventManager.StopListening("AfterDamage", ConditionalTrigger);
+        EventManager.StopListening(GachaEventType.AfterDamage, ConditionalTrigger, Priority);
     }
 }

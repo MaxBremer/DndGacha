@@ -13,6 +13,7 @@ public class GameDemo : MonoBehaviour
     private const int RESERVE_OFFSET_AMOUNT = 1;
     private const float verticalSpacing = 150f;
     private Vector2 startingPosition = new Vector2(0, 300);
+    private const int UI_EVENT_PRIORITY = -5;
 
     //Reference Dictionaries
     public Dictionary<GridSpace, (GameObject obj, GameDemoSquare square)> GridObjs = new Dictionary<GridSpace, (GameObject obj, GameDemoSquare square)>();
@@ -129,12 +130,12 @@ public class GameDemo : MonoBehaviour
     private void SubscribeToEvents()
     {
         //EventManager.StartListening("CreatureSummoned", OnCreatureSummon);
-        EventManager.StartListening("CreatureReserved", OnCreatureReserve);
-        EventManager.StartListening("CreatureLeavesReserve", OnCreatureLeavesReserve);
-        EventManager.StartListening("CreatureEntersSpace", OnCreatureEntersSpace);
-        EventManager.StartListening("StartOfTurn", OnStartOfTurn);
-        EventManager.StartListening("AfterCreatureDies", OnCreatureDies);
-        EventManager.StartListening("CreatureRemoved", OnCreatureDies);
+        EventManager.StartListening(GachaEventType.CreatureReserved, OnCreatureReserve, UI_EVENT_PRIORITY);
+        EventManager.StartListening(GachaEventType.CreatureLeavesReserve, OnCreatureLeavesReserve, UI_EVENT_PRIORITY);
+        EventManager.StartListening(GachaEventType.CreatureEntersSpace, OnCreatureEntersSpace, UI_EVENT_PRIORITY);
+        EventManager.StartListening(GachaEventType.StartOfTurn, OnStartOfTurn, UI_EVENT_PRIORITY);
+        EventManager.StartListening(GachaEventType.AfterCreatureDies, OnCreatureDies, UI_EVENT_PRIORITY);
+        EventManager.StartListening(GachaEventType.CreatureRemoved, OnCreatureDies, UI_EVENT_PRIORITY);
     }
 
     // Update is called once per frame
@@ -514,6 +515,15 @@ public class GameDemo : MonoBehaviour
                 for (int i = targetList.IndexOf(targetObj); i < targetList.Count; i++)
                 {
                     targetList[i].transform.position -= new Vector3(0, RESERVE_OFFSET_AMOUNT, 0);
+                }
+
+                if(cArgs.ReserveOwner.MyPlayerIndex == 0)
+                {
+                    CurP1ReserveOffset -= RESERVE_OFFSET_AMOUNT;
+                }
+                else
+                {
+                    CurP2ReserveOffset -= RESERVE_OFFSET_AMOUNT;
                 }
 
                 targetList.Remove(targetObj);

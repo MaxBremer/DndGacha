@@ -90,13 +90,13 @@ public class Player
         {
             MyGame.AllCreatures.Add(creat);
         }
-        EventManager.Invoke("CreatureReserved", this, new CreatureReservedArgs() { BeingReserved = creat, ReserveOwner = this });
+        EventManager.Invoke(GachaEventType.CreatureReserved, this, new CreatureReservedArgs() { BeingReserved = creat, ReserveOwner = this });
     }
 
     public void RemoveFromReserve(Creature creat)
     {
         Reserve.Remove(creat);
-        EventManager.Invoke("CreatureLeavesReserve", this, new CreatureReservedArgs() { BeingReserved = creat, ReserveOwner = this });
+        EventManager.Invoke(GachaEventType.CreatureLeavesReserve, this, new CreatureReservedArgs() { BeingReserved = creat, ReserveOwner = this });
     }
 }
 

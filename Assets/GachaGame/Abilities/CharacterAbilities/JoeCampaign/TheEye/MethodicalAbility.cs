@@ -16,15 +16,15 @@ public class MethodicalAbility : PassiveAbility
     public override void AddOnboardTriggers()
     {
         base.AddOnboardTriggers();
-        EventManager.StartListening("CreatureActed", Acted);
-        EventManager.StartListening("CreatureMoved", Moved);
+        EventManager.StartListening(GachaEventType.CreatureActed, Acted, Priority);
+        EventManager.StartListening(GachaEventType.CreatureMoved, Moved, Priority);
     }
 
     public override void RemoveOnboardTriggers()
     {
         base.RemoveGraveyardTriggers();
-        EventManager.StopListening("CreatureActed", Acted);
-        EventManager.StopListening("CreatureMoved", Moved);
+        EventManager.StopListening(GachaEventType.CreatureActed, Acted, Priority);
+        EventManager.StopListening(GachaEventType.CreatureMoved, Moved, Priority);
     }
 
     private void Acted(object sender, EventArgs e)

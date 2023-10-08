@@ -44,9 +44,10 @@ public class Creature
         set
         {
             _canAct = value;
+            //TODO: This just isn't true. A creature can lose its ability to act without having acted.
             if (!_canAct)
             {
-                EventManager.Invoke("CreatureActed", this, new EventArgs());
+                EventManager.Invoke(GachaEventType.CreatureActed, this, new EventArgs());
             }
         }
     }
@@ -151,15 +152,16 @@ public class Creature
             SpeedLeft = Speed;
             CanAct = HasTag(CreatureTag.CANT_ACT) ? false : true;
         }
+
+        if (HasTag(CreatureTag.SNOOZING))
+        {
+            LoseTag(CreatureTag.SNOOZING);
+        }
     }
 
     public void EndOfTurn()
     {
         AbilitiesTick();
-        if (HasTag(CreatureTag.SNOOZING))
-        {
-            LoseTag(CreatureTag.SNOOZING);
-        }
     }
 
     public void AbilitiesTick()
@@ -226,7 +228,7 @@ public class Creature
     public void StatsChange(int AtkChg = 0, int HealthChg = 0, int SpeedChg = 0, int InitChg = 0, bool arePermanentStats = true)
     {
         var changeArgs = new StatChangeArgs() { AttackChange = AtkChg, HealthChange = HealthChg, SpeedChange = SpeedChg, InitChange = InitChg, AreStatsPermanent = arePermanentStats };
-        EventManager.Invoke("BeforeCreatureStatsChange", this, changeArgs);
+        EventManager.Invoke(GachaEventType.BeforeCreatureStatsChange, this, changeArgs);
         Attack = Math.Max(0, Attack + changeArgs.AttackChange);
         
         Speed = Math.Max(0, Speed + changeArgs.SpeedChange);
@@ -255,9 +257,9 @@ public class Creature
         MaxHealth = Math.Max(0, MaxHealth);
         Health = Math.Max(0, Health);
 
-        EventManager.Invoke("AfterCreatureStatsChange", this, changeArgs);
+        EventManager.Invoke(GachaEventType.AfterCreatureStatsChange, this, changeArgs);
 
-        if (Health == 0)
+        if (Health == 0 && !InGraveyard)
         {
             Die();
         }
@@ -299,7 +301,7 @@ public class Creature
         Func<Creature, bool> isValid = x => x != this && GachaGrid.IsInRange(this, x, 1) && x.Controller != Controller;
         var candidates = MyGame.AllCreatures.Where(isValid).ToList();
         var args = new BasicAttackTargetingArgs() { ValidAttackTargets = candidates, CreatureAttacking = this, };
-        EventManager.Invoke("CreatureSelectingAttackTargets", this, args);
+        EventManager.Invoke(GachaEventType.CreatureSelectingAttackTargets, this, args);
         return args.ValidAttackTargets;
     }
 
@@ -357,6 +359,10 @@ public class Creature
 
     public void SetController(Player p)
     {
+        if(Controller != null && Controller != p)
+        {
+            Controller.CreatureRemoved(this);
+        }
         Controller = p;
         if (IsOnBoard)
         {
@@ -365,6 +371,10 @@ public class Creature
         if (InReserve)
         {
             Controller.PutInReserve(this);
+        }
+        if (InGraveyard)
+        {
+            Controller.PutInGraveyard(this);
         }
     }
 
@@ -385,7 +395,7 @@ public class Creature
     public void TakeDamage(int damageAmount, Creature damageDealer)
     {
         var dmgArgs = new TakingDamageArgs() { DamageAmount = damageAmount, DamageDealer = damageDealer };
-        EventManager.Invoke("BeforeDamage", this, dmgArgs);
+        EventManager.Invoke(GachaEventType.BeforeDamage, this, dmgArgs);
         if (!HasTag(CreatureTag.IMMUNE))
         {
             Health -= dmgArgs.DamageAmount;
@@ -394,22 +404,22 @@ public class Creature
                 Health = 0;
                 Die();
             }
-            EventManager.Invoke("AfterDamage", this, dmgArgs);
+            EventManager.Invoke(GachaEventType.AfterDamage, this, dmgArgs);
         }
     }
 
     public void Heal(int healingAmount)
     {
         var healingArgs = new TakingDamageArgs() { DamageAmount = healingAmount };
-        EventManager.Invoke("BeforeHealing", this, healingArgs);
+        EventManager.Invoke(GachaEventType.BeforeHealing, this, healingArgs);
         Health = Math.Min(MaxHealth, Health + healingAmount);
-        EventManager.Invoke("AfterHealing", this, healingArgs);
+        EventManager.Invoke(GachaEventType.AfterHealing, this, healingArgs);
     }
 
     public void AttackTarget(Creature target, bool ranged = false)
     {
         var atkArgs = new AttackArgs() { Target = target, IsRanged = ranged, DamageToDeal = Attack, DamageToTake = target.Attack };
-        EventManager.Invoke("BeforeAttack", this, atkArgs);
+        EventManager.Invoke(GachaEventType.BeforeAttack, this, atkArgs);
         if (atkArgs.Target != null)
         {
             atkArgs.Target.TakeDamage(atkArgs.DamageToDeal, this);
@@ -417,7 +427,7 @@ public class Creature
             {
                 TakeDamage(atkArgs.DamageToTake, atkArgs.Target);
             }
-            EventManager.Invoke("AfterAttack", this, atkArgs);
+            EventManager.Invoke(GachaEventType.AfterAttack, this, atkArgs);
         }
     }
 
@@ -430,7 +440,7 @@ public class Creature
         }
 
         var deathSpot = MySpace;
-        EventManager.Invoke("BeforeCreatureDies", this, new CreatureDiesArgs() { CreatureDied = this, WhereItDied = deathSpot });
+        EventManager.Invoke(GachaEventType.BeforeCreatureDies, this, new CreatureDiesArgs() { CreatureDied = this, WhereItDied = deathSpot });
 
         if (State == CreatureState.ONBOARD)
         {
@@ -438,12 +448,12 @@ public class Creature
             Controller.OnBoardCreatures.Remove(this);
         }
         Controller.PutInGraveyard(this);
+        State = CreatureState.GRAVEYARD;
 
         LeaveBoard();
 
-        State = CreatureState.GRAVEYARD;
         DeathTriggerChanges();
-        EventManager.Invoke("AfterCreatureDies", this, new CreatureDiesArgs() { CreatureDied = this, WhereItDied = deathSpot });
+        EventManager.Invoke(GachaEventType.AfterCreatureDies, this, new CreatureDiesArgs() { CreatureDied = this, WhereItDied = deathSpot });
 
         if (IsPrime)
         {
@@ -462,7 +472,7 @@ public class Creature
             RemoveHiddenAbility(hAbil);
         }
 
-        EventManager.Invoke("CreatureLeavesBoard", this, new CreatureDiesArgs() { CreatureDied = this });
+        EventManager.Invoke(GachaEventType.CreatureLeavesBoard, this, new CreatureDiesArgs() { CreatureDied = this });
     }
 
     public Creature CreateCopy(bool keepPrime = false)
@@ -513,17 +523,17 @@ public class Creature
         abil.OnLost();
         abil.Owner = null;
         abil.ClearAllTriggers();
-        EventManager.Invoke("LostAbility", this, new AbilityChangeArgs() { AbilityChanged = abil });
+        EventManager.Invoke(GachaEventType.LostAbility, this, new AbilityChangeArgs() { AbilityChanged = abil });
     }
 
-    public void GainAbility(Ability abil, bool initAbil = false)
+    public void GainAbility(Ability abil, bool initAbil = true)
     {
         Abilities.Add(abil);
         abil.Owner = this;
         if (initAbil)
         {
             abil.InitAbility();
-            EventManager.Invoke("GainedAbility", this, new AbilityChangeArgs() { AbilityChanged = abil });
+            EventManager.Invoke(GachaEventType.GainedAbility, this, new AbilityChangeArgs() { AbilityChanged = abil });
         }
         abil.OnGained();
     }

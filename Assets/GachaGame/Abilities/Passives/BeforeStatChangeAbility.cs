@@ -7,12 +7,12 @@ public class BeforeStatChangeAbility : PassiveAbility
     public override void AddOnboardTriggers()
     {
         base.AddOnboardTriggers();
-        EventManager.StartListening("BeforeCreatureStatsChange", ConditionalTrigger);
+        EventManager.StartListening(GachaEventType.BeforeCreatureStatsChange, ConditionalTrigger, Priority);
     }
 
     public override void RemoveOnboardTriggers()
     {
         base.RemoveOnboardTriggers();
-        EventManager.StopListening("BeforeCreatureStatsChange", ConditionalTrigger);
+        EventManager.StopListening(GachaEventType.BeforeCreatureStatsChange, ConditionalTrigger, Priority);
     }
 }

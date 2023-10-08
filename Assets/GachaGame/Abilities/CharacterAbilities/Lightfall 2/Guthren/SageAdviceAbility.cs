@@ -34,7 +34,14 @@ public class SageAdviceAbility : TouchRangeFriendlyAbility
                 var targetAbil = allAbilsList[r.Next(0, allAbilsList.Count)];
                 if (activeAbilsList.Contains(targetAbil))
                 {
-                    (targetAbil as ActiveAbility).TrueActivation();
+                    if(Owner.MyGame.CurrentPlayerIndex == Owner.Controller.MyPlayerIndex)
+                    {
+                        (targetAbil as ActiveAbility).TrueActivation();
+                    }
+                    else
+                    {
+                        targetAbil.ExternalTrigger(this, new EventArgs());
+                    }
                 }
                 else
                 {

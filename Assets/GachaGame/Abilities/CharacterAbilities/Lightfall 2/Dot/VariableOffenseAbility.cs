@@ -16,6 +16,7 @@ public class VariableOffenseAbility : BeforeIAttackAbility
         Description = "When this character attacks, gain 1 to " + UPPER_END_ATK_RANGE + " attack until after the attack.";
     }
 
+    //TODO: Turn attack remover into ability?
     public override void Trigger(object sender, EventArgs e)
     {
         if(e is AttackArgs atkArgs)
@@ -25,17 +26,16 @@ public class VariableOffenseAbility : BeforeIAttackAbility
             //TODO: What if damage nullified before this trigger? This completely undoes that. Figure out solution.
             Owner.StatsChange(AtkChg: AttackGained);
             atkArgs.DamageToDeal = Owner.Attack;
-            var tClass = new TempAtkRemover(AttackGained, Owner);
-            EventManager.StartListening("AfterAttack", tClass.RemoveAttack);
+            var tClass = new TempAtkRemover(AttackGained, Owner) { Priority = Priority, };
+            EventManager.StartListening(GachaEventType.AfterAttack, tClass.RemoveAttack, Priority);
         }
         
     }
 }
 
-public class TempAtkRemover
+public class TempAtkRemover : PassiveAbility
 {
     private int MyAtkAmount;
-    private Creature Owner;
     public TempAtkRemover(int amount, Creature creat)
     {
         MyAtkAmount = amount;
@@ -47,7 +47,7 @@ public class TempAtkRemover
         if(e is AttackArgs && sender is Creature c && c == Owner)
         {
             Owner.StatsChange(AtkChg: MyAtkAmount * -1);
-            EventManager.StopListening("AfterAttack", RemoveAttack);
+            EventManager.StopListening(GachaEventType.AfterAttack, RemoveAttack, Priority);
         }
     }
 }

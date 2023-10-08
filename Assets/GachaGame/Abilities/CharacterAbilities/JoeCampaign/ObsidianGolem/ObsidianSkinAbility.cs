@@ -11,6 +11,7 @@ public class ObsidianSkinAbility : BeforeAttackAbility
         Name = "ObsidianSkin";
         DisplayName = "Obsidian Skin";
         Description = "Cannot be damaged in melee combat";
+        Priority = 3;
     }
 
     public override void ConditionalTrigger(object sender, EventArgs e)

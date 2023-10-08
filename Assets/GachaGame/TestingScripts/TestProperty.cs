@@ -163,11 +163,11 @@ public class TestProperty : MonoBehaviour
         a2.AddOnboardTriggers();
 
         Debug.Log("Should see two triggers.");
-        EventManager.Invoke("EndOfTurn", this, new EventArgs());
+        EventManager.Invoke(GachaEventType.EndOfTurn, this, new EventArgs());
 
         a1.RemoveOnboardTriggers();
         Debug.Log("Should see one trigger.");
-        EventManager.Invoke("EndOfTurn", this, new EventArgs());
+        EventManager.Invoke(GachaEventType.EndOfTurn, this, new EventArgs());
     }
 
     private void EventArgsCarryOverTest()
@@ -189,7 +189,7 @@ public class TestProperty : MonoBehaviour
 
         Debug.Log("Val starts at 3, should add one each time to 5");
 
-        EventManager.Invoke("TestAddingTrigger", this, args);
+        EventManager.Invoke(GachaEventType.TestAddingTrigger, this, args);
 
         Debug.Log("Final val is: " + args.ArgVal);
     }
@@ -213,7 +213,7 @@ public class TestProperty : MonoBehaviour
 
         Debug.Log("Should see two TRIGGERED instances:");
 
-        EventManager.Invoke("TestTrigger", this, new TestEventArgs(3));
+        EventManager.Invoke(GachaEventType.TestTrigger, this, new TestEventArgs(3));
     }
 
     public static Game SetupBasicTestGame(int gridSize, int creatureCount)

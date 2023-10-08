@@ -9,12 +9,12 @@ public class BeforeCreatureDiesWhileOnboardAbility : PassiveAbility
     public override void AddOnboardTriggers()
     {
         base.AddOnboardTriggers();
-        EventManager.StartListening("BeforeCreatureDies", ConditionalTrigger);
+        EventManager.StartListening(GachaEventType.BeforeCreatureDies, ConditionalTrigger, Priority);
     }
 
     public override void RemoveOnboardTriggers()
     {
         base.RemoveGraveyardTriggers();
-        EventManager.StopListening("BeforeCreatureDies", ConditionalTrigger);
+        EventManager.StopListening(GachaEventType.BeforeCreatureDies, ConditionalTrigger, Priority);
     }
 }

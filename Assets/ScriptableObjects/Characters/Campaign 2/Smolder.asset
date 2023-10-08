@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CharName: Smolder
   CharDisplayName: Smolder
-  FlavorText: Peaceful intentions, arson-based methods.
+  FlavorText: Peaceful ends, arson-based means.
   rarity: 3
   CardTexture: {fileID: 0}
   Attack: 2
@@ -26,3 +26,4 @@ MonoBehaviour:
   - BurnTogetherSmolder
   - FlameStrike
   Tags: 
+  CreatureTypes: []

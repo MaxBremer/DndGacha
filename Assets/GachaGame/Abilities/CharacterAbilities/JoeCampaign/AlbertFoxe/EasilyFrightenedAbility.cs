@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class EasilyFrightenedAbility : PassiveAbility
+public class EasilyFrightenedAbility : AuraAbility
 {
     private List<Creature> _afraidOf = new List<Creature>();
     private bool _cantActOn = false;
@@ -21,17 +21,17 @@ public class EasilyFrightenedAbility : PassiveAbility
     public override void AddOnboardTriggers()
     {
         base.AddOnboardTriggers();
-        EventManager.StartListening("CreatureEntersSpace", ConditionalTrigger);
-        EventManager.StartListening("CreatureLeavesSpace", OnCreatureLeaves);
-        EventManager.StartListening("CreatureLeavesBoard", OnCreatureLeavesBoard);
+        EventManager.StartListening(GachaEventType.CreatureEntersSpace, ConditionalTrigger, Priority);
+        EventManager.StartListening(GachaEventType.CreatureLeavesSpace, OnCreatureLeaves, Priority);
+        EventManager.StartListening(GachaEventType.CreatureLeavesBoard, OnCreatureLeavesBoard, Priority);
     }
 
     public override void RemoveOnboardTriggers()
     {
         base.RemoveOnboardTriggers();
-        EventManager.StopListening("CreatureEntersSpace", ConditionalTrigger);
-        EventManager.StopListening("CreatureLeavesSpace", OnCreatureLeaves);
-        EventManager.StopListening("CreatureLeavesBoard", OnCreatureLeavesBoard);
+        EventManager.StopListening(GachaEventType.CreatureEntersSpace, ConditionalTrigger, Priority);
+        EventManager.StopListening(GachaEventType.CreatureLeavesSpace, OnCreatureLeaves, Priority);
+        EventManager.StopListening(GachaEventType.CreatureLeavesBoard, OnCreatureLeavesBoard, Priority);
     }
 
     public override void ConditionalTrigger(object sender, EventArgs e)
@@ -61,13 +61,13 @@ public class EasilyFrightenedAbility : PassiveAbility
 
     public override void Trigger(object sender, EventArgs e)
     {
-        if (!_cantActOn && !Owner.HasTag(CreatureTag.CANT_ACT))
+        if (!_cantActOn)// && !Owner.HasTag(CreatureTag.CANT_ACT))
         {
             _cantActOn = true;
             Owner.GainTag(CreatureTag.CANT_ACT);
         }
 
-        if (!_cantMoveOn && !Owner.HasTag(CreatureTag.CANT_MOVE))
+        if (!_cantMoveOn)// && !Owner.HasTag(CreatureTag.CANT_MOVE))
         {
             _cantMoveOn = true;
             Owner.GainTag(CreatureTag.CANT_MOVE);

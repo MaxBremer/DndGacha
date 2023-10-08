@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 public class AccursedSpectreAbility : AfterCreatureDiesWhileOnboardAbility
 {
@@ -25,18 +26,27 @@ public class AccursedSpectreAbility : AfterCreatureDiesWhileOnboardAbility
     {
         if(e is CreatureDiesArgs dieArgs)
         {
-            Owner.MyGame.SummonCreature(dieArgs.CreatureDied, dieArgs.WhereItDied);
             dieArgs.CreatureDied.SetController(Owner.Controller);
+            Owner.MyGame.SummonCreature(dieArgs.CreatureDied, dieArgs.WhereItDied);
             dieArgs.CreatureDied.Health = dieArgs.CreatureDied.MaxHealth;
-            dieArgs.CreatureDied.GainHiddenAbility(new DieAtEndOfNextTurn());
+            dieArgs.CreatureDied.GainAbility(new FadingSpectreAbility());
+            dieArgs.CreatureDied.LoseTag(dieArgs.CreatureDied.WhereTag(CreatureTag.HEXBLADES_CURSE).Where(x => x.CreatureData == Owner).First());
+            dieArgs.CreatureDied.LoseTag(CreatureTag.SNOOZING);
             dieArgs.CreatureDied.CanAct = true;
             dieArgs.CreatureDied.SpeedLeft = dieArgs.CreatureDied.Speed;
         }
     }
 
-    private class DieAtEndOfNextTurn : MyTurnEndPassive
+    private class FadingSpectreAbility : MyTurnEndPassive
     {
         private bool _firstTurnEnded = false;
+
+        public FadingSpectreAbility()
+        {
+            Name = "FadingSpectre";
+            DisplayName = "Fading Spectre";
+            Description = "This dies and loses this ability at the end of the turn after it was summoned.";
+        }
 
         public override void Trigger(object sender, EventArgs e)
         {
@@ -47,6 +57,7 @@ public class AccursedSpectreAbility : AfterCreatureDiesWhileOnboardAbility
             else
             {
                 Owner.Die();
+                //Owner.RemoveAbility(this);
             }
         }
     }

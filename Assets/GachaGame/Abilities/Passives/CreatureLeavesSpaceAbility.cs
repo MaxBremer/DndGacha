@@ -9,12 +9,12 @@ public class CreatureLeavesSpaceAbility : PassiveAbility
     public override void AddOnboardTriggers()
     {
         base.AddOnboardTriggers();
-        EventManager.StartListening("CreatureLeavesSpace", ConditionalTrigger);
+        EventManager.StartListening(GachaEventType.CreatureLeavesSpace, ConditionalTrigger, Priority);
     }
 
     public override void RemoveOnboardTriggers()
     {
         base.RemoveOnboardTriggers();
-        EventManager.StopListening("CreatureLeavesSpace", ConditionalTrigger);
+        EventManager.StopListening(GachaEventType.CreatureLeavesSpace, ConditionalTrigger, Priority);
     }
 }

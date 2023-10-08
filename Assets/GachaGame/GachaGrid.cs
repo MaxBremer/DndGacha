@@ -57,7 +57,7 @@ public class GachaGrid
         }
         mover.SpeedLeft -= path.Count - 1;
         CreatureEntersSpace(mover, destination);
-        EventManager.Invoke("CreatureMoved", mover, new System.EventArgs());
+        EventManager.Invoke(GachaEventType.CreatureMoved, mover, new System.EventArgs());
     }
 
     public void CreatureLeavesSpace(Creature leaver)
@@ -67,7 +67,7 @@ public class GachaGrid
             var leaveArgs = new CreatureSpaceArgs() { MyCreature = leaver, SpaceInvolved = leaver.MySpace };
             leaver.MySpace.Occupant = null;
             leaver.MySpace = null;
-            EventManager.Invoke("CreatureLeavesSpace", this, leaveArgs);
+            EventManager.Invoke(GachaEventType.CreatureLeavesSpace, this, leaveArgs);
         }
     }
 
@@ -75,7 +75,7 @@ public class GachaGrid
     {
         enterer.MySpace = targetSpace;
         targetSpace.Occupant = enterer;
-        EventManager.Invoke("CreatureEntersSpace", this, new CreatureSpaceArgs() { MyCreature = enterer, SpaceInvolved = targetSpace });
+        EventManager.Invoke(GachaEventType.CreatureEntersSpace, this, new CreatureSpaceArgs() { MyCreature = enterer, SpaceInvolved = targetSpace });
     }
 
     public static bool InitSquareAvailable(Player p)
@@ -211,7 +211,7 @@ public class GachaGrid
         }
         var potentialMoves = GetValidMoves(c.MySpace, c.SpeedLeft, c.HasTag(CreatureTag.FREEMOVER));
 
-        EventManager.Invoke("CreatureMovesFound", this, new ValidMovesFoundForCreatArgs() { ValidMovesWithPaths = potentialMoves, CreatureMoving = c });
+        EventManager.Invoke(GachaEventType.CreatureMovesFound, this, new ValidMovesFoundForCreatArgs() { ValidMovesWithPaths = potentialMoves, CreatureMoving = c });
 
         return potentialMoves;
     }

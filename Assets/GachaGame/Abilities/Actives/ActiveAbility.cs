@@ -63,7 +63,7 @@ public class ActiveAbility : Ability
     public void LowerCooldown(int amount)
     {
         var args = new CooldownEventArgs() { CooldownAmount = amount, AbilityCooled = this, AbilityOwner = Owner };
-        EventManager.Invoke("AbilityCooldownLower", this, args);
+        EventManager.Invoke(GachaEventType.AbilityCooldownLower, this, args);
         Cooldown = Math.Max(0, Cooldown - args.CooldownAmount);
     }
 

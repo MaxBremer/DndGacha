@@ -28,7 +28,7 @@ public class HexbladesCurseAbility : TargetSingleEnemyAbility
             // If no existing curses, start the event listener to add damage.
             if (!currentCursed.Any())
             {
-                EventManager.StartListening("BeforeDamage", ExtraDamage);
+                EventManager.StartListening(GachaEventType.BeforeDamage, ExtraDamage, Priority);
             }
 
             // Remove curses from creatures currently cursed by me

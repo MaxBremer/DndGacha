@@ -16,13 +16,13 @@ public class GentleGiantAbility : PassiveAbility
     public override void AddOnboardTriggers()
     {
         base.AddOnboardTriggers();
-        EventManager.StartListening("CreatureSelectingAttackTargets", CreatureSelectingTargets);
+        EventManager.StartListening(GachaEventType.CreatureSelectingAttackTargets, CreatureSelectingTargets, Priority);
     }
 
     public override void RemoveOnboardTriggers()
     {
         base.RemoveOnboardTriggers();
-        EventManager.StopListening("CreatureSelectingAttackTargets", CreatureSelectingTargets);
+        EventManager.StopListening(GachaEventType.CreatureSelectingAttackTargets, CreatureSelectingTargets, Priority);
     }
 
     private void CreatureSelectingTargets(object sender, EventArgs e)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 public abstract class CreatureAffectingAuraWhileOnboardAbility : AuraAbility
 {
@@ -11,15 +12,15 @@ public abstract class CreatureAffectingAuraWhileOnboardAbility : AuraAbility
     public override void AddOnboardTriggers()
     {
         base.AddOnboardTriggers();
-        EventManager.StartListening("CreatureSummoned", RefreshAura);
-        EventManager.StartListening("CreatureLeavesBoard", OnCreatureLeavesBoard);
+        EventManager.StartListening(GachaEventType.CreatureSummoned, RefreshAura, Priority);
+        EventManager.StartListening(GachaEventType.CreatureLeavesBoard, OnCreatureLeavesBoard, Priority);
     }
 
     public override void RemoveOnboardTriggers()
     {
         base.RemoveOnboardTriggers();
-        EventManager.StopListening("CreatureSummoned", RefreshAura);
-        EventManager.StopListening("CreatureLeavesBoard", OnCreatureLeavesBoard);
+        EventManager.StopListening(GachaEventType.CreatureSummoned, RefreshAura, Priority);
+        EventManager.StopListening(GachaEventType.CreatureLeavesBoard, OnCreatureLeavesBoard, Priority);
     }
 
     public virtual void RefreshAura(object sender, EventArgs e)
@@ -29,6 +30,7 @@ public abstract class CreatureAffectingAuraWhileOnboardAbility : AuraAbility
             if (!ShouldCreatureBeEffected(creat))
             {
                 RemoveEffectFromCreature(creat);
+                CurrentlyEffectedCreatures.Remove(creat);
             }
         }
 

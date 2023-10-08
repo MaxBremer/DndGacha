@@ -13,9 +13,14 @@ MonoBehaviour:
   m_Name: Knockwraith
   m_EditorClassIdentifier: 
   CharName: Leah Knockwraith
-  FlavorText: 
+  CharDisplayName: Leah Knockwraith
+  FlavorText: The lesson is simple. Peace, at any cost.
   rarity: 4
   CardTexture: {fileID: 0}
-  attack: 0
-  defense: 0
-  health: 0
+  Attack: 0
+  Health: 0
+  Speed: 0
+  Initiative: 0
+  Abilities: []
+  Tags: 
+  CreatureTypes: []

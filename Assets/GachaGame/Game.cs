@@ -7,6 +7,8 @@ public class Game
 {
     private const int POINTS_TO_WIN = 6;
 
+    private const int POINT_GAIN_PRIORITY = 5;
+
     private GameArgs _myArgs;
 
     public Game(GameArgs args)
@@ -71,7 +73,7 @@ public class Game
         }
 
         EventManager.InitializeGame(this);
-        EventManager.StartListening("CreatureDies", CreatureDied_GainPointIfPrime);
+        EventManager.StartListening(GachaEventType.CreatureDies, CreatureDied_GainPointIfPrime, POINT_GAIN_PRIORITY);
 
         ChoiceManager.Reset(this);
 
@@ -85,7 +87,7 @@ public class Game
         caller.CreatureCalled(called);
         SummonCreature(called, callLocation);
         called.IsPrime = true;
-        EventManager.Invoke("CreatureCalled", caller, new CreatureSummonArgs() { BeingSummoned = called, LocationOfSummon = callLocation });
+        EventManager.Invoke(GachaEventType.CreatureCalled, caller, new CreatureSummonArgs() { BeingSummoned = called, LocationOfSummon = callLocation });
     }
 
     public void SummonCreature(Creature summoned, GridSpace location)
@@ -109,7 +111,7 @@ public class Game
         }
 
         var summonArgs = new CreatureSummonArgs() { BeingSummoned = summoned, LocationOfSummon = location };
-        EventManager.Invoke("CreatureSummoned", this, summonArgs);
+        EventManager.Invoke(GachaEventType.CreatureSummoned, this, summonArgs);
     }
 
     public void RemoveCreature(Creature c)
@@ -130,13 +132,13 @@ public class Game
 
         AllCreatures.Remove(c);
 
-        EventManager.Invoke("CreatureRemoved", this, new CreatureDiesArgs() { CreatureDied = c, WhereItDied = gs });
+        EventManager.Invoke(GachaEventType.CreatureRemoved, this, new CreatureDiesArgs() { CreatureDied = c, WhereItDied = gs });
     }
 
     public void GainPoint(Player p)
     {
         p.Points++;
-        EventManager.Invoke("PointGained", this, new PointGainedArgs() { GainedPoint = p });
+        EventManager.Invoke(GachaEventType.PointGained, this, new PointGainedArgs() { GainedPoint = p });
         if (p.Points >= POINTS_TO_WIN)
         {
             Win(p);
@@ -158,7 +160,7 @@ public class Game
 
     public void Win(Player p)
     {
-        EventManager.Invoke("GameOver", this, new GameOverArgs() { PlayerWhoWon = p });
+        EventManager.Invoke(GachaEventType.GameOver, this, new GameOverArgs() { PlayerWhoWon = p });
         // Game over shenanigans.
         GameOngoing = false;
     }
@@ -167,7 +169,7 @@ public class Game
     {
         var EOTArgs = new TurnEndArgs() { PlayerWhoseTurnIsEnding = CurrentPlayerIndex };
         EndOfTurnSetup();
-        EventManager.Invoke("EndOfTurn", this, EOTArgs);
+        EventManager.Invoke(GachaEventType.EndOfTurn, this, EOTArgs);
         // If it's not the last players turn, cycle to next player. Otherwise, next REAL turn.
         if (CurrentPlayerIndex >= Players.Length - 1)
         {
@@ -181,7 +183,7 @@ public class Game
 
         var SOTArgs = new TurnStartArgs() { PlayerWhoseTurnIsStarting = CurrentPlayerIndex };
         StartOfTurnSetup();
-        EventManager.Invoke("StartOfTurn", this, SOTArgs);
+        EventManager.Invoke(GachaEventType.StartOfTurn, this, SOTArgs);
     }
 
     public List<Player> GetOpponents(Player p)

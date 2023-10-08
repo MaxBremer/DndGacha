@@ -9,12 +9,12 @@ public class AfterCreatureDiesWhileGraveyardAbility : PassiveAbility
     public override void AddGraveyardTriggers()
     {
         base.AddGraveyardTriggers();
-        EventManager.StartListening("AfterCreatureDies", ConditionalTrigger);
+        EventManager.StartListening(GachaEventType.AfterCreatureDies, ConditionalTrigger, Priority);
     }
 
     public override void RemoveGraveyardTriggers()
     {
         base.RemoveGraveyardTriggers();
-        EventManager.StopListening("AfterCreatureDies", ConditionalTrigger);
+        EventManager.StopListening(GachaEventType.AfterCreatureDies, ConditionalTrigger, Priority);
     }
 }

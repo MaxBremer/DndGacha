@@ -9,12 +9,12 @@ public class AbilityCooldownLowerPassive : PassiveAbility
     public override void AddOnboardTriggers()
     {
         base.AddOnboardTriggers();
-        EventManager.StartListening("AbilityCooldownLower", ConditionalTrigger);
+        EventManager.StartListening(GachaEventType.AbilityCooldownLower, ConditionalTrigger, Priority);
     }
 
     public override void RemoveOnboardTriggers()
     {
         base.RemoveOnboardTriggers();
-        EventManager.StopListening("AbilityCooldownLower", ConditionalTrigger);
+        EventManager.StopListening(GachaEventType.AbilityCooldownLower, ConditionalTrigger, Priority);
     }
 }

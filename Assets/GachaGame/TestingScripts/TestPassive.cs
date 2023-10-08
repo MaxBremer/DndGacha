@@ -8,8 +8,8 @@ public class TestPassive : PassiveAbility
     public override void AddReserveTriggers()
     {
         Debug.Log("Ran this trigger add!");
-        EventManager.StartListening("TestTrigger", OnTestRun);
-        EventManager.StartListening("TestAddingTrigger", CumulativeTestTrigger);
+        EventManager.StartListening(GachaEventType.TestTrigger, OnTestRun, Priority);
+        EventManager.StartListening(GachaEventType.TestAddingTrigger, CumulativeTestTrigger, Priority);
     }
 
     private void OnTestRun(object sender, EventArgs e)
