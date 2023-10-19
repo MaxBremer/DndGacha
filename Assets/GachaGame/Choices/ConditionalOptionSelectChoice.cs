@@ -23,6 +23,10 @@ public class ConditionalOptionSelectChoice : Choice
         {
             _chosenOption = value;
             ChoiceMade = !string.IsNullOrEmpty(_chosenOption);
+            if (ChoiceMade)
+            {
+                TriggerAfterChoiceMade();
+            }
         }
     }
 

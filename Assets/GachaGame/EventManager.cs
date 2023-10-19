@@ -297,6 +297,9 @@ public enum GachaEventType
     BeforeAbilityTrigger,
     AfterAbilityTrigger,
 
+    BeforeActiveAbilityActivates,
+    AfterActiveAbilityActivates,
+
     LostAbility,
     GainedAbility,
 
@@ -325,8 +328,10 @@ public enum GachaEventType
 
     CreatureSelectingAttackTargets,
     CreatureMovesFound,
+    CreatureAbilitySelectingTargets,
 
     CustomEvent,
     TestTrigger,
     TestAddingTrigger,
+    NULL
 }

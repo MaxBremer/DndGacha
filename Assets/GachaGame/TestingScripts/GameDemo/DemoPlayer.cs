@@ -65,7 +65,7 @@ public class DemoPlayer : Player
         {
             case ChoiceType.CREATURETARGET:
                 var currentCreatureChoice = CurrentTargetChoice as CreatureTargetChoice;
-                Creature[] validTargetCreats = ChoiceManager.AllValidChoicesCreature(currentCreatureChoice);
+                Creature[] validTargetCreats = ChoiceManager.AllValidChoicesCreature(currentCreatureChoice, CurrentTargetAbility);
 
                 if (validTargetCreats.Length > 0)
                 {

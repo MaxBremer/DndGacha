@@ -20,5 +20,7 @@ public abstract class Choice
 
     public abstract void ClearChoice();
 
-    public Func<bool> ConditionOfPresentation = () => true; 
+    public Func<bool> ConditionOfPresentation = () => true;
+
+    public Action TriggerAfterChoiceMade = () => { };
 }

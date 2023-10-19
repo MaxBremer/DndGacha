@@ -77,6 +77,8 @@ public class Game
 
         ChoiceManager.Reset(this);
 
+        GameEventLog.Initialize(this);
+
         StartOfTurnSetup();
     }
 
@@ -133,6 +135,7 @@ public class Game
         AllCreatures.Remove(c);
 
         EventManager.Invoke(GachaEventType.CreatureRemoved, this, new CreatureDiesArgs() { CreatureDied = c, WhereItDied = gs });
+        c.RemoveAllTriggers();
     }
 
     public void GainPoint(Player p)
@@ -181,9 +184,7 @@ public class Game
             CurrentPlayerIndex++;
         }
 
-        var SOTArgs = new TurnStartArgs() { PlayerWhoseTurnIsStarting = CurrentPlayerIndex };
         StartOfTurnSetup();
-        EventManager.Invoke(GachaEventType.StartOfTurn, this, SOTArgs);
     }
 
     public List<Player> GetOpponents(Player p)
@@ -198,6 +199,11 @@ public class Game
         }
 
         return retList;
+    }
+
+    public void PrintEventText(string eventText)
+    {
+        Debug.Log(eventText);
     }
 
     private void EndOfTurnSetup()
@@ -220,6 +226,9 @@ public class Game
             //Players[CurrentPlayerIndex].NumCallsThisTurn += 1;
             CurrentInitiative = ((TurnCount - 1) / 2) + 1;
         }
+
+        var SOTArgs = new TurnStartArgs() { PlayerWhoseTurnIsStarting = CurrentPlayerIndex };
+        EventManager.Invoke(GachaEventType.StartOfTurn, this, SOTArgs);
     }
 
     private void InitPlayers()

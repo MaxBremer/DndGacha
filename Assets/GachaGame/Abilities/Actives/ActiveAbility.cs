@@ -35,14 +35,26 @@ public class ActiveAbility : Ability
 
     public virtual void TrueActivation()
     {
-        if (ChoicesNeeded.Count < 1)
+        var activationArgs = new AbilityActivateArgs() { AbilityActivating = this, };
+        EventManager.Invoke(GachaEventType.BeforeActiveAbilityActivates, this, activationArgs);
+        if (activationArgs.CounterActivation)
         {
-            ExternalTrigger(this, new EventArgs());
+            return;
         }
-        else
+
+        for (int i = 0; i < activationArgs.NumActivations; i++)
         {
-            ChoiceManager.TriggerBasicPlayerDecision(this);
+            if (ChoicesNeeded.Count < 1)
+            {
+                ExternalTrigger(this, new EventArgs());
+            }
+            else
+            {
+                ChoiceManager.TriggerBasicPlayerDecision(this);
+            }
         }
+
+        EventManager.Invoke(GachaEventType.AfterActiveAbilityActivates, this, activationArgs);
     }
 
     public virtual void CooldownTick()

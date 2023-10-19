@@ -17,10 +17,13 @@ MonoBehaviour:
   FlavorText: The lesson is simple. Peace, at any cost.
   rarity: 4
   CardTexture: {fileID: 0}
-  Attack: 0
-  Health: 0
-  Speed: 0
-  Initiative: 0
-  Abilities: []
+  Attack: 2
+  Health: 20
+  Speed: 2
+  Initiative: 6
+  Abilities:
+  - SundialVisions
+  - StrategicSacrifice
+  - AGlassStatue
   Tags: 
   CreatureTypes: []

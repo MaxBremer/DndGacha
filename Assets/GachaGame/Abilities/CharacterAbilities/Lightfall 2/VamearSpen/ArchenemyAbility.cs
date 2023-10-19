@@ -1,0 +1,104 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+public class ArchenemyAbility : TargetSingleEnemyAbility
+{
+    private Creature _theEnemy = null;
+
+    public ArchenemyAbility()
+    {
+        Name = "Archenemy";
+        DisplayName = "Archenemy";
+        Description = "Choose an enemy creature. Both that creature and this one can only target each other with abilities and attacks. Can only have one archenemy at a time.";
+        MaxCooldown = 0;
+    }
+
+    public override void AddOnboardTriggers()
+    {
+        base.AddOnboardTriggers();
+
+        EventManager.StartListening(GachaEventType.CreatureLeavesBoard, Creature_LeavingBoard, Priority);
+        EventManager.StartListening(GachaEventType.CreatureAbilitySelectingTargets, Creature_AbilityTargetsBeingSelected, Priority);
+        EventManager.StartListening(GachaEventType.CreatureSelectingAttackTargets, Creature_AttackTargetsBeingSelected, Priority);
+    } 
+
+    public override void RemoveOnboardTriggers()
+    {
+        base.RemoveOnboardTriggers();
+
+        EventManager.StopListening(GachaEventType.CreatureLeavesBoard, Creature_LeavingBoard, Priority);
+        EventManager.StopListening(GachaEventType.CreatureAbilitySelectingTargets, Creature_AbilityTargetsBeingSelected, Priority);
+        EventManager.StopListening(GachaEventType.CreatureSelectingAttackTargets, Creature_AttackTargetsBeingSelected, Priority);
+    }
+
+    public override void Trigger(object sender, EventArgs e)
+    {
+        if (ChoicesNeeded.Where(x => x.Caption == "Target").FirstOrDefault() is CreatureTargetChoice creatChoice && creatChoice.ChoiceMade)
+        {
+            _theEnemy = creatChoice.TargetCreature;
+        }
+    }
+
+    private void Creature_AbilityTargetsBeingSelected(object sender, EventArgs e)
+    {
+        if(_theEnemy != null && e is AbilityCreatureTargetSelectingArgs creatArgs)
+        {
+            if(creatArgs.AbilityMakingChoice.Owner == Owner)
+            {
+                foreach (var possibleCreat in creatArgs.CurrentTargetsBeingConsidered)
+                {
+                    if(possibleCreat != _theEnemy)
+                    {
+                        creatArgs.CurrentTargetsBeingConsidered.Remove(possibleCreat);
+                    }
+                }
+            }else if(creatArgs.AbilityMakingChoice.Owner == _theEnemy)
+            {
+                foreach (var possibleCreat in creatArgs.CurrentTargetsBeingConsidered)
+                {
+                    if (possibleCreat != Owner)
+                    {
+                        creatArgs.CurrentTargetsBeingConsidered.Remove(possibleCreat);
+                    }
+                }
+            }
+        }
+    }
+
+    private void Creature_AttackTargetsBeingSelected(object sender, EventArgs e)
+    {
+        if(_theEnemy != null && e is BasicAttackTargetingArgs atkArgs)
+        {
+            if(atkArgs.CreatureAttacking == Owner)
+            {
+                foreach (var possibleCreat in atkArgs.ValidAttackTargets)
+                {
+                    if(possibleCreat != _theEnemy)
+                    {
+                        atkArgs.ValidAttackTargets.Remove(possibleCreat);
+                    }
+                }
+            }else if(atkArgs.CreatureAttacking == _theEnemy)
+            {
+                foreach (var possibleCreat in atkArgs.ValidAttackTargets)
+                {
+                    if (possibleCreat != Owner)
+                    {
+                        atkArgs.ValidAttackTargets.Remove(possibleCreat);
+                    }
+                }
+            }
+        }
+    }
+
+    private void Creature_LeavingBoard(object sender, EventArgs e)
+    {
+        if (_theEnemy != null && e is CreatureDiesArgs creatArgs && (creatArgs.CreatureDied == _theEnemy || creatArgs.CreatureDied == Owner))
+        {
+            _theEnemy = null;
+        }
+    }
+}

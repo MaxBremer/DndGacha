@@ -108,6 +108,27 @@ public static class AbilityDatabase
         { "UnpredictableRage", typeof(UnpredictableRageAbility) },
         { "UncannyResillience", typeof(UncannyResilienceAbility) },
 
+        // Quillam
+        { "Twinshot", typeof(TwinshotAbility) },
+        { "Pistol", typeof(PistolAbility) },
+        { "Assassinate", typeof(AssassinateAbility) },
+
+        // Wallace
+        { "InnerCitySafehouses", typeof(InnerCitySafehousesAbility) },
+        { "SharedResources", typeof(SharedResourcesAbility) },
+        { "SurpriseAssisstance", typeof(SurpriseAssistanceAbility) },
+        { "MightAsWellBeDead", typeof(MightAsWellBeDeadAbility) },
+
+        // Vamear Spen
+        { "Archenemy", typeof(ArchenemyAbility) },
+        { "MightOfTheFamily", typeof(MightOfTheFamilyAbility) },
+        { "TheTiger", typeof(TheTigerAbility) },
+
+        // Leah Knockwraith
+        { "SundialVisions", typeof(SundialVisionsAbility) },
+        { "StrategicSacrifice", typeof(StrategicSacrificeAbility) },
+        { "AGlassStatue", typeof(AGlassStatueAbility) },
+
         // CAMPAIGN 1
         // Kthellan
         { "TridentsSpeed", typeof(TridentsSpeedAbility) },

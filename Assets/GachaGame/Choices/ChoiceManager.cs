@@ -95,7 +95,7 @@ public static class ChoiceManager
                 if (choice is CreatureTargetChoice creatChoice)
                 {
                     var possibleChoices = new List<Creature>();
-                    possibleChoices.AddRange(CurrentGame.AllCreatures.Where(x => creatChoice.IsValidCreature(x)));
+                    possibleChoices.AddRange(GetValidCreaturesForChoice(creatChoice, abilOfChoice));
                     creatChoice.TargetCreature = possibleChoices[r.Next(possibleChoices.Count)];
                 }
                 break;
@@ -157,7 +157,7 @@ public static class ChoiceManager
         switch (choice.Type)
         {
             case ChoiceType.CREATURETARGET:
-                return CurrentGame.AllCreatures.Where(x => ((CreatureTargetChoice)choice).IsValidCreature(x)).Any();
+                return GetValidCreaturesForChoice(choice as CreatureTargetChoice, abilOfChoice).Any();
             case ChoiceType.POINTTARGET:
                 return CurrentGame.GameGrid.GetAllGridSquares().Where(x => ((PointTargetChoice)choice).IsValidSpace(x)).Any();
             case ChoiceType.OPTIONSELECT:
@@ -179,7 +179,7 @@ public static class ChoiceManager
         switch (choice.Type)
         {
             case ChoiceType.CREATURETARGET:
-                return CurrentGame.AllCreatures.Where(x => ((CreatureTargetChoice)choice).IsValidCreature(x)).Count() >= numReq;
+                return GetValidCreaturesForChoice(choice as CreatureTargetChoice, abilOfChoice).Count() >= numReq;
             case ChoiceType.POINTTARGET:
                 return CurrentGame.GameGrid.GetAllGridSquares().Where(x => ((PointTargetChoice)choice).IsValidSpace(x)).Count() >= numReq;
             case ChoiceType.OPTIONSELECT:
@@ -192,9 +192,9 @@ public static class ChoiceManager
         }
     }
 
-    public static Creature[] AllValidChoicesCreature(CreatureTargetChoice choice)
+    public static Creature[] AllValidChoicesCreature(CreatureTargetChoice choice, Ability abilMakingChoice)
     {
-        return CurrentGame.AllCreatures.Where(x => choice.IsValidCreature(x)).ToArray();
+        return GetValidCreaturesForChoice(choice, abilMakingChoice).ToArray();
     }
 
     public static GridSpace[] AllValidChoicesPoint(PointTargetChoice choice)
@@ -211,5 +211,13 @@ public static class ChoiceManager
             var nextAbil = _waitlistAbilities.Dequeue();
             TriggerBasicPlayerDecision(nextAbil);
         }
+    }
+
+    private static IEnumerable<Creature> GetValidCreaturesForChoice(CreatureTargetChoice choice, Ability abilMakingChoice)
+    {
+        var viableTargets = CurrentGame.AllCreatures.Where(x => choice.IsValidCreature(x) && (!x.HasTag(CreatureTag.HIDDEN))).ToList();
+        var args = new AbilityCreatureTargetSelectingArgs() { AbilityMakingChoice = abilMakingChoice, ChoiceBeingMade = choice, CurrentTargetsBeingConsidered = viableTargets, };
+        EventManager.Invoke(GachaEventType.CreatureAbilitySelectingTargets, abilMakingChoice, args);
+        return args.CurrentTargetsBeingConsidered;
     }
 }

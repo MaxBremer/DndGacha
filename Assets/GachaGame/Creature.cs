@@ -279,6 +279,14 @@ public class Creature
     public void PutInReserve()
     {
         State = CreatureState.RESERVE;
+
+        if (IsOnBoard)
+        {
+            MyGame.GameGrid.CreatureLeavesSpace(this);
+        }
+
+        LeaveBoard();
+
         foreach (var abil in AllAbilities)
         {
             abil.AddReserveTriggers();
@@ -287,13 +295,6 @@ public class Creature
             if (abil.OnboardTriggerAdded)
                 abil.RemoveOnboardTriggers();
         }
-
-        if (IsOnBoard)
-        {
-            MyGame.GameGrid.CreatureLeavesSpace(this);
-        }
-
-        LeaveBoard();
     }
 
     public List<Creature> GetValidBasicAttackTargets()

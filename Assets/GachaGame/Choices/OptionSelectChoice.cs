@@ -20,6 +20,10 @@ public class OptionSelectChoice : Choice
         {
             _chosenOption = value;
             ChoiceMade = !string.IsNullOrEmpty(_chosenOption);
+            if (ChoiceMade)
+            {
+                TriggerAfterChoiceMade();
+            }
         }
     }
 

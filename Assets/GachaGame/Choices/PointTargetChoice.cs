@@ -21,6 +21,10 @@ public class PointTargetChoice : Choice
         {
             _targetSpace = value;
             ChoiceMade = _targetSpace != null;
+            if (ChoiceMade)
+            {
+                TriggerAfterChoiceMade();
+            }
         }
     }
 

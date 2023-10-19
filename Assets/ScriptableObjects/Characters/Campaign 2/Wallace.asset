@@ -13,8 +13,17 @@ MonoBehaviour:
   m_Name: Wallace
   m_EditorClassIdentifier: 
   CharName: Wondrous Wallace
+  CharDisplayName: Wondrous Wallace
+  FlavorText: Cheerfully runs a benevolent Yakuza.
   rarity: 1
   CardTexture: {fileID: 0}
-  attack: 0
-  defense: 0
-  health: 0
+  Attack: 1
+  Health: 11
+  Speed: 1
+  Initiative: 3
+  Abilities:
+  - InnerCitySafehouses
+  - SharedResources
+  - SurpriseAssistance
+  Tags: 
+  CreatureTypes: []

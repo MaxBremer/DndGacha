@@ -13,8 +13,17 @@ MonoBehaviour:
   m_Name: Quillam
   m_EditorClassIdentifier: 
   CharName: Quillam Reine
+  CharDisplayName: Quillam Reine
+  FlavorText: Possesses an a level of luck inverse to his skill as an assassin.
   rarity: 0
   CardTexture: {fileID: 0}
-  attack: 0
-  defense: 0
-  health: 0
+  Attack: 2
+  Health: 8
+  Speed: 3
+  Initiative: 2
+  Abilities:
+  - Twinshot
+  - Pistol
+  - Assassinate
+  Tags: 
+  CreatureTypes: []

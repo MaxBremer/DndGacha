@@ -79,14 +79,14 @@ public class Ability
                 return;
             }
         }
-        var beforeArgs = new BeforeAbilityTriggerArgs();
+        var beforeArgs = new BeforeAbilityTriggerArgs() { AbilTriggering = this, };
         EventManager.Invoke(GachaEventType.BeforeAbilityTrigger, this, beforeArgs);
         if (!beforeArgs.Countered)
         {
             for (int i = 0; i < beforeArgs.NumberOfTriggers; i++)
             {
                 Trigger(sender, e);
-                EventManager.Invoke(GachaEventType.AfterAbilityTrigger, this, new EventArgs());
+                EventManager.Invoke(GachaEventType.AfterAbilityTrigger, this, new AfterAbilityTriggersArgs() { AbilThatTriggered = this, });
             }
         }
         PostExternalTrigger();

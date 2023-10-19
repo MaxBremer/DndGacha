@@ -13,8 +13,17 @@ MonoBehaviour:
   m_Name: Vamear Spen
   m_EditorClassIdentifier: 
   CharName: Vamear Spen
+  CharDisplayName: Vamear Spen
+  FlavorText: Just like old times, eh Leo?
   rarity: 2
   CardTexture: {fileID: 0}
-  attack: 0
-  defense: 0
-  health: 0
+  Attack: 4
+  Health: 14
+  Speed: 1
+  Initiative: 3
+  Abilities:
+  - Archenemy
+  - MightOfTheFamily
+  - TheTiger
+  Tags: 
+  CreatureTypes: []

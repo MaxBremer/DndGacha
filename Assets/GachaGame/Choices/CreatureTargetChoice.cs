@@ -21,6 +21,10 @@ public class CreatureTargetChoice : Choice
         {
             _targetCreature = value;
             ChoiceMade = _targetCreature != null;
+            if (ChoiceMade)
+            {
+                TriggerAfterChoiceMade();
+            }
         }
     }
 

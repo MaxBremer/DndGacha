@@ -461,7 +461,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MySelectState: 0
-  TestGame: 1
+  TestGame: 0
   gridSquarePrefab: {fileID: 7263189157821394348, guid: bb7511324c4c4cf4aaf02d8e96ba774b, type: 3}
   ReserveCharPrefab: {fileID: 6358010715277065038, guid: ea24a97e72217d24186d2742fe3a5639, type: 3}
   BoardCharPrefab: {fileID: 2523191262594325922, guid: 80651676d5320ba47a2986ea715f145e, type: 3}
@@ -472,18 +472,18 @@ MonoBehaviour:
   P2ReserveLoc: {fileID: 859793795}
   P1Characters:
   - {fileID: 11400000, guid: 2cf3ff5ddd8308d4485e3736c6c1c09e, type: 2}
-  - {fileID: 11400000, guid: df01b23579647ac4c9286792c6c02418, type: 2}
+  - {fileID: 11400000, guid: 1366e9fe58bf3ff46889f339c0682967, type: 2}
   - {fileID: 11400000, guid: 4f6dbb7d14f1a3043848d6602fda5295, type: 2}
   - {fileID: 11400000, guid: e2dc561dce694b2409f21f2f27a2d4b0, type: 2}
-  - {fileID: 11400000, guid: 76d2efafd5bf2c64d9ca3bb864105f9e, type: 2}
-  - {fileID: 11400000, guid: 6fa354ddd355a5c46beab43be1379a7b, type: 2}
+  - {fileID: 11400000, guid: 55bbfda36478e294ab11cfb77e6d649d, type: 2}
+  - {fileID: 11400000, guid: c4958c5e50ab606499342a2b0b5d5b24, type: 2}
   P2Characters:
-  - {fileID: 11400000, guid: 63a27d3ab1c9b6046a38837cc91da1f3, type: 2}
-  - {fileID: 11400000, guid: 0fbfcfb7a02da6d40a9a8141c6618fb8, type: 2}
-  - {fileID: 11400000, guid: 76d2efafd5bf2c64d9ca3bb864105f9e, type: 2}
-  - {fileID: 11400000, guid: b4323127fd120d74799d539ac15f75b6, type: 2}
-  - {fileID: 11400000, guid: e1614f4b29dee8f4ba7f0e83d93ac0d5, type: 2}
-  - {fileID: 11400000, guid: d66a5fe7abb58a94e8f0378d75588b6a, type: 2}
+  - {fileID: 11400000, guid: cbfd722b06116404cb4514d35fc2b71f, type: 2}
+  - {fileID: 11400000, guid: 4f6dbb7d14f1a3043848d6602fda5295, type: 2}
+  - {fileID: 11400000, guid: 1366e9fe58bf3ff46889f339c0682967, type: 2}
+  - {fileID: 11400000, guid: 05cefb4b8f7b9524b914c191d120ec87, type: 2}
+  - {fileID: 11400000, guid: 7ef3a63da62be8a4d822367d2301afdc, type: 2}
+  - {fileID: 11400000, guid: ba0d273d8a2f70c4b808d2fd08fa767e, type: 2}
   NeededColors:
   - {r: 0.6603774, g: 0.5850818, b: 0.52124125, a: 0}
   - {r: 0.9056604, g: 0.32455292, b: 0.31327868, a: 0}
