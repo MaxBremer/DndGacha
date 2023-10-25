@@ -31,9 +31,10 @@ public class AccursedSpectreAbility : AfterCreatureDiesWhileOnboardAbility
             dieArgs.CreatureDied.Health = dieArgs.CreatureDied.MaxHealth;
             dieArgs.CreatureDied.GainAbility(new FadingSpectreAbility());
             dieArgs.CreatureDied.LoseTag(dieArgs.CreatureDied.WhereTag(CreatureTag.HEXBLADES_CURSE).Where(x => x.CreatureData == Owner).First());
-            dieArgs.CreatureDied.LoseTag(CreatureTag.SNOOZING);
+            /*dieArgs.CreatureDied.LoseTag(CreatureTag.SNOOZING);
             dieArgs.CreatureDied.CanAct = true;
-            dieArgs.CreatureDied.SpeedLeft = dieArgs.CreatureDied.Speed;
+            dieArgs.CreatureDied.SpeedLeft = dieArgs.CreatureDied.Speed;*/
+            dieArgs.CreatureDied.StartOfTurnRefresh(false);
         }
     }
 

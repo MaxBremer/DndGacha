@@ -88,7 +88,8 @@ public class ActiveAbility : Ability
     {
         MidActivation = false;
         Cooldown = MaxCooldown;
-        Owner.CanAct = false;
+        //Owner.CanAct = false;
+        Owner.Acted();
         _activatedThisTurn = true;
     }
 

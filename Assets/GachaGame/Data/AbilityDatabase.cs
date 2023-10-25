@@ -116,7 +116,7 @@ public static class AbilityDatabase
         // Wallace
         { "InnerCitySafehouses", typeof(InnerCitySafehousesAbility) },
         { "SharedResources", typeof(SharedResourcesAbility) },
-        { "SurpriseAssisstance", typeof(SurpriseAssistanceAbility) },
+        { "SurpriseAssistance", typeof(SurpriseAssistanceAbility) },
         { "MightAsWellBeDead", typeof(MightAsWellBeDeadAbility) },
 
         // Vamear Spen
@@ -128,6 +128,11 @@ public static class AbilityDatabase
         { "SundialVisions", typeof(SundialVisionsAbility) },
         { "StrategicSacrifice", typeof(StrategicSacrificeAbility) },
         { "AGlassStatue", typeof(AGlassStatueAbility) },
+
+        // Red
+        { "TheLightsDim", typeof(TheLightsDimAbility) },
+        { "TheCurtainsOpen", typeof(TheCurtainsOpenAbility) },
+        { "Showtime", typeof(ShowtimeAbility) },
 
         // CAMPAIGN 1
         // Kthellan

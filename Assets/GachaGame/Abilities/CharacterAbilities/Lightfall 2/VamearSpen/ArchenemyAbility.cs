@@ -44,26 +44,33 @@ public class ArchenemyAbility : TargetSingleEnemyAbility
 
     private void Creature_AbilityTargetsBeingSelected(object sender, EventArgs e)
     {
-        if(_theEnemy != null && e is AbilityCreatureTargetSelectingArgs creatArgs)
+        if(_theEnemy != null && e is AbilityCreatureTargetSelectingArgs creatArgs && creatArgs.CurrentTargetsBeingConsidered != null)
         {
-            if(creatArgs.AbilityMakingChoice.Owner == Owner)
+            var toRemove = new List<Creature>();
+            if (creatArgs.AbilityMakingChoice.Owner == Owner)
             {
                 foreach (var possibleCreat in creatArgs.CurrentTargetsBeingConsidered)
                 {
                     if(possibleCreat != _theEnemy)
                     {
-                        creatArgs.CurrentTargetsBeingConsidered.Remove(possibleCreat);
+                        toRemove.Add(possibleCreat);
                     }
                 }
-            }else if(creatArgs.AbilityMakingChoice.Owner == _theEnemy)
+            }
+            else if (creatArgs.AbilityMakingChoice.Owner == _theEnemy)
             {
                 foreach (var possibleCreat in creatArgs.CurrentTargetsBeingConsidered)
                 {
                     if (possibleCreat != Owner)
                     {
-                        creatArgs.CurrentTargetsBeingConsidered.Remove(possibleCreat);
+                        toRemove.Add(possibleCreat);
                     }
                 }
+            }
+
+            foreach (var creat in toRemove)
+            {
+                creatArgs.CurrentTargetsBeingConsidered.Remove(creat);
             }
         }
     }
@@ -72,24 +79,32 @@ public class ArchenemyAbility : TargetSingleEnemyAbility
     {
         if(_theEnemy != null && e is BasicAttackTargetingArgs atkArgs)
         {
-            if(atkArgs.CreatureAttacking == Owner)
+            var toRemove = new List<Creature>();
+
+            if (atkArgs.CreatureAttacking == Owner)
             {
                 foreach (var possibleCreat in atkArgs.ValidAttackTargets)
                 {
                     if(possibleCreat != _theEnemy)
                     {
-                        atkArgs.ValidAttackTargets.Remove(possibleCreat);
+                        toRemove.Add(possibleCreat);
                     }
                 }
-            }else if(atkArgs.CreatureAttacking == _theEnemy)
+            }
+            else if (atkArgs.CreatureAttacking == _theEnemy)
             {
                 foreach (var possibleCreat in atkArgs.ValidAttackTargets)
                 {
                     if (possibleCreat != Owner)
                     {
-                        atkArgs.ValidAttackTargets.Remove(possibleCreat);
+                        toRemove.Add(possibleCreat);
                     }
                 }
+            }
+
+            foreach (var creat in toRemove)
+            {
+                atkArgs.ValidAttackTargets.Remove(creat);
             }
         }
     }

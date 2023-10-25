@@ -36,8 +36,9 @@ public class SurpriseAssistanceAbility : TargetFriendlyOrSelfAbility
             _timesUntilReplacement = Math.Max(_timesUntilReplacement - 1, 0);
             if (_timesUntilReplacement < 1)
             {
-                Owner.RemoveAbility(this);
-                Owner.GainAbility(new MightAsWellBeDeadAbility());
+                var targetCreat = Owner;
+                targetCreat.RemoveAbility(this);
+                targetCreat.GainAbility(new MightAsWellBeDeadAbility());
             }
         }
     }

@@ -15,7 +15,7 @@ public class AuraOfNightmaresAbility : MyTurnEndPassive
 
     public override void ConditionalTrigger(object sender, EventArgs e)
     {
-        if (e is TurnStartArgs turnArgs && turnArgs.PlayerWhoseTurnIsStarting == Owner.Controller.MyPlayerIndex && GetCandidates().Any())
+        if (e is TurnEndArgs turnArgs && turnArgs.PlayerWhoseTurnIsEnding == Owner.Controller.MyPlayerIndex && GetCandidates().Any())
         {
             ExternalTrigger(sender, e);
         }

@@ -37,7 +37,7 @@ public class Database : MonoBehaviour
 
     public void DebugCharChoose()
     {
-        Rarity chosenrare = CharacterRaritySelector.SelectRarityDefault();
+        Rarity chosenrare = StaticData.SelectRarityDefault();
         var targetCharList = CharactersInRarity[chosenrare];
         var chosen = targetCharList[Random.Range(0, targetCharList.Count)];
 
@@ -48,7 +48,7 @@ public class Database : MonoBehaviour
 
     public ScriptableCharacterBase OpenPackCharacter()
     {
-        Rarity chosenrare = CharacterRaritySelector.SelectRarityDefault();
+        Rarity chosenrare = StaticData.SelectRarityDefault();
         var targetCharList = CharactersInRarity[chosenrare];
         var chosenChar = targetCharList[Random.Range(0, targetCharList.Count)];
         Debug.Log("Congrats! You obtained a(n) " + StaticData.rarityNames[chosenChar.rarity] + " character!");

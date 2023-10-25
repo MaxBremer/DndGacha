@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public static class GameUtils
@@ -17,5 +18,12 @@ public static class GameUtils
                currentPlayer.CanCallThisTurn &&
                game.CurrentInitiative >= selectedCreature.Initiative &&
                currentPlayer.ValidInitSpaces.Contains(targetGridSpace);
+    }
+
+    public static bool AbilWasTriggeredNTurnsAgo(int n, string abilName)
+    {
+        var targetTurnLog = GameEventLog.GetLogNTurnsAgo(n);
+
+        return targetTurnLog != null && targetTurnLog.AllEventsThisTurn.Where(x => x.EventType == GachaEventType.AfterAbilityTrigger && x.StringData.First() == abilName).Any();
     }
 }

@@ -65,6 +65,20 @@ public abstract class CreatureAffectingAuraWhileOnboardAbility : AuraAbility
         }
     }
 
+    public override void OnLost()
+    {
+        base.OnLost();
+
+        ClearAura(null, null);
+    }
+
+    public override void OnGained()
+    {
+        base.OnGained();
+
+        RefreshAura(null, null);
+    }
+
     public abstract bool ShouldCreatureBeEffected(Creature c);
 
     public abstract void ApplyEffectToCreature(Creature c);

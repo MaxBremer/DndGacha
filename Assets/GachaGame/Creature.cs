@@ -38,18 +38,23 @@ public class Creature
 
     public CreatureState State;
 
-    public bool CanAct
+    /*public bool CanAct
     {
         get => _canAct && (!HasTag(CreatureTag.CANT_ACT));
         set
         {
             _canAct = value;
-            //TODO: This just isn't true. A creature can lose its ability to act without having acted.
             if (!_canAct)
             {
                 EventManager.Invoke(GachaEventType.CreatureActed, this, new EventArgs());
             }
         }
+    }*/
+
+    public bool CanAct { 
+        // TODO: Better way of handling CANT_ACT.
+        get => _canAct && (!HasTag(CreatureTag.CANT_ACT)); 
+        set => _canAct = value; 
     }
 
     public bool IsCharacter;
@@ -138,10 +143,10 @@ public class Creature
         DisplayName = MyCreatureBase.DisplayName;
     }
 
-    public void StartOfTurnRefresh()
+    public void StartOfTurnRefresh(bool doStunTagCheck = true)
     {
         var stnTag = Tags.Where(x => x.TagType == CreatureTag.STUNNED);
-        if (stnTag.Any())
+        if (stnTag.Any() && doStunTagCheck)
         {
             Tags.Remove(stnTag.First());
             SpeedLeft = 0;
@@ -150,7 +155,7 @@ public class Creature
         else
         {
             SpeedLeft = Speed;
-            CanAct = HasTag(CreatureTag.CANT_ACT) ? false : true;
+            CanAct = !HasTag(CreatureTag.CANT_ACT);
         }
 
         if (HasTag(CreatureTag.SNOOZING))
@@ -173,6 +178,13 @@ public class Creature
                 active.CooldownTick();
             }
         }
+    }
+
+    public void Acted()
+    {
+        CanAct = false;
+
+        EventManager.Invoke(GachaEventType.CreatureActed, this, new EventArgs());
     }
 
     public void LowerAbilityCooldownsAmount(int num)
@@ -267,13 +279,18 @@ public class Creature
 
     public void StatsSet(int AtkSet = -1, int HealthSet = -1, int SpeedSet = -1, int InitSet = -1)
     {
-        Attack = AtkSet > 0 ? AtkSet : Attack;
-        Health = HealthSet > 0 ? HealthSet : Health;
-        MaxHealth = HealthSet > 0 ? HealthSet : Health;
-        Initiative = InitSet > 0 ? InitSet : Initiative;
-        Speed = SpeedSet > 0 ? SpeedSet : Speed;
-        SpeedLeft = SpeedSet > 0 ? SpeedSet : Speed;
+        Attack = AtkSet >= 0 ? AtkSet : Attack;
+        Health = HealthSet >= 0 ? HealthSet : Health;
+        MaxHealth = HealthSet >= 0 ? HealthSet : Health;
+        Initiative = InitSet >= 0 ? InitSet : Initiative;
+        Speed = SpeedSet >= 0 ? SpeedSet : Speed;
+        SpeedLeft = SpeedSet >= 0 ? SpeedSet : Speed;
         //TODO: Stats set event maybe?
+
+        if (Health == 0 && !InGraveyard)
+        {
+            Die();
+        }
     }
 
     public void PutInReserve()
@@ -338,13 +355,7 @@ public class Creature
 
     public void LoseTag(CreatureTag tag)
     {
-        // TODO: Only lose first tag?
-        /*var toRemove = new List<Tag>();
-        toRemove.AddRange(Tags.Where(x => x.TagType == tag));
-        foreach (var targetTag in toRemove)
-        {
-            LoseTag(targetTag);
-        }*/
+        // Only loses FIRST instance of tag.
 
         var targetTag = Tags.Where(x => x.TagType == tag).FirstOrDefault();
         if(targetTag != null)
@@ -384,7 +395,8 @@ public class Creature
         if (CanAct)
         {
             AttackTarget(target);
-            CanAct = false;
+            /*CanAct = false;*/
+            Acted();
         }
         else
         {

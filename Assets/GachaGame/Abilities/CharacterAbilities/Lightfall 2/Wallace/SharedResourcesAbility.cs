@@ -16,6 +16,8 @@ public class SharedResourcesAbility : ActiveAbility
 
     public override void InitAbility()
     {
+        base.InitAbility();
+
         var firstAbilChoice = new OptionSelectChoice() { Caption = "AbilSelect1" };
         var secondAbilChoice = new OptionSelectChoice() { Caption = "AbilSelect2" };
 

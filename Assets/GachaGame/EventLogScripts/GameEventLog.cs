@@ -84,6 +84,19 @@ public static class GameEventLog
         TrueAddEvent(eventToAdd);
     }
 
+    public static TurnLog GetLogNTurnsAgo(int n)
+    {
+        var numToRemove = n + 1;
+        if (FullLog.Count < numToRemove)
+        {
+            return null;
+        }
+        else
+        {
+            return FullLog[FullLog.Count() - numToRemove];
+        }
+    }
+
     private static void TrueAddEvent(GameEvent eventToAdd)
     {
         CurrentPlayerTurnEvents.Add(eventToAdd);

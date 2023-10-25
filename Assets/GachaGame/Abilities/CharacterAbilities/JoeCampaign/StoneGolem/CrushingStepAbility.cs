@@ -47,7 +47,8 @@ public class CrushingStepAbility : RangedTargetEnemyAbility
         }
         else
         {
-            Owner.CanAct = false;
+            //Owner.CanAct = false;
+            Owner.Acted();
         }
         _activatedThisTurn = true;
     }

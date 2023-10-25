@@ -165,6 +165,8 @@ public class Game
     {
         EventManager.Invoke(GachaEventType.GameOver, this, new GameOverArgs() { PlayerWhoWon = p });
         // Game over shenanigans.
+        var playerNum = p.MyPlayerIndex + 1;
+        Debug.Log("Game Over! Player " + playerNum + " won!");
         GameOngoing = false;
     }
 

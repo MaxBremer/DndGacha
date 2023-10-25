@@ -11,6 +11,8 @@ public class EnthrallAbility : RangedTargetEnemyAbility
         Name = "Enthrall";
         DisplayName = "Enthrall";
         Description = "Select an enemy character within Range 1. It is now in your control, until it is no longer within Range 1 of this character at the start of its turn.";
+        MaxCooldown = 0;
+        Range = 1;
     }
 
     public override void Trigger(object sender, EventArgs e)
@@ -63,11 +65,13 @@ public class EnthralledAbility : PassiveAbility
         base.OnGained();
         _previous = Owner.Controller;
         Owner.SetController(_boss);
+        Owner.StartOfTurnRefresh(false);
     }
 
     public override void OnLost()
     {
         base.OnLost();
         Owner.SetController(_previous);
+        Owner.StartOfTurnRefresh(false);
     }
 }
