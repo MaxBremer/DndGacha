@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class BurnTogetherBuzzAbility : CreatureAffectingAuraWhileOnboardAbility
+public sealed class BurnTogetherBuzzAbility : CreatureAffectingAuraWhileOnboardAbility
 {
     private const int STAT_CHANGE_AMOUNT = 2;
 

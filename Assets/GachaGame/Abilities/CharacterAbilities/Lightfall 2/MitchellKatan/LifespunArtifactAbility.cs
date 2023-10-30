@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class LifespunArtifactAbility : RangedUnblockedPointTargetAbility
+public sealed class LifespunArtifactAbility : RangedUnblockedPointTargetAbility
 {
     public LifespunArtifactAbility()
     {

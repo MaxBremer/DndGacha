@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class MajorUpgradeAbility : TouchRangeFriendlyAbility
+public sealed class MajorUpgradeAbility : TouchRangeFriendlyAbility
 {
     public MajorUpgradeAbility()
     {

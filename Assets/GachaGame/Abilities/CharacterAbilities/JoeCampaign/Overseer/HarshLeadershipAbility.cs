@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class HarshLeadershipAbility : RangedTargetFriendlyAbility
+public sealed class HarshLeadershipAbility : RangedTargetFriendlyAbility
 {
     public HarshLeadershipAbility()
     {

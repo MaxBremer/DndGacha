@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class LuringPupilsAbility : CreatureMovesFoundWhileOnboardPassive
+public sealed class LuringPupilsAbility : CreatureMovesFoundWhileOnboardPassive
 {
     public LuringPupilsAbility()
     {

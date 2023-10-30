@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class AgricultureAbility : RangedMultiplePointTargetAbility
+public sealed class AgricultureAbility : RangedMultiplePointTargetAbility
 {
     public AgricultureAbility()
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class SecondWindAbility : ActiveAbility
+public sealed class SecondWindAbility : ActiveAbility
 {
     private bool _alreadyUsedThisBattle = false;
 

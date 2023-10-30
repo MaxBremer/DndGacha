@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class MethodicalAbility : PassiveAbility
+public sealed class MethodicalAbility : PassiveAbility
 {
     public MethodicalAbility()
     {

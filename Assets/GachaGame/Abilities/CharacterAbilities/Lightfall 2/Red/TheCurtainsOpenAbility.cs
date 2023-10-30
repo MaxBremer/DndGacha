@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class TheCurtainsOpenAbility : RangedTargetMultipleEnemiesAbility
+public sealed class TheCurtainsOpenAbility : RangedTargetMultipleEnemiesAbility
 {
     public TheCurtainsOpenAbility()
     {

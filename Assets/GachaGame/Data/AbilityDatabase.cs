@@ -9,6 +9,9 @@ public static class AbilityDatabase
     {
         "PointTargetObstacle",
         "TragicBackstory",
+        "MightAsWellBeDead",
+        "ArtifactSummonHound",
+        "ArtifactLifeBuff",
     };
 
     public static Dictionary<string, Type> AbilityDictionary = new Dictionary<string, Type>()

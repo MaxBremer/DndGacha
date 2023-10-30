@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class VariableOffenseAbility : BeforeIAttackAbility
+public sealed class VariableOffenseAbility : BeforeIAttackAbility
 {
     private const int UPPER_END_ATK_RANGE = 5;
 

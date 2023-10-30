@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class WrathOfTheStormAbility : RangedTargetEnemyAbility
+public sealed class WrathOfTheStormAbility : RangedTargetEnemyAbility
 {
     public WrathOfTheStormAbility()
     {

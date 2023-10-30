@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class BestOfABadThingAbility : FriendlyCreatureDiesPassive
+public sealed class BestOfABadThingAbility : FriendlyCreatureDiesPassive
 {
     public BestOfABadThingAbility()
     {

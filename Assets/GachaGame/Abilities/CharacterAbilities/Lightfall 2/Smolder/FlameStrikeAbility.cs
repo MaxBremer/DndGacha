@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class FlameStrikeAbility : RangedMultiplePointTargetAbility
+public sealed class FlameStrikeAbility : RangedMultiplePointTargetAbility
 {
     private const int DAMAGE_AMOUNT = 5;
 

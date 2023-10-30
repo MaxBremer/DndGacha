@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class HealingWordsAbility : TouchRangeFriendlyOrSelfAbility
+public sealed class HealingWordsAbility : TouchRangeFriendlyOrSelfAbility
 {
     private const int HEALING_AMOUNT = 4;
 

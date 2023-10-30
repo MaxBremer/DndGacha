@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class AgmalsPactAbility : MyTurnStartPassive
+public sealed class AgmalsPactAbility : MyTurnStartPassive
 {
     public Creature PactGiver;
 

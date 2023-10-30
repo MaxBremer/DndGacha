@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class MrSandmanAbility : ActiveAbility
+public sealed class MrSandmanAbility : ActiveAbility
 {
     public MrSandmanAbility()
     {

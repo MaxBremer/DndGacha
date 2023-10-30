@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class FubikianLongbowAbility : RangedAttackEnemiesAbility
+public sealed class FubikianLongbowAbility : RangedAttackEnemiesAbility
 {
     public FubikianLongbowAbility()
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class PistolAbility : RangedAttackEnemiesAbility
+public sealed class PistolAbility : RangedAttackEnemiesAbility
 {
     public PistolAbility()
     {

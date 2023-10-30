@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ArmCannonAbility : RangedAttackEnemiesAbility
+public sealed class ArmCannonAbility : RangedAttackEnemiesAbility
 {
     public ArmCannonAbility()
     {

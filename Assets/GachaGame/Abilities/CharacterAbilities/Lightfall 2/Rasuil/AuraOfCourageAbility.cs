@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class AuraOfCourageAbility : MyTurnEndPassive
+public sealed class AuraOfCourageAbility : MyTurnEndPassive
 {
     public AuraOfCourageAbility()
     {

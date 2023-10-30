@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class MoonsongsSurgeAbility : ActiveAbility
+public sealed class MoonsongsSurgeAbility : ActiveAbility
 {
     private ActiveAbility _mirrorAbil = null;
     private ActiveAbility _volleyAbil = null;

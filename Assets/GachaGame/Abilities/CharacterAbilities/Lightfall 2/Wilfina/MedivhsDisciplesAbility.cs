@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class MedivhsDisciplesAbility : AfterMyDeathPassive
+public sealed class MedivhsDisciplesAbility : AfterMyDeathPassive
 {
     public MedivhsDisciplesAbility()
     {

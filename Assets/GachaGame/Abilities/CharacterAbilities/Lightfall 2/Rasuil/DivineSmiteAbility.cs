@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class DivineSmiteAbility : ActiveAbility
+public sealed class DivineSmiteAbility : ActiveAbility
 {
     private const int INCREASE_AMOUNT = 3;
 

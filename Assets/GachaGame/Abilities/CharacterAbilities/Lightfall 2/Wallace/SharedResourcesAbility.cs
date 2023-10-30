@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class SharedResourcesAbility : ActiveAbility
+public sealed class SharedResourcesAbility : ActiveAbility
 {
     public SharedResourcesAbility()
     {

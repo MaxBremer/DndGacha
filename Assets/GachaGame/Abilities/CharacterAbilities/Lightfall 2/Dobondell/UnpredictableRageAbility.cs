@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class UnpredictableRageAbility : AfterISurviveDamageAbility
+public sealed class UnpredictableRageAbility : AfterISurviveDamageAbility
 {
     public UnpredictableRageAbility()
     {

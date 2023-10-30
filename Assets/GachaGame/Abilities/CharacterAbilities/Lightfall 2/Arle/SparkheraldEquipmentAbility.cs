@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class SparkheraldEquipmentAbility : TouchRangeFriendlyOrSelfAbility
+public sealed class SparkheraldEquipmentAbility : TouchRangeFriendlyOrSelfAbility
 {
     private const int ATK_INCREASE_AMOUNT = 2;
 

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class EasilyFrightenedAbility : AuraAbility
+public sealed class EasilyFrightenedAbility : AuraAbility
 {
     private List<Creature> _afraidOf = new List<Creature>();
     private bool _cantActOn = false;

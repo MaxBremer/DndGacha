@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class StandingLeapAbility : ActiveAbility
+public sealed class StandingLeapAbility : ActiveAbility
 {
     private const int JUMP_DIST = 3;
 

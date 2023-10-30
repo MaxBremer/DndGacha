@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class PaleReincarnationAbility : ActiveAbility
+public sealed class PaleReincarnationAbility : ActiveAbility
 {
     public PaleReincarnationAbility()
     {

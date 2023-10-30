@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class AGlassStatueAbility : ActiveAbility
+public sealed class AGlassStatueAbility : ActiveAbility
 {
     public AGlassStatueAbility()
     {

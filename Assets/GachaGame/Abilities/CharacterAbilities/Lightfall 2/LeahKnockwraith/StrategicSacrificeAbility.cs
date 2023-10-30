@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class StrategicSacrificeAbility : TargetNonselfFriendlyAbility
+public sealed class StrategicSacrificeAbility : TargetNonselfFriendlyAbility
 {
     public StrategicSacrificeAbility()
     {

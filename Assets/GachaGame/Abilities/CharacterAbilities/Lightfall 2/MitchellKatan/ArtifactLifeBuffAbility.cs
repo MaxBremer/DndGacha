@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class ArtifactLifeBuffAbility : CreatureAffectingAuraWhileOnboardAbility
+public sealed class ArtifactLifeBuffAbility : CreatureAffectingAuraWhileOnboardAbility
 {
     public ArtifactLifeBuffAbility()
     {

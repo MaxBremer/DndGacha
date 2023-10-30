@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class EnthrallAbility : RangedTargetEnemyAbility
+public sealed class EnthrallAbility : RangedTargetEnemyAbility
 {
     public EnthrallAbility()
     {
@@ -25,7 +25,7 @@ public class EnthrallAbility : RangedTargetEnemyAbility
     }
 }
 
-public class EnthralledAbility : PassiveAbility
+public sealed class EnthralledAbility : PassiveAbility
 {
     private Player _boss;
     private Player _previous;

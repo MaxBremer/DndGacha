@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class ArtifactSummonHoundAbility : TurnEndPassive
+public sealed class ArtifactSummonHoundAbility : TurnEndPassive
 {
     public ArtifactSummonHoundAbility()
     {

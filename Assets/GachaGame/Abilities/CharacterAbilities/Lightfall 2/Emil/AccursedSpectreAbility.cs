@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class AccursedSpectreAbility : AfterCreatureDiesWhileOnboardAbility
+public sealed class AccursedSpectreAbility : AfterCreatureDiesWhileOnboardAbility
 {
     public AccursedSpectreAbility()
     {

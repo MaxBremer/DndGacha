@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class AmyAbility : RangedUnblockedPointTargetAbility
+public sealed class AmyAbility : RangedUnblockedPointTargetAbility
 {
     private Creature MyAmy = null;
 

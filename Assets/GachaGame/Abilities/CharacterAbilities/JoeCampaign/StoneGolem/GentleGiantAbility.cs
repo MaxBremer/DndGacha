@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class GentleGiantAbility : PassiveAbility
+public sealed class GentleGiantAbility : PassiveAbility
 {
     public GentleGiantAbility()
     {

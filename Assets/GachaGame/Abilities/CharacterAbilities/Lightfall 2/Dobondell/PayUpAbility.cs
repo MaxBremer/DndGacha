@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class PayUpAbility : RangedAttackEnemiesAbility
+public sealed class PayUpAbility : RangedAttackEnemiesAbility
 {
     public PayUpAbility()
     {

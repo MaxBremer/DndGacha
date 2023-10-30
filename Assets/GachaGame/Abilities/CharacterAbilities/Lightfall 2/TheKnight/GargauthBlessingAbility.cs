@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class GargauthBlessingAbility : TargetFriendlyOrSelfAbility
+public sealed class GargauthBlessingAbility : TargetFriendlyOrSelfAbility
 {
     public GargauthBlessingAbility()
     {

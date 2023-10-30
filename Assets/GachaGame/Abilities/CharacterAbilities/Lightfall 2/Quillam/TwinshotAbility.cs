@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class TwinshotAbility : BeforeMyAbilityActivatesAbility
+public sealed class TwinshotAbility : BeforeMyAbilityActivatesAbility
 {
     public TwinshotAbility()
     {

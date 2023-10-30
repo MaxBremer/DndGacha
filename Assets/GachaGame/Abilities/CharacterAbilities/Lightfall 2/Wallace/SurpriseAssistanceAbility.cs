@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class SurpriseAssistanceAbility : TargetFriendlyOrSelfAbility
+public sealed class SurpriseAssistanceAbility : TargetFriendlyOrSelfAbility
 {
     private int _timesUntilReplacement = 5;
 

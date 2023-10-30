@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class KnowThyEnemyAbility : TargetSingleEnemyAbility
+public sealed class KnowThyEnemyAbility : TargetSingleEnemyAbility
 {
     public KnowThyEnemyAbility()
     {

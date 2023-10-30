@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class OverallCompetenceAbility : WhenImCalledAbility
+public sealed class OverallCompetenceAbility : WhenImCalledAbility
 {
     public OverallCompetenceAbility()
     {

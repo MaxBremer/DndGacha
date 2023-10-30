@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class TongueOfWarriorsAbility : OrthogonalTargetEnemyAbility
+public sealed class TongueOfWarriorsAbility : OrthogonalTargetEnemyAbility
 {
     public TongueOfWarriorsAbility()
     {

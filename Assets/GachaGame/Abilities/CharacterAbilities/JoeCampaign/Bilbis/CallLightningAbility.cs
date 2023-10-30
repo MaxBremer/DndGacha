@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class CallLightningAbility : RangedPointTargetAbility
+public sealed class CallLightningAbility : RangedPointTargetAbility
 {
     public CallLightningAbility()
     {

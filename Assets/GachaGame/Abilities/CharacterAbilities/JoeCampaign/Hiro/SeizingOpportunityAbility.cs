@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class SeizingOpportunityAbility : CreatureLeavesSpaceAbility
+public sealed class SeizingOpportunityAbility : CreatureLeavesSpaceAbility
 {
     public SeizingOpportunityAbility()
     {

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HelltechArmorAbility : BeforeMyStatsChangeAbility
+public sealed class HelltechArmorAbility : BeforeMyStatsChangeAbility
 {
     public HelltechArmorAbility()
     {

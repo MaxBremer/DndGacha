@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class SundialVisionsAbility : PassiveAbility
+public sealed class SundialVisionsAbility : PassiveAbility
 {
     // 1 is 25%, 2 is 50%
     private int _oddsOfCountering = 1;

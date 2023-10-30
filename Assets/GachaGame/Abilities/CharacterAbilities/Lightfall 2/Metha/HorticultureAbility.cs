@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class HorticultureAbility : ActiveAbility
+public sealed class HorticultureAbility : ActiveAbility
 {
     public HorticultureAbility()
     {

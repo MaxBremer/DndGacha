@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class FlurryOfBlowsAbility : TouchRangeEnemyCreatureAbility
+public sealed class FlurryOfBlowsAbility : TouchRangeEnemyCreatureAbility
 {
     public FlurryOfBlowsAbility()
     {

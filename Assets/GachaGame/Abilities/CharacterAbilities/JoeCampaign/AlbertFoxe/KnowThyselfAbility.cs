@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class KnowThyselfAbility : TargetNonselfFriendlyAbility
+public sealed class KnowThyselfAbility : TargetNonselfFriendlyAbility
 {
     public KnowThyselfAbility()
     {

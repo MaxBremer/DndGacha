@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class HexbladesCurseAbility : TargetSingleEnemyAbility
+public sealed class HexbladesCurseAbility : TargetSingleEnemyAbility
 {
     private const int DAMAGE_AMOUNT = 3;
 

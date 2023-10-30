@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class EldritchBlastAbility : RangedAttackAbility
+public sealed class EldritchBlastAbility : RangedAttackAbility
 {
     private const int HEX_RANGE = 5;
 

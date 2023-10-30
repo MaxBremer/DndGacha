@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class ShowtimeAbility : ActiveAbility
+public sealed class ShowtimeAbility : ActiveAbility
 {
     private const int AMOUNT_ATTACK_INCREASES = 6;
 

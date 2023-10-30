@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class LightningOfTheBeholderAbility : RangedTargetEnemyAbility
+public sealed class LightningOfTheBeholderAbility : RangedTargetEnemyAbility
 {
     public LightningOfTheBeholderAbility()
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class BurnTogetherSmolderAbility : CreatureAffectingAuraWhileOnboardAbility
+public sealed class BurnTogetherSmolderAbility : CreatureAffectingAuraWhileOnboardAbility
 {
     private const int STAT_CHANGE_AMOUNT = 2;
 

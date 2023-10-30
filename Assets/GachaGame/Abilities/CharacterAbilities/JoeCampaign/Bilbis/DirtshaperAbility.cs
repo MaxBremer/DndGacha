@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class DirtshaperAbility : RangedMultiplePointTargetAbility
+public sealed class DirtshaperAbility : RangedMultiplePointTargetAbility
 {
     public DirtshaperAbility()
     {

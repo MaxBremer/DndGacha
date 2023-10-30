@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class BotanistsFuryAbility : AfterCreatureDiesWhileOnboardAbility
+public sealed class BotanistsFuryAbility : AfterCreatureDiesWhileOnboardAbility
 {
     public BotanistsFuryAbility()
     {

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TridentsSpeedAbility : MyTurnStartPassive
+public sealed class TridentsSpeedAbility : MyTurnStartPassive
 {
     public TridentsSpeedAbility()
     {

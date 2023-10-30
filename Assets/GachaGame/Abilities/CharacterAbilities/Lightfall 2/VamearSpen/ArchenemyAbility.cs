@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class ArchenemyAbility : TargetSingleEnemyAbility
+public sealed class ArchenemyAbility : TargetSingleEnemyAbility
 {
     private Creature _theEnemy = null;
 

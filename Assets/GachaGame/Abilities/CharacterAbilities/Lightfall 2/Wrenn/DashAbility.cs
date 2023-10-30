@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class DashAbility : ActiveAbility
+public sealed class DashAbility : ActiveAbility
 {
     private int _lastSpeed = 0;
 

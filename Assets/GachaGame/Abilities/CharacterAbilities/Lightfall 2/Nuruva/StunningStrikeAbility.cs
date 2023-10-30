@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-public class StunningStrikeAbility : TouchRangeEnemyCreatureAbility
+public sealed class StunningStrikeAbility : TouchRangeEnemyCreatureAbility
 {
     public StunningStrikeAbility()
     {

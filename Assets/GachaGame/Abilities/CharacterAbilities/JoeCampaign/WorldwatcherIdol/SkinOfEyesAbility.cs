@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class SkinOfEyesAbility : MyTurnStartPassive
+public sealed class SkinOfEyesAbility : MyTurnStartPassive
 {
     public SkinOfEyesAbility()
     {

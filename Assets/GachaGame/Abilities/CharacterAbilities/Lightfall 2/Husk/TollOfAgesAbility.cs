@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TollOfAgesAbility : MyTurnEndPassive
+public sealed class TollOfAgesAbility : MyTurnEndPassive
 {
     private const int DAMAGE_AMOUNT = 2;
 

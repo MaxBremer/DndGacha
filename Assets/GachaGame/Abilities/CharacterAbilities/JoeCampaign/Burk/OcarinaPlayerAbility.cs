@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class OcarinaPlayerAbility : BeforeAttackAbility
+public sealed class OcarinaPlayerAbility : BeforeAttackAbility
 {
     public OcarinaPlayerAbility()
     {

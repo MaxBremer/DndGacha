@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class FocusKiAbility : ActiveAbility
+public sealed class FocusKiAbility : ActiveAbility
 {
     public FocusKiAbility()
     {

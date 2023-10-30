@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class UncannyResilienceAbility : AfterMyDeathPassive
+public sealed class UncannyResilienceAbility : AfterMyDeathPassive
 {
     public UncannyResilienceAbility()
     {

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class TowerwarpAbility : WhenImSummonedAbility
+public sealed class TowerwarpAbility : WhenImSummonedAbility
 {
     private List<GridSpace> _myTower = new List<GridSpace>();
 

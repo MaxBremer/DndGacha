@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class DeathAffinityAbility : FriendlyNonselfCreatureDiesPassive
+public sealed class DeathAffinityAbility : FriendlyNonselfCreatureDiesPassive
 {
     public DeathAffinityAbility()
     {

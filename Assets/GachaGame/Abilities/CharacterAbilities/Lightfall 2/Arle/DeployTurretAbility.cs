@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class DeployTurretAbility : RangedUnblockedPointTargetAbility
+public sealed class DeployTurretAbility : RangedUnblockedPointTargetAbility
 {
     private static CreatureGameBase _turretBase = GetTurretBase();
 

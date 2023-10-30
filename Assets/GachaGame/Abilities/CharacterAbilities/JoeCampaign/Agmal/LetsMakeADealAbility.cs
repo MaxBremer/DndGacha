@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class LetsMakeADealAbility : ActiveAbility
+public sealed class LetsMakeADealAbility : ActiveAbility
 {
     private List<Creature> ReceivedDeal = new List<Creature>();
     public int Range;

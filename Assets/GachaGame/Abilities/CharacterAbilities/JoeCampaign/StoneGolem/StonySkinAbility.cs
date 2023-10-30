@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class StonySkinAbility : BeforeDamageAbility
+public sealed class StonySkinAbility : BeforeDamageAbility
 {
     public StonySkinAbility()
     {

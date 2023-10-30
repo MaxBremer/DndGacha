@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class MightAsWellBeDeadAbility : TargetAnyCreatureAbility
+public sealed class MightAsWellBeDeadAbility : TargetAnyCreatureAbility
 {
     public MightAsWellBeDeadAbility()
     {

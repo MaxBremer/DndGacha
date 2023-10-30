@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class FireBoltAbility : RangedAttackEnemiesAbility
+public sealed class FireBoltAbility : RangedAttackEnemiesAbility
 {
     public FireBoltAbility()
     {

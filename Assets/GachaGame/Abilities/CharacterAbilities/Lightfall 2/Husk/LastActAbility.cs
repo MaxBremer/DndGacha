@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class LastActAbility : ActiveAbility
+public sealed class LastActAbility : ActiveAbility
 {
     private const int NUM_TIMES_ATTACK = 2;
     private const int SELF_DAMAGE = 99;

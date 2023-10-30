@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class LayOnHandsAbility : TouchRangeFriendlyOrSelfAbility
+public sealed class LayOnHandsAbility : TouchRangeFriendlyOrSelfAbility
 {
     private const int HEAL_AMOUNT = 10;
 

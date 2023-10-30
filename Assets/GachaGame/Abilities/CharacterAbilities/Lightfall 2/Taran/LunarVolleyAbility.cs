@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class LunarVolleyAbility : RangedTargetEnemyAbility
+public sealed class LunarVolleyAbility : RangedTargetEnemyAbility
 {
     private const int DAMAGE_AMOUNT = 7;
     
