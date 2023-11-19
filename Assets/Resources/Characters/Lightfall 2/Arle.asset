@@ -10,20 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 876edf0a239a40643beaf9d65bf9d9fd, type: 3}
-  m_Name: Alexander
+  m_Name: Arle
   m_EditorClassIdentifier: 
-  CharName: Alexander "Sandman"  De Venicia
-  CharDisplayName: Alexander de Venecia
-  FlavorText: Someone just bring him a dream so he'll shut up.
+  CharName: Arle Bellclaire
+  CharDisplayName: Arle
+  FlavorText: The only one to survive becoming a Shard, and for good reason.
   rarity: 2
   CardTexture: {fileID: 0}
   Attack: 1
-  Health: 10
-  Speed: 2
+  Health: 13
+  Speed: 3
   Initiative: 3
   Abilities:
-  - PaleReincarnation
-  - DeathAffinity
-  - MrSandman
+  - SparkheraldEquipment
+  - DeployTurret
+  - MajorUpgrade
   Tags: 
   CreatureTypes: []
+  LevelCurveType: 4

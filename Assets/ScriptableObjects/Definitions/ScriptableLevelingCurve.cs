@@ -9,12 +9,11 @@ public class ScriptableLevelingCurve : ScriptableObject
 
     public LevelData[] levels = new LevelData[19];
 
-    [System.Serializable]
-    public class LevelData
+    public void Initialize(List<LevelData> levelData)
     {
-        public int attack;
-        public int health;
-        public int speed;
-        public int initiative;
+        for (int i = 0; i < 19; i++)
+        {
+            levels[i] = levelData[i];
+        }
     }
 }

@@ -5,11 +5,8 @@ public enum LevelingCurveType
     SpeedHeavy,
     Balanced,
 
-    AttackHealthFocus,
-    AttackSpeedFocus,
-    HealthSpeedFocus,
-
     Utility,
+    Tank,
     
     NULL,
 }

@@ -10,31 +10,31 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d5e9a89630e99274582731938537bdf8, type: 3}
-  m_Name: AttackHeavy
+  m_Name: UtilityCurve
   m_EditorClassIdentifier: 
-  LevelCurveType: 0
+  LevelCurveType: 4
   levels:
-  - attack: 1
-    health: 1
-    speed: 1
-    initiative: 0
-  - attack: 1
+  - attack: 0
     health: 1
     speed: 0
     initiative: 0
-  - attack: 2
+  - attack: 0
     health: 2
-    speed: 1
+    speed: 0
     initiative: 0
   - attack: 1
-    health: 1
+    health: 2
     speed: 0
+    initiative: 0
+  - attack: 0
+    health: 1
+    speed: 1
     initiative: -1
   - attack: 1
     health: 2
     speed: 0
     initiative: 0
-  - attack: 1
+  - attack: 0
     health: 1
     speed: 1
     initiative: 0
@@ -42,11 +42,39 @@ MonoBehaviour:
     health: 2
     speed: 0
     initiative: 0
+  - attack: 0
+    health: 2
+    speed: 1
+    initiative: 0
   - attack: 1
+    health: 2
+    speed: 0
+    initiative: 0
+  - attack: 0
+    health: 1
+    speed: 1
+    initiative: -1
+  - attack: 1
+    health: 2
+    speed: 0
+    initiative: 0
+  - attack: 0
+    health: 1
+    speed: 1
+    initiative: -1
+  - attack: 1
+    health: 2
+    speed: 0
+    initiative: 0
+  - attack: 0
     health: 1
     speed: 0
     initiative: 0
-  - attack: 2
+  - attack: 1
+    health: 2
+    speed: 0
+    initiative: 0
+  - attack: 0
     health: 1
     speed: 1
     initiative: 0
@@ -54,37 +82,9 @@ MonoBehaviour:
     health: 2
     speed: 0
     initiative: -1
-  - attack: 1
+  - attack: 0
     health: 1
     speed: 0
-    initiative: 0
-  - attack: 2
-    health: 2
-    speed: 1
-    initiative: 0
-  - attack: 1
-    health: 1
-    speed: 0
-    initiative: 0
-  - attack: 1
-    health: 2
-    speed: 0
-    initiative: 0
-  - attack: 2
-    health: 1
-    speed: 1
-    initiative: 0
-  - attack: 2
-    health: 2
-    speed: 0
-    initiative: 0
-  - attack: 1
-    health: 1
-    speed: 0
-    initiative: 0
-  - attack: 2
-    health: 2
-    speed: 1
     initiative: 0
   - attack: 1
     health: 2
