@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 public sealed class HorticultureAbility : ActiveAbility
 {
+    private int StatAmount = 1;
+
     public HorticultureAbility()
     {
         Name = "Horticulture";
         DisplayName = "Horticulture";
-        Description = "Give your plants +0/+1/+1.";
         MaxCooldown = 1;
     }
 
@@ -24,7 +25,17 @@ public sealed class HorticultureAbility : ActiveAbility
     {
         foreach (var creat in Owner.Controller.OnBoardCreatures.Where(x => x.CreatureTypes.Contains("Plant")))
         {
-            creat.StatsChange(AtkChg: 1, HealthChg: 1);
+            creat.StatsChange(AtkChg: StatAmount, HealthChg: StatAmount);
         }
+    }
+
+    public override void RankUpToTwo()
+    {
+        StatAmount++;
+    }
+
+    public override void UpdateDescription()
+    {
+        Description = "Give your plants +0/+" + StatAmount + "/+" + StatAmount + ".";
     }
 }

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class GameDemoReserveChar : MonoBehaviour
 {
@@ -12,6 +13,9 @@ public class GameDemoReserveChar : MonoBehaviour
     public Color abilTargetColor = Color.magenta;
 
     private Renderer rend;
+
+    [SerializeField]
+    private TextMeshPro charNameText;
 
     private bool isAbilTarget = false;
 
@@ -31,6 +35,7 @@ public class GameDemoReserveChar : MonoBehaviour
     public void SetCreat(Creature creat)
     {
         MyCreature = creat;
+        charNameText.text = creat.DisplayName;
     }
 
     private void OnMouseDown()

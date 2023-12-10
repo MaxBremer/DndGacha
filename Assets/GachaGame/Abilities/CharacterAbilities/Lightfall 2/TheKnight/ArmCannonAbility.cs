@@ -5,18 +5,30 @@ using UnityEngine;
 
 public sealed class ArmCannonAbility : RangedAttackEnemiesAbility
 {
+    private int atkAmt = 1;
+
     public ArmCannonAbility()
     {
         Name = "ArmCannon";
         DisplayName = "Arm Cannon";
-        Description = "Gain 1 attack, then Ranged Attack: 1, then lose 1 attack.";
-        Range = 2;
+        Range = 1;
+        MaxCooldown = 2;
     }
 
     public override void Trigger(object sender, EventArgs e)
     {
-        Owner.StatsChange(AtkChg: 1);
+        Owner.StatsChange(AtkChg: atkAmt);
         base.Trigger(sender, e);
-        Owner.StatsChange(AtkChg: -1);
+        Owner.StatsChange(AtkChg: -1 * atkAmt);
+    }
+
+    public override void UpdateDescription()
+    {
+        Description = "Gain " + atkAmt + " attack, then Ranged Attack: " + Range + ", then lose " + atkAmt + " attack.";
+    }
+
+    public override void RankUpToTwo()
+    {
+        atkAmt++;
     }
 }

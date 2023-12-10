@@ -5,22 +5,39 @@ using UnityEngine;
 
 public sealed class HelltechArmorAbility : BeforeMyStatsChangeAbility
 {
+    private int mult = 2;
+
     public HelltechArmorAbility()
     {
         Name = "HelltechArmor";
         DisplayName = "Helltech Armor";
-        Description = "Whenever this creature gains non-aura stats, it gains twice as much.";
     }
 
     public override void Trigger(object sender, EventArgs e)
     {
-        base.Trigger(sender, e);
         if(e is StatChangeArgs chgArgs && chgArgs.AreStatsPermanent)
         {
-            chgArgs.AttackChange = chgArgs.AttackChange > 0 ? chgArgs.AttackChange * 2 : chgArgs.AttackChange;
-            chgArgs.HealthChange = chgArgs.HealthChange > 0 ? chgArgs.HealthChange * 2 : chgArgs.HealthChange;
-            chgArgs.SpeedChange = chgArgs.SpeedChange > 0 ? chgArgs.SpeedChange * 2 : chgArgs.SpeedChange;
-            chgArgs.InitChange = chgArgs.InitChange > 0 ? chgArgs.InitChange * 2 : chgArgs.InitChange;
+            chgArgs.AttackChange = chgArgs.AttackChange > 0 ? chgArgs.AttackChange * mult : chgArgs.AttackChange;
+            chgArgs.HealthChange = chgArgs.HealthChange > 0 ? chgArgs.HealthChange * mult : chgArgs.HealthChange;
+            if(AbilityRank >= 1)
+            {
+                chgArgs.SpeedChange = chgArgs.SpeedChange > 0 ? chgArgs.SpeedChange * mult : chgArgs.SpeedChange;
+                chgArgs.InitChange = chgArgs.InitChange > 0 ? chgArgs.InitChange * mult : chgArgs.InitChange;
+            }
         }
+    }
+
+    public override void UpdateDescription()
+    {
+        Description = "Whenever this creature gains non-aura " + (AbilityRank < 1 ? "attack or health" : "stats") + ", it gains " + (mult == 2 ? "twice" : "thrice") + " as much.";
+    }
+
+    public override void RankUpToOne()
+    {
+    }
+
+    public override void RankUpToTwo()
+    {
+        mult++;
     }
 }

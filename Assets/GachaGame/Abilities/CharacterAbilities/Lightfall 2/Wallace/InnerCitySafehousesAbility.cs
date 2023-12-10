@@ -10,7 +10,6 @@ public sealed class InnerCitySafehousesAbility : TargetAnyCreatureAbility
     {
         Name = "InnerCitySafehouses";
         DisplayName = "Inner-City Safehouses";
-        Description = "Choose a character. Give them Hidden (Cannot be targeted by attacks/abilities) until the end of their next turn.";
         MaxCooldown = 2;
     }
 
@@ -19,20 +18,36 @@ public sealed class InnerCitySafehousesAbility : TargetAnyCreatureAbility
         if (ChoicesNeeded.Where(x => x.Caption == "Target").FirstOrDefault() is CreatureTargetChoice creatChoice && creatChoice.ChoiceMade)
         {
             creatChoice.TargetCreature.GainTag(CreatureTag.HIDDEN);
-            creatChoice.TargetCreature.GainHiddenAbility(new RemoveHiddenEndOfTurn());
+            bool doImmune = false;
+            if(AbilityRank >= 1)
+            {
+                doImmune = true;
+                creatChoice.TargetCreature.GainTag(CreatureTag.IMMUNE);
+            }
+            creatChoice.TargetCreature.GainHiddenAbility(new RemoveHiddenEndOfTurn(doImmune));
         }
+    }
+
+    public override void RankUpToOne()
+    {
+    }
+
+    public override void UpdateDescription()
+    {
+        Description = "Choose a character. Give them Hidden (Cannot be targeted by attacks/abilities) " + (AbilityRank < 1 ? "" : "and Immune ") + "until the end of their next turn.";
     }
 }
 
 public class RemoveHiddenEndOfTurn : MyTurnEndPassive
 {
     private bool _firstTurnEnded = false;
+    private bool _immuneAlso;
 
-    public RemoveHiddenEndOfTurn()
+    public RemoveHiddenEndOfTurn(bool doImmune)
     {
         Name = "RemoveHidden";
         DisplayName = "Safehouse";
-        Description = "Hidden until the end of my next turn (Next turn!)";
+        _immuneAlso = doImmune;
     }
 
     public override void Trigger(object sender, EventArgs e)
@@ -40,12 +55,21 @@ public class RemoveHiddenEndOfTurn : MyTurnEndPassive
         if (!_firstTurnEnded)
         {
             _firstTurnEnded = true;
-            Description = "Hidden until the end of my next turn (This turn!)";
+            UpdateDescription();
         }
         else
         {
+            if (_immuneAlso)
+            {
+                Owner.LoseTag(CreatureTag.IMMUNE);
+            }
             Owner.LoseTag(CreatureTag.HIDDEN);
             Owner.RemoveHiddenAbility(this);
         }
+    }
+
+    public override void UpdateDescription()
+    {
+        Description = "Hidden " + (_immuneAlso ? "and Immune " : "") + "until the end of my next turn " + (_firstTurnEnded ? "(This turn!)" : "(Next turn!)");
     }
 }

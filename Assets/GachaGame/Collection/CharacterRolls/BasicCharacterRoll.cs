@@ -8,7 +8,7 @@ using UnityEngine;
 
 public class BasicCharacterRoll : ICharacterRoll
 {
-    private const double LEVEL_CURVE_POW = 1.5;
+    private const double LEVEL_CURVE_POW = 1.3;
 
     private const double RARITY_WEIGHT_PROPORTION = 0.5;
 
@@ -35,9 +35,9 @@ public class BasicCharacterRoll : ICharacterRoll
     {
         return new Dictionary<CosmeticType, int>
         {
-            { CosmeticType.NORMAL, 70000 },
-            { CosmeticType.SHINY, 20000 },
-            { CosmeticType.ARTIFACT, 9000 },
+            { CosmeticType.NORMAL, 76000 },
+            { CosmeticType.SHINY, 22100 },
+            { CosmeticType.ARTIFACT, 900 },
             { CosmeticType.COSMIC, 10 }
         };
     }
@@ -119,15 +119,20 @@ public class BasicCharacterRoll : ICharacterRoll
             if (randomValue < cumulativeWeight)
             {
                 var newCharacter = new CollectionCharacter(character);
+
                 // Roll for Level, Rank, and CosmeticType
-                var levelToSet = RollForStat(getStatsFrom.GetLevelWeights(), true);
+                /*var levelToSet = RollForStat(getStatsFrom.GetLevelWeights(), true);
                 while(newCharacter.Level < levelToSet)
                 {
                     newCharacter.LevelUp();
+                }*/
+                newCharacter.Level = RollForStat(getStatsFrom.GetLevelWeights(), true);
+                var rankToSet = RollForStat(getStatsFrom.GetRankWeights());
+                while(newCharacter.Rank < rankToSet)
+                {
+                    newCharacter.RankUp();
                 }
-                newCharacter.Rank = RollForStat(getStatsFrom.GetRankWeights());
                 newCharacter.Cosmetic = RollForCosmeticType(getStatsFrom.GetCosmeticWeights());
-                newCharacter.UnspentRankupPoints = newCharacter.Rank;
 
                 return newCharacter;
             }

@@ -6,14 +6,13 @@ using UnityEngine;
 
 public sealed class LastActAbility : ActiveAbility
 {
-    private const int NUM_TIMES_ATTACK = 2;
-    private const int SELF_DAMAGE = 99;
+    private int NUM_TIMES_ATTACK = 2;
+    private int SELF_DAMAGE = 99;
 
     public LastActAbility()
     {
         Name = "LastAct";
         DisplayName = "Last Act";
-        Description = "This character performs two ranged attacks on each enemy creature, regardless of range. Then deal " + SELF_DAMAGE + " to this character.";
         MaxCooldown = 6;
     }
 
@@ -27,5 +26,15 @@ public sealed class LastActAbility : ActiveAbility
             }
         }
         Owner.TakeDamage(SELF_DAMAGE, Owner);
+    }
+
+    public override void UpdateDescription()
+    {
+        Description = "This character performs " + (AbilityRank < 1 ? "two" : "three") + " ranged attacks on each enemy creature, regardless of range. Then deal " + SELF_DAMAGE + " to this character.";
+    }
+
+    public override void RankUpToOne()
+    {
+        NUM_TIMES_ATTACK++;
     }
 }

@@ -10,7 +10,6 @@ public sealed class UnpredictableRageAbility : AfterISurviveDamageAbility
     {
         Name = "UnpredictableRage";
         DisplayName = "UNPREDICTABLE RAGE";
-        Description = "After this character survives damage increase its stats by 4 points distributed randomly between speed, attack, and health.";
     }
 
     public override void Trigger(object sender, EventArgs e)
@@ -36,5 +35,20 @@ public sealed class UnpredictableRageAbility : AfterISurviveDamageAbility
         }
 
         Owner.StatsChange(AtkChg: a, HealthChg: h, SpeedChg: s);
+    }
+
+    public override void UpdateDescription()
+    {
+        string suffix = "";
+
+        if(AbilityRank == 1)
+        {
+            suffix = " This triggers twice.";
+        }else if (AbilityRank == 2)
+        {
+            suffix = " This triggers thrice.";
+        }
+
+        Description = "After this character survives damage increase its stats by 4 points distributed randomly between speed, attack, and health." + suffix;
     }
 }

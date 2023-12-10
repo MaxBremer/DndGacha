@@ -120,4 +120,14 @@ public class ActiveAbility : Ability
         ((ActiveAbility)copy).MaxCooldown = MaxCooldown;
         return copy;
     }
+
+    public override void RankUpToOne()
+    {
+        MaxCooldown = Math.Max(MaxCooldown - 1, 0);
+    }
+
+    public override void RankUpToTwo()
+    {
+        MaxCooldown = Math.Max(MaxCooldown - 1, 0);
+    }
 }

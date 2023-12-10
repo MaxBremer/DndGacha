@@ -10,8 +10,12 @@ public sealed class PistolAbility : RangedAttackEnemiesAbility
     {
         Name = "Pistol";
         DisplayName = "Pistol";
-        Description = "Ranged Attack: 3.";
         Range = 3;
         MaxCooldown = 0;
+    }
+
+    public override void UpdateDescription()
+    {
+        Description = "Ranged Attack: " + Range + ".";
     }
 }

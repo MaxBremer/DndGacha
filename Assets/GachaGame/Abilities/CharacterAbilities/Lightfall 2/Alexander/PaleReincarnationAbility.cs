@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 public sealed class PaleReincarnationAbility : ActiveAbility
 {
+    private int HealthAmount = 1;
+
     public PaleReincarnationAbility()
     {
         Name = "PaleReincarnation";
         DisplayName = "Pale Reincarnation";
-        Description = "Summon a 1-health copy of a random friendly character that died this game. They gain \"P: At the end of your turn, this gains 1 health\"";
         MaxCooldown = 1;
     }
 
@@ -31,6 +32,18 @@ public sealed class PaleReincarnationAbility : ActiveAbility
         newC.SetController(Owner.Controller);
         var space = Owner.MyGame.GameGrid.GetUnblockedAdjacents(Owner.MySpace, false).First();
         Owner.MyGame.SummonCreature(newC, space);
-        newC.GainAbility("DustGraftedBody", true);
+
+        var dustAbil = new DustGraftedBodyAbility(HealthAmount);
+        newC.GainAbility(dustAbil, true);
+    }
+
+    public override void RankUpToOne()
+    {
+        HealthAmount++;
+    }
+
+    public override void UpdateDescription()
+    {
+        Description = "Summon a " + HealthAmount + "-health copy of a random friendly character that died this game. They gain \"P: At the end of your turn, this gains " + HealthAmount + " health\"";
     }
 }

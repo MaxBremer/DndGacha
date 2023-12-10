@@ -10,7 +10,6 @@ public sealed class MajorUpgradeAbility : TouchRangeFriendlyAbility
     {
         Name = "MajorUpgrade";
         DisplayName = "Major Upgrade";
-        Description = "Double the attack and health of an adjacent turret.";
         MaxCooldown = 3;
     }
 
@@ -32,5 +31,10 @@ public sealed class MajorUpgradeAbility : TouchRangeFriendlyAbility
         {
             creatChoice.TargetCreature.StatsChange(AtkChg: creatChoice.TargetCreature.Attack, HealthChg: creatChoice.TargetCreature.MaxHealth);
         }
+    }
+
+    public override void UpdateDescription()
+    {
+        Description = "Double the attack and health of an adjacent turret.";
     }
 }

@@ -12,7 +12,6 @@ public sealed class LunarVolleyAbility : RangedTargetEnemyAbility
     {
         Name = "LunarVolley";
         DisplayName = "Lunar Volley";
-        Description = "Choose a target within range 4. It takes 7 damage.";
         MaxCooldown = 2;
         Range = 4;
     }
@@ -21,7 +20,18 @@ public sealed class LunarVolleyAbility : RangedTargetEnemyAbility
     {
         if(ChoicesNeeded.Where(x => x.Caption == "Target").FirstOrDefault() is CreatureTargetChoice creatChoice && creatChoice.ChoiceMade)
         {
-            creatChoice.TargetCreature.TakeDamage(7, Owner);
+            creatChoice.TargetCreature.TakeDamage(DAMAGE_AMOUNT, Owner);
         }
+    }
+
+    public override void UpdateDescription()
+    {
+        Description = "Choose a target within range " + Range + ". It takes " + DAMAGE_AMOUNT + " damage.";
+    }
+
+    public override void RankUpToTwo()
+    {
+        Range++;
+        MaxCooldown--;
     }
 }

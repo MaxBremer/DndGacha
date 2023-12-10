@@ -11,7 +11,6 @@ public sealed class StunningStrikeAbility : TouchRangeEnemyCreatureAbility
     {
         Name = "StunningStrike";
         DisplayName = "Stunning Strike";
-        Description = "Attack. That target is Stunned, and cannot act or move on its next turn.";
         MaxCooldown = 3;
     }
 
@@ -22,5 +21,10 @@ public sealed class StunningStrikeAbility : TouchRangeEnemyCreatureAbility
             Owner.AttackTarget(creatChoice.TargetCreature);
             creatChoice.TargetCreature.GainTag(CreatureTag.STUNNED);
         }
+    }
+
+    public override void UpdateDescription()
+    {
+        Description = "Attack. That target is Stunned, and cannot act or move on its next turn.";
     }
 }

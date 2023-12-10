@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 public sealed class MrSandmanAbility : ActiveAbility
 {
+    private bool CombineSpeed = false;
+
     public MrSandmanAbility()
     {
         Name = "MrSandman";
         DisplayName = "Mr. Sandman";
-        Description = "Combine all Pale Reincarnations on the battlefield into a Horrific Amalgamation with no abilities, the highest speed of those characters, and the combined attack and health of those characters.";
         MaxCooldown = 3;
     }
 
@@ -27,7 +28,7 @@ public sealed class MrSandmanAbility : ActiveAbility
         var atk = 0;
         var health = 0;
         var spd = 0;
-        relevantCreatures.ForEach(x => { atk += x.Attack; health += x.Health; spd = Math.Max(spd, x.Speed); });
+        relevantCreatures.ForEach(x => { atk += x.Attack; health += x.Health; spd = CombineSpeed ? spd + x.Speed : Math.Max(spd, x.Speed); });
         var cbase = new CreatureGameBase()
         {
             Initiative = 1,
@@ -44,5 +45,16 @@ public sealed class MrSandmanAbility : ActiveAbility
 
         relevantCreatures.ForEach(x => Owner.MyGame.RemoveCreature(x));
         Owner.MyGame.SummonCreature(creat, spaceToSummon);
+    }
+
+    public override void RankUpToTwo()
+    {
+        CombineSpeed = true;
+    }
+
+    public override void UpdateDescription()
+    {
+        string ending = CombineSpeed ? " and the combined speed, attack, and health of those characters." : ", the highest speed of those characters, and the combined attack and health of those characters.";
+        Description = "Combine all Pale Reincarnations on the battlefield into a Horrific Amalgamation with no abilities" + ending;
     }
 }

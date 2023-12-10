@@ -10,7 +10,6 @@ public sealed class DeathspunArtifactAbility : RangedUnblockedPointTargetAbility
     {
         Name = "DeathspunArtifact";
         DisplayName = "Deathspun Artifact";
-        Description = "Summon a 0/10/0 artifact in range 2 with \"P: At the end of your turn, summon a 3 / 1 / 4 undead hound adjacent to this\"";
         MaxCooldown = 3;
         Range = 2;
     }
@@ -21,6 +20,20 @@ public sealed class DeathspunArtifactAbility : RangedUnblockedPointTargetAbility
         {
             Owner.MyGame.SummonCreature(GetArtifact(), pointChoice.TargetSpace);
         }
+    }
+
+    public override void UpdateDescription()
+    {
+        Description = "Summon a 0/10/0 artifact in range 2 that summons " + (AbilityRank < 2 ? "a hound" : "two hounds") + " at the end of your turns.";
+    }
+
+    public override void RankUpToOne()
+    {
+        MaxCooldown--;
+    }
+
+    public override void RankUpToTwo()
+    {
     }
 
     private Creature GetArtifact()
@@ -34,11 +47,13 @@ public sealed class DeathspunArtifactAbility : RangedUnblockedPointTargetAbility
             DisplayName = "Deathspun Artifact",
         };
         cBase.CreatureTypes.Add("Artifact");
-        cBase.Abilities.Add("ArtifactSummonHound");
+        //cBase.Abilities.Add("ArtifactSummonHound");
 
         var creat = new Creature(cBase);
         creat.InitFromBase();
         creat.SetController(Owner.Controller);
+
+        creat.GainAbility(new ArtifactSummonHoundAbility(AbilityRank < 2 ? 1 : 2));
 
         return creat;
     }

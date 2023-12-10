@@ -11,6 +11,10 @@ public sealed class FireBoltAbility : RangedAttackEnemiesAbility
         Range = 2;
         Name = "FireBolt";
         DisplayName = "Fire Bolt";
+    }
+
+    public override void UpdateDescription()
+    {
         Description = "Ranged Attack " + Range;
     }
 }

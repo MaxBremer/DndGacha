@@ -10,13 +10,27 @@ public sealed class ClothOfErasAbility : RangedAttackEnemiesAbility
     {
         Name = "ClothOfEras";
         DisplayName = "Cloth of Eras";
-        Description = "Ranged Attack: 6";
         MaxCooldown = 0;
+        Range = 6;
     }
 
-    public override void InitAbility()
+    public override void Trigger(object sender, EventArgs e)
     {
-        Range = 6;
-        base.InitAbility();
+        if (ChoicesNeeded.Where(x => x.Caption == "Target").FirstOrDefault() is CreatureTargetChoice creatChoice && creatChoice.ChoiceMade && AbilityRank == 2)
+        {
+            Owner.StatsChange(AtkChg: 1);
+        }
+
+        base.Trigger(sender, e);
+    }
+
+    public override void RankUpToTwo()
+    {
+    }
+
+    public override void UpdateDescription()
+    {
+        string prefix = AbilityRank < 2 ? "R" : "Gain 1 attack then r";
+        Description = prefix + "anged Attack: " + Range;
     }
 }

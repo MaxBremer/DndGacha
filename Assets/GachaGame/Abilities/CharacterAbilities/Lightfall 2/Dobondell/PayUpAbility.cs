@@ -10,7 +10,6 @@ public sealed class PayUpAbility : RangedAttackEnemiesAbility
     {
         Name = "PayUp";
         DisplayName = "PAY UP";
-        Description = "Choose a character in Range 2. Gain 1 attack, ranged attack it, and increase its current cooldowns by 1.";
         MaxCooldown = 2;
         Range = 2;
     }
@@ -29,5 +28,15 @@ public sealed class PayUpAbility : RangedAttackEnemiesAbility
                 }
             }
         }
+    }
+
+    public override void UpdateDescription()
+    {
+        Description = "Choose a character in Range " + Range + ". Gain 1 attack, ranged attack it, and increase its current cooldowns by 1.";
+    }
+
+    public override void RankUpToTwo()
+    {
+        MaxCooldown--;
     }
 }

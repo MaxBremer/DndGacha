@@ -461,7 +461,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MySelectState: 0
-  TestGame: 1
+  TestGame: 0
   gridSquarePrefab: {fileID: 7263189157821394348, guid: bb7511324c4c4cf4aaf02d8e96ba774b, type: 3}
   ReserveCharPrefab: {fileID: 6358010715277065038, guid: ea24a97e72217d24186d2742fe3a5639, type: 3}
   BoardCharPrefab: {fileID: 2523191262594325922, guid: 80651676d5320ba47a2986ea715f145e, type: 3}
@@ -472,18 +472,18 @@ MonoBehaviour:
   P2ReserveLoc: {fileID: 859793795}
   P1Characters:
   - {fileID: 11400000, guid: eab803fc63a9f5f4986b51d5a63ed12b, type: 2}
-  - {fileID: 11400000, guid: 3b60a5e692849bb4490e1830dd07ce11, type: 2}
+  - {fileID: 11400000, guid: 1366e9fe58bf3ff46889f339c0682967, type: 2}
+  - {fileID: 11400000, guid: df01b23579647ac4c9286792c6c02418, type: 2}
+  - {fileID: 11400000, guid: f4d25edeb8f63784bb4ac1d788fa9905, type: 2}
   - {fileID: 11400000, guid: b7ff311164758014f991c84d93127a5d, type: 2}
-  - {fileID: 11400000, guid: d42120c9bfb08b943849bf9807644322, type: 2}
-  - {fileID: 11400000, guid: 867b762ebc05f214bb7c888dc66c01a3, type: 2}
-  - {fileID: 11400000, guid: 4c3b9b02eb1fcea42a7a86898e9d0a3a, type: 2}
+  - {fileID: 11400000, guid: de1ff4d9cf3a75842b761a5b9dbbcef7, type: 2}
   P2Characters:
   - {fileID: 11400000, guid: cbfd722b06116404cb4514d35fc2b71f, type: 2}
-  - {fileID: 11400000, guid: 4f6dbb7d14f1a3043848d6602fda5295, type: 2}
-  - {fileID: 11400000, guid: 3b60a5e692849bb4490e1830dd07ce11, type: 2}
-  - {fileID: 11400000, guid: 05cefb4b8f7b9524b914c191d120ec87, type: 2}
-  - {fileID: 11400000, guid: 7ef3a63da62be8a4d822367d2301afdc, type: 2}
-  - {fileID: 11400000, guid: ba0d273d8a2f70c4b808d2fd08fa767e, type: 2}
+  - {fileID: 11400000, guid: de1ff4d9cf3a75842b761a5b9dbbcef7, type: 2}
+  - {fileID: 11400000, guid: 66da76f11a6196d4c8b130b954487c65, type: 2}
+  - {fileID: 11400000, guid: 63a27d3ab1c9b6046a38837cc91da1f3, type: 2}
+  - {fileID: 11400000, guid: e2dc561dce694b2409f21f2f27a2d4b0, type: 2}
+  - {fileID: 11400000, guid: dbc4fb67b12097547a97cf453603762f, type: 2}
   NeededColors:
   - {r: 0.6603774, g: 0.5850818, b: 0.52124125, a: 0}
   - {r: 0.9056604, g: 0.32455292, b: 0.31327868, a: 0}

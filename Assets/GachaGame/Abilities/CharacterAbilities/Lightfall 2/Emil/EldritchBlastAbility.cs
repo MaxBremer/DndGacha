@@ -6,13 +6,12 @@ using System.Threading.Tasks;
 
 public sealed class EldritchBlastAbility : RangedAttackAbility
 {
-    private const int HEX_RANGE = 5;
+    private int HEX_RANGE => Range + 2;
 
     public EldritchBlastAbility()
     {
         Name = "EldritchBlast";
         DisplayName = "Eldritch Blast";
-        Description = "Ranged Attack: 3. If the target is under my Hexblades Curse, this is instead Ranged Attack: 5.";
         MaxCooldown = 1;
         Range = 3;
     }
@@ -23,5 +22,10 @@ public sealed class EldritchBlastAbility : RangedAttackAbility
         ChoicesNeeded.Clear();
         Func<Creature, bool> isValid = x => x != Owner && (GachaGrid.IsInRange(Owner, x, Range) || (x.WhereTag(CreatureTag.HEXBLADES_CURSE).Where(x => x.CreatureData == Owner).Any() && GachaGrid.IsInRange(Owner, x, HEX_RANGE)));
         ChoicesNeeded.Add(new CreatureTargetChoice() { IsValidCreature = isValid, Caption = "Target" });
+    }
+
+    public override void UpdateDescription()
+    {
+        Description = "Ranged Attack: " + Range + ". If the target is under my Hexblades Curse, this is instead Ranged Attack: " + HEX_RANGE + ".";
     }
 }

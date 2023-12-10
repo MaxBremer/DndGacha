@@ -10,7 +10,6 @@ public sealed class FlamingCompanionAbility : WhenImCalledAbility
     {
         Name = "FlamingCompanion";
         DisplayName = "Flaming Companion";
-        Description = "When this character is called, Buzz is called as well if she is in reserve and there is space available.";
     }
 
     public override void Trigger(object sender, EventArgs e)
@@ -20,6 +19,28 @@ public sealed class FlamingCompanionAbility : WhenImCalledAbility
         if(potentialBuzz != null && potentialSpace != null)
         {
             Owner.MyGame.CallCharacter(potentialBuzz, potentialSpace, Owner.Controller);
+            if(AbilityRank >= 1)
+            {
+                potentialBuzz.GainTag(CreatureTag.QUICKSTRIKE);
+                if(AbilityRank == 2)
+                {
+                    potentialBuzz.StatsChange(HealthChg: 3);
+                }
+            }
         }
+    }
+
+    public override void UpdateDescription()
+    {
+        string endTag = AbilityRank < 1 ? "" : (AbilityRank < 2 ? " Give her Quickstrike." : "Give her Quickstrike and +3 health.");
+        Description = "When this character is called, Buzz is called as well if she is in reserve and there is space available." + endTag;
+    }
+
+    public override void RankUpToOne()
+    {
+    }
+
+    public override void RankUpToTwo()
+    {
     }
 }

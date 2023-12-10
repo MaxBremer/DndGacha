@@ -7,13 +7,12 @@ using UnityEngine;
 
 public sealed class BurnTogetherBuzzAbility : CreatureAffectingAuraWhileOnboardAbility
 {
-    private const int STAT_CHANGE_AMOUNT = 2;
+    private int STAT_CHANGE_AMOUNT = 2;
 
     public BurnTogetherBuzzAbility()
     {
         Name = "BurnTogetherBuzz";
         DisplayName = "Burn Together";
-        Description = "If Smolder is on the battlefield, his stats have +" + STAT_CHANGE_AMOUNT;
     }
 
     public override void ApplyEffectToCreature(Creature c)
@@ -30,5 +29,20 @@ public sealed class BurnTogetherBuzzAbility : CreatureAffectingAuraWhileOnboardA
     public override bool ShouldCreatureBeEffected(Creature c)
     {
         return c.DisplayName == "Smolder" && c.IsOnBoard;
+    }
+
+    public override void RankUpToOne()
+    {
+        STAT_CHANGE_AMOUNT++;
+    }
+
+    public override void RankUpToTwo()
+    {
+        STAT_CHANGE_AMOUNT++;
+    }
+
+    public override void UpdateDescription()
+    {
+        Description = "If Smolder is on the battlefield, his stats have +" + STAT_CHANGE_AMOUNT;
     }
 }

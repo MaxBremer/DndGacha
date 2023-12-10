@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 public sealed class AssassinateAbility : RangedTargetAbility
 {
+    private int _healthMax = 7;
+
     public AssassinateAbility()
     {
         Name = "Assassinate";
         DisplayName = "Assassinate";
-        Description = "Choose a creature in range 4 with 7 or less health. Kill it.";
         MaxCooldown = 5;
         Range = 4;
     }
@@ -32,5 +33,21 @@ public sealed class AssassinateAbility : RangedTargetAbility
         {
             creatChoice.TargetCreature.Die();
         }
+    }
+
+    public override void UpdateDescription()
+    {
+        Description = "Choose a creature in range " + Range + " with " + _healthMax + " or less health. Kill it.";
+    }
+
+    public override void RankUpToOne()
+    {
+        MaxCooldown--;
+        Range++;
+    }
+
+    public override void RankUpToTwo()
+    {
+        _healthMax += 2;
     }
 }

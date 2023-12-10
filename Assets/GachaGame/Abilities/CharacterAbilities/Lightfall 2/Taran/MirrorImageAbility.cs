@@ -6,11 +6,12 @@ using UnityEngine;
 
 public sealed class MirrorImageAbility : RangedUnblockedPointTargetAbility
 {
+    private int _healthAmt = 1;
+
     public MirrorImageAbility()
     {
         Name = "MirrorImage";
         DisplayName = "Mirror Image";
-        Description = "Create a 1 health copy of this character in range 1 that can move but cannot act. It appears identical to this character to your opponent, and dies when this character does. You may switch this character and the Image's positions.";
         MaxCooldown = 0;
         Range = 1;
     }
@@ -27,7 +28,12 @@ public sealed class MirrorImageAbility : RangedUnblockedPointTargetAbility
         if(ChoicesNeeded.Where(x => x.Caption == "Target").FirstOrDefault() is PointTargetChoice pointChoice && pointChoice.ChoiceMade && ChoicesNeeded.Where(x => x.Caption == "SwapChoice").FirstOrDefault() is OptionSelectChoice optChoice && optChoice.ChoiceMade)
         {
             var image = Owner.CreateCopy();
-            image.Health = 1;
+
+            if(AbilityRank < 2)
+            {
+                image.Health = 1;
+            }
+
             image.GainTag(CreatureTag.CANT_ACT);
             image.GainTag(CreatureTag.ILLUSORY);
             if (optChoice.ChosenOption == "Swap Positions with Image")
@@ -41,5 +47,19 @@ public sealed class MirrorImageAbility : RangedUnblockedPointTargetAbility
                 Owner.MyGame.SummonCreature(image, pointChoice.TargetSpace);
             }
         }
+    }
+
+    public override void UpdateDescription()
+    {
+        Description = "Create a " + (AbilityRank < 2 ? "1 health copy" : "") + " of this character in range " + Range + " that can move but cannot act. It appears identical to this character to your opponent, and dies when this character does. You may switch this character and the Image's positions.";
+    }
+
+    public override void RankUpToOne()
+    {
+        Range++;
+    }
+
+    public override void RankUpToTwo()
+    {
     }
 }

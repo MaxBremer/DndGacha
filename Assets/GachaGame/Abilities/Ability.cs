@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class Ability
 {
+    public int _defaultNumTriggers = 1;
+
     public bool ReserveTriggerAdded = false, OnboardTriggerAdded = false, GraveyardTriggerAdded = false;
 
     public string Name;
@@ -14,6 +16,8 @@ public class Ability
     public string Description;
 
     public int Priority = 0;
+
+    public int AbilityRank = 0;
 
     public Creature Owner;
 
@@ -36,6 +40,8 @@ public class Ability
         {
             AddGraveyardTriggers();
         }
+
+        UpdateDescription();
     }
 
     public bool AllChoicesMade()
@@ -79,7 +85,7 @@ public class Ability
                 return;
             }
         }
-        var beforeArgs = new BeforeAbilityTriggerArgs() { AbilTriggering = this, };
+        var beforeArgs = new BeforeAbilityTriggerArgs() { AbilTriggering = this, NumberOfTriggers = _defaultNumTriggers, };
         EventManager.Invoke(GachaEventType.BeforeAbilityTrigger, this, beforeArgs);
         if (!beforeArgs.Countered)
         {
@@ -102,6 +108,26 @@ public class Ability
         ClearChoices();
     }
 
+    public void RankUp()
+    {
+        if (AbilityRank == 2)
+        {
+            return;
+        }
+
+        if(AbilityRank == 0)
+        {
+            RankUpToOne();
+        }
+        else
+        {
+            RankUpToTwo();
+        }
+
+        AbilityRank++;
+        UpdateDescription();
+    }
+
     public virtual void AddReserveTriggers() { ReserveTriggerAdded = true; }
 
     public virtual void RemoveReserveTriggers() { ReserveTriggerAdded = false; }
@@ -118,6 +144,12 @@ public class Ability
 
     public virtual void OnLost() { }
 
+    public virtual void RankUpToOne() { }
+
+    public virtual void RankUpToTwo() { }
+
+    public virtual void UpdateDescription() { }
+
     public virtual Ability CreateCopy()
     {
         var copy = (Ability)Activator.CreateInstance(this.GetType());
@@ -126,6 +158,11 @@ public class Ability
         copy.DisplayName = DisplayName;
         copy.Description = Description;
         copy.Owner = Owner;
+
+        while(copy.AbilityRank < AbilityRank)
+        {
+            copy.RankUp();
+        }
 
         copy.InitAbility();
 

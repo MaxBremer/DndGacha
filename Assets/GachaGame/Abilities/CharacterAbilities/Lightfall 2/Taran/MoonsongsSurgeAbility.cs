@@ -14,7 +14,6 @@ public sealed class MoonsongsSurgeAbility : ActiveAbility
     {
         Name = "MoonsongsSurge";
         DisplayName = "Moonsong's Surge";
-        Description = "Choose one: use Lunar Volley twice, or use Mirror Image three times.";
         MaxCooldown = 4;
     }
 
@@ -72,5 +71,10 @@ public sealed class MoonsongsSurgeAbility : ActiveAbility
                 }
             }
         }
+    }
+
+    public override void UpdateDescription()
+    {
+        Description = "Choose one: use Lunar Volley twice, or use Mirror Image three times.";
     }
 }

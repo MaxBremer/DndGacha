@@ -8,6 +8,8 @@ public class Creature
 {
     private bool _canAct;
 
+    private bool _canAttack = true;
+
     public Creature(CreatureGameBase baseToInit = null)
     {
         if(baseToInit != null)
@@ -82,7 +84,7 @@ public class Creature
 
     public bool InGraveyard => State == CreatureState.GRAVEYARD;
 
-    public bool CanBasicAttack => CanAct && GetValidBasicAttackTargets().Count > 0;
+    public bool CanBasicAttack => (HasTag(CreatureTag.QUICKSTRIKE) ? _canAttack : CanAct) && GetValidBasicAttackTargets().Count > 0;
 
     public Player Controller;
 
@@ -117,13 +119,19 @@ public class Creature
         Initiative = MyCreatureBase.Initiative;
 
         Abilities.Clear();
+        var abilIndex = 0;
         foreach (var abil in MyCreatureBase.Abilities)
         {
             var instance = Activator.CreateInstance(AbilityDatabase.AbilityDictionary[abil]);
             if (instance is Ability abilInst)
             {
-                GainAbility(abilInst, true);
+                /*for (int i = 0; i < MyCreatureBase.AbilityRanks[abilIndex]; i++)
+                {
+                    abilInst.RankUp();
+                }*/
+                GainAbility(abilInst, true, MyCreatureBase.AbilityRanks[abilIndex]);
             }
+            abilIndex++;
         }
 
         Tags.Clear();
@@ -157,6 +165,8 @@ public class Creature
             SpeedLeft = Speed;
             CanAct = !HasTag(CreatureTag.CANT_ACT);
         }
+
+        _canAttack = CanAct;
 
         if (HasTag(CreatureTag.SNOOZING))
         {
@@ -395,8 +405,14 @@ public class Creature
         if (CanAct)
         {
             AttackTarget(target);
-            /*CanAct = false;*/
-            Acted();
+            if (HasTag(CreatureTag.QUICKSTRIKE))
+            {
+                _canAttack = false;
+            }
+            else
+            {
+                Acted();
+            }
         }
         else
         {
@@ -530,28 +546,40 @@ public class Creature
         return copy;
     }
 
-    public void RemoveAbility(Ability abil)
+    public void RemoveAbility(Ability abil, bool clearTriggers = true)
     {
+        if (!Abilities.Contains(abil))
+        {
+            return;
+        }
         Abilities.Remove(abil);
         abil.OnLost();
         abil.Owner = null;
-        abil.ClearAllTriggers();
+        if (clearTriggers)
+        {
+            abil.ClearAllTriggers();
+        }
         EventManager.Invoke(GachaEventType.LostAbility, this, new AbilityChangeArgs() { AbilityChanged = abil });
     }
 
-    public void GainAbility(Ability abil, bool initAbil = true)
+    public void GainAbility(Ability abil, bool initAbil = true, int rankOf = 0)
     {
         Abilities.Add(abil);
         abil.Owner = this;
         if (initAbil)
         {
+            for (int i = 0; i < rankOf; i++)
+            {
+                abil.RankUp();
+            }
             abil.InitAbility();
+
             EventManager.Invoke(GachaEventType.GainedAbility, this, new AbilityChangeArgs() { AbilityChanged = abil });
         }
         abil.OnGained();
     }
 
-    public void GainAbility(string abil, bool initAbil = false)
+    public void GainAbility(string abil, bool initAbil = true)
     {
         var a = Activator.CreateInstance(AbilityDatabase.AbilityDictionary[abil]);
         if(a is Ability ability)
@@ -563,6 +591,11 @@ public class Creature
     public bool HasAbility(string Name)
     {
         return Abilities.Where(x => x.Name == Name).Any();
+    }
+
+    public bool HasAbility(Ability abil)
+    {
+        return Abilities.Contains(abil);
     }
 
     public void GainHiddenAbility(PassiveAbility abil)

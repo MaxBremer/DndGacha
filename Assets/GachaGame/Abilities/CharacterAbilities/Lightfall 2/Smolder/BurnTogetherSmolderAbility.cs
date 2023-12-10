@@ -6,13 +6,12 @@ using System.Threading.Tasks;
 
 public sealed class BurnTogetherSmolderAbility : CreatureAffectingAuraWhileOnboardAbility
 {
-    private const int STAT_CHANGE_AMOUNT = 2;
+    private int STAT_CHANGE_AMOUNT = 2;
 
     public BurnTogetherSmolderAbility()
     {
         Name = "BurnTogetherSmolder";
         DisplayName = "Burn Together";
-        Description = "If Buzz is on the battlefield, her stats have +" + STAT_CHANGE_AMOUNT;
     }
 
     public override void ApplyEffectToCreature(Creature c)
@@ -29,5 +28,20 @@ public sealed class BurnTogetherSmolderAbility : CreatureAffectingAuraWhileOnboa
     public override bool ShouldCreatureBeEffected(Creature c)
     {
         return c.DisplayName == "Buzz" && c.IsOnBoard;
+    }
+
+    public override void UpdateDescription()
+    {
+        Description = "If Buzz is on the battlefield, her stats have +" + STAT_CHANGE_AMOUNT;
+    }
+
+    public override void RankUpToOne()
+    {
+        STAT_CHANGE_AMOUNT++;
+    }
+
+    public override void RankUpToTwo()
+    {
+        STAT_CHANGE_AMOUNT++;
     }
 }

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CharName: Leah Knockwraith
   CharDisplayName: Leah Knockwraith
-  FlavorText: The lesson is simple. Peace, at any cost.
+  FlavorText: The lesson life teaches is simple. Peace, at any cost.
   rarity: 4
   CardTexture: {fileID: 0}
   Attack: 2
@@ -27,3 +27,4 @@ MonoBehaviour:
   - AGlassStatue
   Tags: 
   CreatureTypes: []
+  LevelCurveType: 6

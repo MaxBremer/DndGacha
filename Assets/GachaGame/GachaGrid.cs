@@ -29,6 +29,10 @@ public class GachaGrid
 
     public int Height { get; private set; }
 
+    public bool AnyUnblockedSpacesExist => GetAllGridSquares().Where(x => !x.isBlocked).Any();
+
+    public bool NumUnblockedSpacesExist(int numNeeded) => GetAllGridSquares().Where(x => !x.isBlocked).Count() >= numNeeded;
+
     public List<GridSpace> GetAllGridSquares()
     {
         var returner = new List<GridSpace>();
@@ -50,12 +54,17 @@ public class GachaGrid
     public void Move(Creature mover, List<GridSpace> path, GridSpace destination)
     {
         CreatureLeavesSpace(mover);
+        var startSpace = path[0];
         foreach (var space in path)
         {
             // ALL SPACES CREATURE MOVES THROUGH ITERATED HERE
             // Probably invoke some "Moved through" event.
+            if(space != startSpace)
+            {
+                mover.SpeedLeft -= space.GetSpeedWeight(mover);
+            }
         }
-        mover.SpeedLeft -= path.Count - 1;
+        //mover.SpeedLeft -= path.Count - 1;
         CreatureEntersSpace(mover, destination);
         EventManager.Invoke(GachaEventType.CreatureMoved, mover, new System.EventArgs());
     }
@@ -76,6 +85,15 @@ public class GachaGrid
         enterer.MySpace = targetSpace;
         targetSpace.Occupant = enterer;
         EventManager.Invoke(GachaEventType.CreatureEntersSpace, this, new CreatureSpaceArgs() { MyCreature = enterer, SpaceInvolved = targetSpace });
+    }
+
+    public List<GridSpace> GetSpacesInRange(GridSpace targetSpace, int range, bool useDiagonals)
+    {
+        var ret = new List<GridSpace>();
+
+        ret.AddRange(GetAllGridSquares().Where(x => useDiagonals ? IsInRangeDiags(targetSpace, x, range) : IsInRange(targetSpace, x, range)));
+        Debug.Log("num in range: " + ret.Count());
+        return ret;
     }
 
     public static bool InitSquareAvailable(Player p)
@@ -100,6 +118,11 @@ public class GachaGrid
     public static bool IsInRange(GridSpace from, GridSpace to, int range)
     {
         return Mathf.Abs(to.XPos - from.XPos) + Mathf.Abs(to.YPos - from.YPos) <= range;
+    }
+
+    public static bool IsInRangeDiags(GridSpace from, GridSpace to, int range)
+    {
+        return Mathf.Max(Mathf.Abs(to.XPos - from.XPos), Mathf.Abs(to.YPos - from.YPos)) <= range;
     }
 
     public static int DistanceBetween(Creature from, Creature to)
@@ -209,18 +232,124 @@ public class GachaGrid
         {
             return new Dictionary<GridSpace, List<GridSpace>>();
         }
-        var potentialMoves = GetValidMoves(c.MySpace, c.SpeedLeft, c.HasTag(CreatureTag.FREEMOVER));
+        var potentialMoves = GetValidMoves(c.MySpace, c.SpeedLeft, c.HasTag(CreatureTag.FREEMOVER), c);
 
         EventManager.Invoke(GachaEventType.CreatureMovesFound, this, new ValidMovesFoundForCreatArgs() { ValidMovesWithPaths = potentialMoves, CreatureMoving = c });
 
         return potentialMoves;
     }
 
-    public Dictionary<GridSpace, List<GridSpace>> GetValidMoves(int x, int y, int moveSpeed) => GetValidMoves(this[(x, y)], moveSpeed, false);
+    public Dictionary<GridSpace, List<GridSpace>> GetValidMoves(int x, int y, int moveSpeed) => GetValidMoves(this[(x, y)], moveSpeed, false, null);
 
     public GridSpace this[(int, int) x] => GridSquares[x];
 
-    public Dictionary<GridSpace, List<GridSpace>> GetValidMoves(GridSpace startSpace, int speed, bool includeDiagonals)
+    public Dictionary<GridSpace, List<GridSpace>> GetValidMoves(GridSpace startSpace, int speed, bool includeDiagonals, Creature creatMoving)
+    {
+        // A dictionary to store paths to reachable spaces.
+        Dictionary<GridSpace, List<GridSpace>> reachablePaths = new Dictionary<GridSpace, List<GridSpace>>();
+
+        // A queue for the BFS.
+        Queue<GridSpace> queue = new Queue<GridSpace>();
+
+        // A dictionary to store the movement cost used to reach each space.
+        Dictionary<GridSpace, int> movementCost = new Dictionary<GridSpace, int>();
+
+        // Start the BFS from the startSpace with 0 cost.
+        queue.Enqueue(startSpace);
+        movementCost[startSpace] = 0;
+
+        // The path to the startSpace is just the startSpace itself.
+        reachablePaths[startSpace] = new List<GridSpace> { startSpace };
+
+        while (queue.Count > 0)
+        {
+            // Get the next space from the queue.
+            GridSpace space = queue.Dequeue();
+
+            // Get the cost to reach this space.
+            int costToSpace = movementCost[space];
+
+            // Get the unblocked adjacent spaces.
+            List<GridSpace> adjacents = GetUnblockedAdjacents(space, includeDiagonals);
+
+            foreach (GridSpace adjacent in adjacents)
+            {
+                // Calculate the cost to move to the adjacent space.
+                int costToAdjacent = costToSpace + adjacent.GetSpeedWeight(creatMoving);
+
+                // If the cost to move to the adjacent space is within our speed limit,
+                // and we haven't visited this adjacent space yet, or we found a cheaper path to it,
+                // then add it to the queue and update the movement cost and path.
+                if (costToAdjacent <= speed && (!movementCost.ContainsKey(adjacent) || costToAdjacent < movementCost[adjacent]))
+                {
+                    queue.Enqueue(adjacent);
+                    movementCost[adjacent] = costToAdjacent;
+
+                    // The path to the adjacent space is the path to the current space,
+                    // plus the adjacent space itself. We create a new list to avoid
+                    // modifying the path to the current space.
+                    List<GridSpace> pathToAdjacent = new List<GridSpace>(reachablePaths[space]);
+                    pathToAdjacent.Add(adjacent);
+                    reachablePaths[adjacent] = pathToAdjacent;
+                }
+            }
+        }
+
+        // Return the paths to the reachable spaces.
+        return reachablePaths;
+    }
+
+    public GridSpace GetNearestAvailableSpace(GridSpace startSpace)
+    {
+        if (!startSpace.isBlocked)
+        {
+            return startSpace;
+        }
+
+        var visited = new HashSet<GridSpace>();
+        var queue = new Queue<GridSpace>();
+        queue.Enqueue(startSpace);
+        visited.Add(startSpace);
+
+        List<GridSpace> potentialSpaces = new List<GridSpace>();
+
+        while (queue.Count > 0)
+        {
+            int levelSize = queue.Count; // Number of spaces at the current distance
+            for (int i = 0; i < levelSize; i++)
+            {
+                var currentSpace = queue.Dequeue();
+                var adjacents = GetAdjacents(currentSpace, false); // Get adjacent spaces without diagonals
+
+                foreach (var adjacent in adjacents)
+                {
+                    if (!visited.Contains(adjacent))
+                    {
+                        visited.Add(adjacent);
+                        queue.Enqueue(adjacent);
+
+                        if (!adjacent.isBlocked)
+                        {
+                            potentialSpaces.Add(adjacent);
+                        }
+                    }
+                }
+            }
+
+            // If we found any unblocked spaces at this distance, return one at random
+            if (potentialSpaces.Any())
+            {
+                return potentialSpaces[UnityEngine.Random.Range(0, potentialSpaces.Count)];
+            }
+        }
+
+        // If we run out of candidates, return null
+        return null;
+    }
+
+
+
+    /*public Dictionary<GridSpace, List<GridSpace>> GetValidMoves(GridSpace startSpace, int speed, bool includeDiagonals)
     {
         // A dictionary to store paths to reachable spaces.
         Dictionary<GridSpace, List<GridSpace>> reachablePaths = new Dictionary<GridSpace, List<GridSpace>>();
@@ -276,6 +405,6 @@ public class GachaGrid
 
         // Return the paths to the reachable spaces.
         return reachablePaths;
-    }
+    }*/
 
 }

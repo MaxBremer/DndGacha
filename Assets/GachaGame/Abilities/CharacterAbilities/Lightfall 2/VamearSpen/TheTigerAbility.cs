@@ -6,11 +6,13 @@ using System.Threading.Tasks;
 
 public sealed class TheTigerAbility : TouchRangeEnemyCreatureAbility
 {
+    private int atkGainAmt = 2;
+    private int numAtks = 3;
+
     public TheTigerAbility()
     {
         Name = "TheTiger";
         DisplayName = "The Tiger";
-        Description = "Gain 2 attack, then attack the target 3 times.";
         MaxCooldown = 1;
     }
 
@@ -18,8 +20,8 @@ public sealed class TheTigerAbility : TouchRangeEnemyCreatureAbility
     {
         if(ChoicesNeeded.Where(x => x.Caption == "Target").FirstOrDefault() is CreatureTargetChoice creatChoice && creatChoice.ChoiceMade)
         {
-            Owner.StatsChange(AtkChg: 2);
-            for (int i = 0; i < 3; i++)
+            Owner.StatsChange(AtkChg: atkGainAmt);
+            for (int i = 0; i < numAtks; i++)
             {
                 if (Owner.IsOnBoard && creatChoice.TargetCreature.IsOnBoard)
                 {
@@ -27,5 +29,22 @@ public sealed class TheTigerAbility : TouchRangeEnemyCreatureAbility
                 }
             }
         }
+    }
+
+    public override void UpdateDescription()
+    {
+        Description = "Choose an adjacent enemy. Gain " + atkGainAmt + " attack, then attack the target " + numAtks + " times.";
+    }
+
+    public override void RankUpToOne()
+    {
+        atkGainAmt++;
+        MaxCooldown--;
+    }
+
+    public override void RankUpToTwo()
+    {
+        atkGainAmt++;
+        numAtks++;
     }
 }

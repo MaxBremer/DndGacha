@@ -7,11 +7,12 @@ using UnityEngine;
 
 public sealed class AccursedSpectreAbility : AfterCreatureDiesWhileOnboardAbility
 {
+    private int NumTurnsUntilDeath = 2;
+
     public AccursedSpectreAbility()
     {
         Name = "AccursedSpectre";
         DisplayName = "Accursed Spectre";
-        Description = "If a character under my Hexblades curse dies, it is revived it under your control at full health and dies at the end of its next turn.";
     }
 
     public override void ConditionalTrigger(object sender, EventArgs e)
@@ -29,7 +30,7 @@ public sealed class AccursedSpectreAbility : AfterCreatureDiesWhileOnboardAbilit
             dieArgs.CreatureDied.SetController(Owner.Controller);
             Owner.MyGame.SummonCreature(dieArgs.CreatureDied, dieArgs.WhereItDied);
             dieArgs.CreatureDied.Health = dieArgs.CreatureDied.MaxHealth;
-            dieArgs.CreatureDied.GainAbility(new FadingSpectreAbility());
+            dieArgs.CreatureDied.GainAbility(new FadingSpectreAbility(NumTurnsUntilDeath));
             dieArgs.CreatureDied.LoseTag(dieArgs.CreatureDied.WhereTag(CreatureTag.HEXBLADES_CURSE).Where(x => x.CreatureData == Owner).First());
             /*dieArgs.CreatureDied.LoseTag(CreatureTag.SNOOZING);
             dieArgs.CreatureDied.CanAct = true;
@@ -38,15 +39,32 @@ public sealed class AccursedSpectreAbility : AfterCreatureDiesWhileOnboardAbilit
         }
     }
 
+    public override void RankUpToOne()
+    {
+        NumTurnsUntilDeath++;
+    }
+
+    public override void RankUpToTwo()
+    {
+        NumTurnsUntilDeath++;
+    }
+
+    public override void UpdateDescription()
+    {
+        Description = "If a character under my Hexblades curse dies, it is revived it under your control at full health and dies in " + NumTurnsUntilDeath + " turns.";
+    }
+
     private class FadingSpectreAbility : MyTurnEndPassive
     {
         private bool _firstTurnEnded = false;
+        private int _turnsUntilDeath;
 
-        public FadingSpectreAbility()
+        public FadingSpectreAbility(int deathTurns)
         {
+            _turnsUntilDeath = deathTurns;
             Name = "FadingSpectre";
             DisplayName = "Fading Spectre";
-            Description = "This dies and loses this ability at the end of the turn after it was summoned.";
+            Description = "This dies and loses this ability " + _turnsUntilDeath + " after it was summoned.";
         }
 
         public override void Trigger(object sender, EventArgs e)

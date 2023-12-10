@@ -6,14 +6,13 @@ using System.Threading.Tasks;
 
 public sealed class FlameStrikeAbility : RangedMultiplePointTargetAbility
 {
-    private const int DAMAGE_AMOUNT = 5;
+    private int DAMAGE_AMOUNT = 5;
 
     public FlameStrikeAbility()
     {
         Name = "FlameStrike";
         DisplayName = "Flame Strike";
-        Description = "Choose three points in Range 9. All characters in range 1 of any of these points take " + DAMAGE_AMOUNT + " damage.";
-        Range = 9;
+        Range = 6;
         MaxCooldown = 4;
         NumTargets = 3;
     }
@@ -29,6 +28,24 @@ public sealed class FlameStrikeAbility : RangedMultiplePointTargetAbility
                 creat.TakeDamage(DAMAGE_AMOUNT, Owner);
             }
         }
+    }
+
+    public override void UpdateDescription()
+    {
+        Description = "Choose three points in Range " + Range + ". All characters in range 1 of any of these points take " + DAMAGE_AMOUNT + " damage.";
+    }
+
+    public override void RankUpToOne()
+    {
+        MaxCooldown--;
+        Range++;
+        DAMAGE_AMOUNT++;
+    }
+
+    public override void RankUpToTwo()
+    {
+        Range++;
+        DAMAGE_AMOUNT += 2;
     }
 
     private GridSpace GetChoiceNum(int num)

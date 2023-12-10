@@ -55,6 +55,7 @@
     CreatureSelectingAttackTargets,
     CreatureMovesFound,
     CreatureAbilitySelectingTargets,
+    BeforeGridSpaceMoveWeightGet,
 
     CustomEvent,
     TestTrigger,

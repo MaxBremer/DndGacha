@@ -10,7 +10,7 @@ public sealed class MightAsWellBeDeadAbility : TargetAnyCreatureAbility
     {
         Name = "MightAsWellBeDead";
         DisplayName = "Might as well be dead";
-        Description = "Choose a character. Remove them from the game.";
+        Description = "Choose a character. Remove them from the game. No one ever returns from Darkkon.";
         MaxCooldown = 2;
     }
 

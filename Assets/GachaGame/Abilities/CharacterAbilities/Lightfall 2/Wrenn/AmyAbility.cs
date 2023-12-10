@@ -7,12 +7,14 @@ using System.Threading.Tasks;
 public sealed class AmyAbility : RangedUnblockedPointTargetAbility
 {
     private Creature MyAmy = null;
+    private int amySpeed = 3;
+    private int amyHealth = 8;
+    private int amyAtk = 1;
 
     public AmyAbility()
     {
         Name = "Amy";
         DisplayName = "Amy";
-        Description = "Summon a 4/8/1 dog named Amy. There can only ever be one Amy. When she dies, replace this ability with \"Tragic Backstory\".";
         Range = 1;
         MaxCooldown = 1;
     }
@@ -33,16 +35,33 @@ public sealed class AmyAbility : RangedUnblockedPointTargetAbility
         }
     }
 
+    public override void UpdateDescription()
+    {
+        Description = "Summon a " + amySpeed + "/" + amyHealth + "/" + amyAtk + " dog named Amy. There can only ever be one Amy. When she dies, replace this ability with \"Tragic Backstory\".";
+    }
+
+    public override void RankUpToOne()
+    {
+        amySpeed++;
+        amyAtk++;
+    }
+
+    public override void RankUpToTwo()
+    {
+        amySpeed++;
+        amyAtk += 2;
+    }
+
     private Creature GetAmy()
     {
         var creat = new Creature()
         {
             DisplayName = "Amy",
-            Attack = 1,
-            MaxHealth = 8,
-            Health = 8,
-            Speed = 4,
-            SpeedLeft = 4,
+            Attack = amyAtk,
+            MaxHealth = amyHealth,
+            Health = amyHealth,
+            Speed = amySpeed,
+            SpeedLeft = amySpeed,
             Initiative = 1,
         };
 
@@ -70,6 +89,7 @@ public sealed class AmyAbility : RangedUnblockedPointTargetAbility
 
         public override void Trigger(object sender, EventArgs e)
         {
+            if(MyWrenn != null && WrennAmyAbil != null && MyWrenn.HasAbility(WrennAmyAbil))
             MyWrenn.RemoveAbility(WrennAmyAbil);
             MyWrenn.GainAbility(new TragicBackstoryAbility(), true);
         }

@@ -10,7 +10,6 @@ public sealed class ResearchTheLostAbility : RangedUnblockedPointTargetAbility
     {
         Name = "ResearchTheLost";
         DisplayName = "Research the Lost";
-        Description = "Summon a copy of a random creature that's died this game in range 1. Set its stats to 1. This gains a random one of its abilities if it has any. Otherwise, this gains 2 health. Increase the cooldown of this ability by 1.";
         MaxCooldown = 1;
         Range = 1;
     }
@@ -32,16 +31,29 @@ public sealed class ResearchTheLostAbility : RangedUnblockedPointTargetAbility
             newCreat.SetController(Owner.Controller);
             Owner.MyGame.SummonCreature(newCreat, pointChoice.TargetSpace);
 
-            if(newCreat.Abilities.Count > 0)
+            if(AbilityRank >= 1)
             {
-                Owner.GainAbility(newCreat.Abilities[r.Next(0, newCreat.Abilities.Count)].CreateCopy());
-            }
-            else
-            {
-                Owner.StatsChange(HealthChg: 2);
+                if (newCreat.Abilities.Count > 0)
+                {
+                    Owner.GainAbility(newCreat.Abilities[r.Next(0, newCreat.Abilities.Count)].CreateCopy());
+                }
+                else
+                {
+                    Owner.StatsChange(HealthChg: 2);
+                }
             }
 
-            MaxCooldown += 1;
+            if(AbilityRank < 2)
+            {
+                MaxCooldown += 1;
+            }
         }
+    }
+
+    public override void UpdateDescription()
+    {
+        string suffix = AbilityRank < 1 ? "" : " This gains a random one of its abilities if it has any. Otherwise, this gains 2 health.";
+        suffix += AbilityRank < 2 ? " Increase the cooldown of this ability by 1." : "";
+        Description = "Summon a copy of a random creature that's died this game in range 1. Set its stats to 1." + suffix;
     }
 }

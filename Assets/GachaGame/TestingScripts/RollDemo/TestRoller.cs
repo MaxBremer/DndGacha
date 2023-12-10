@@ -19,6 +19,7 @@ public class TestRoller : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        LevelingCurveManager.InitializeLevelCurves();
         collection = new PlayerCollection();
         ResetRoll();
     }
@@ -65,8 +66,15 @@ public class TestRoller : MonoBehaviour
 
     public void PerformRoll()
     {
-        var result = currentRoll.MakeRoll(currentRoll);
+        int rollCount = 1;
+        CollectionCharacter result = currentRoll.MakeRoll(currentRoll);
+        while (result.Cosmetic != CosmeticType.ARTIFACT)
+        {
+            rollCount++;
+            result = currentRoll.MakeRoll(currentRoll);
+        }
         DisplayResult(result);
+        resultDisplay.text = resultDisplay.text + "\nNumber of rolls: " + rollCount;
         collection.AddCharacter(result);
         ResetRoll(); // Reset after each roll
     }

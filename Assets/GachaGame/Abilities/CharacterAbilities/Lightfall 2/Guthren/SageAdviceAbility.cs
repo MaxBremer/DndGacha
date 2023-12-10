@@ -10,7 +10,6 @@ public sealed class SageAdviceAbility : TouchRangeFriendlyAbility
     {
         Name = "SageAdvice";
         DisplayName = "Sage Advice";
-        Description = "Target a creature in range 1. Give its stats +1 and trigger a random one of its active or \"On Death\" abilities if it has any.";
         MaxCooldown = 2;
     }
 
@@ -49,5 +48,22 @@ public sealed class SageAdviceAbility : TouchRangeFriendlyAbility
                 }
             }
         }
+    }
+
+    public override void UpdateDescription()
+    {
+        Description = "Target a creature in range " + Range + ". Give its stats +1 and trigger a random one of its active or \"On Death\" abilities if it has any.";
+    }
+
+    public override void RankUpToOne()
+    {
+        MaxCooldown--;
+        Range++;
+    }
+
+    public override void RankUpToTwo()
+    {
+        MaxCooldown--;
+        Range++;
     }
 }

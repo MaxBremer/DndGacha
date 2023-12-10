@@ -6,11 +6,15 @@ using System.Threading.Tasks;
 
 public sealed class MightOfTheFamilyAbility : TargetSingleEnemyAbility
 {
+    private int goonAtk = 2;
+    private int goonHealth = 6;
+    private int goonSpd = 2;
+    private int dmgAmount = 1;
+
     public MightOfTheFamilyAbility()
     {
         Name = "MightOfTheFamily";
         DisplayName = "Might of the Family";
-        Description = "Choose an enemy creature. Deal 1 damage to them, then summon a 2/6/2 Goon that attacks them immediately if there's room.";
         MaxCooldown = 1;
     }
 
@@ -18,7 +22,7 @@ public sealed class MightOfTheFamilyAbility : TargetSingleEnemyAbility
     {
         if (ChoicesNeeded.Where(x => x.Caption == "Target").FirstOrDefault() is CreatureTargetChoice creatChoice && creatChoice.ChoiceMade)
         {
-            creatChoice.TargetCreature.TakeDamage(1, Owner);
+            //creatChoice.TargetCreature.TakeDamage(1, Owner);
             var validSpaces = Owner.MyGame.GameGrid.GetAdjacents(creatChoice.TargetCreature.MySpace, false);
             if (validSpaces.Count > 0)
             {
@@ -29,6 +33,24 @@ public sealed class MightOfTheFamilyAbility : TargetSingleEnemyAbility
                 goon.AttackTarget(creatChoice.TargetCreature);
             }
         }
+    }
+
+    public override void UpdateDescription()
+    {
+        Description = "Choose an enemy creature. Summon a " + goonSpd + "/" + goonHealth + "/" + goonAtk + " Goon adjacent to them that attacks them immediately if there's room.";
+    }
+
+    public override void RankUpToOne()
+    {
+        goonHealth += 2;
+        goonAtk++;
+    }
+
+    public override void RankUpToTwo()
+    {
+        goonHealth += 3;
+        goonAtk += 2;
+        goonSpd++;
     }
 
     private Creature GetGoon()

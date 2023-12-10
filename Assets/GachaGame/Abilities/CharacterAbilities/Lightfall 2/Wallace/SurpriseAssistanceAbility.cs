@@ -12,7 +12,6 @@ public sealed class SurpriseAssistanceAbility : TargetFriendlyOrSelfAbility
     {
         Name = "SurpriseAssistance";
         DisplayName = "Surprise Assistance";
-        Description = "Choose a friendly character. Reduce a random one of their nonzero cooldown counters by 1. Once this is used 5 times, replace it with Might as well be dead.";
         MaxCooldown = 0;
     }
 
@@ -29,11 +28,20 @@ public sealed class SurpriseAssistanceAbility : TargetFriendlyOrSelfAbility
         if (ChoicesNeeded.Where(x => x.Caption == "Target").FirstOrDefault() is CreatureTargetChoice creatChoice && creatChoice.ChoiceMade)
         {
             var abilOptions = creatChoice.TargetCreature.Abilities.Where(y => y is ActiveAbility active && active.Cooldown > 0).ToArray();
-            var r = new Random();
-            var chosen = abilOptions[r.Next(abilOptions.Length)];
-            (chosen as ActiveAbility).CooldownTick();
+            if(AbilityRank < 1)
+            {
+                var r = new Random();
+                var chosen = abilOptions[r.Next(abilOptions.Length)];
+                (chosen as ActiveAbility).CooldownTick();
+            }
+            else
+            {
+                Array.ForEach(abilOptions, x => (x as ActiveAbility).CooldownTick());
+            }
+            
 
             _timesUntilReplacement = Math.Max(_timesUntilReplacement - 1, 0);
+            UpdateDescription();
             if (_timesUntilReplacement < 1)
             {
                 var targetCreat = Owner;
@@ -41,5 +49,20 @@ public sealed class SurpriseAssistanceAbility : TargetFriendlyOrSelfAbility
                 targetCreat.GainAbility(new MightAsWellBeDeadAbility());
             }
         }
+    }
+
+    public override void UpdateDescription()
+    {
+        var pluralize = _timesUntilReplacement > 1;
+        Description = "Choose a friendly character. Reduce " + (AbilityRank < 1 ? "a random one of " : "") + "their nonzero cooldown counters by 1. Once this is used " + _timesUntilReplacement + " more time" + (pluralize ? "s" : "") + ", replace it with Might as well be dead.";
+    }
+
+    public override void RankUpToOne()
+    {
+    }
+
+    public override void RankUpToTwo()
+    {
+        _timesUntilReplacement = Math.Max(_timesUntilReplacement - 2, 0);
     }
 }

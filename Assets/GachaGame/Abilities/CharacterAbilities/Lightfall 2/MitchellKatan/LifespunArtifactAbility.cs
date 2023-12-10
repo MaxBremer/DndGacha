@@ -6,11 +6,15 @@ using System.Threading.Tasks;
 
 public sealed class LifespunArtifactAbility : RangedUnblockedPointTargetAbility
 {
+
+    private int _spd = 1;
+    private int _atk = 1;
+    private int _health = 5;
+
     public LifespunArtifactAbility()
     {
         Name = "LifespunArtifact";
         DisplayName = "Lifespun Artifact";
-        Description = "Summon a 0/10/0 artifact in range 2 with \"P: Your other creatures have +1/+5/+1\"";
         MaxCooldown = 3;
         Range = 2;
     }
@@ -21,6 +25,23 @@ public sealed class LifespunArtifactAbility : RangedUnblockedPointTargetAbility
         {
             Owner.MyGame.SummonCreature(GetArtifact(), pointChoice.TargetSpace);
         }
+    }
+
+    public override void UpdateDescription()
+    {
+        Description = "Summon a 0/10/0 artifact in range " + Range + " with \"P: Your other creatures have " + (AbilityRank < 2 ? "+1/+5/+1" : "+2/+8/+2") + "\"";
+    }
+
+    public override void RankUpToOne()
+    {
+        MaxCooldown--;
+    }
+
+    public override void RankUpToTwo()
+    {
+        _spd++;
+        _atk++;
+        _health += 3;
     }
 
     private Creature GetArtifact()
@@ -34,11 +55,13 @@ public sealed class LifespunArtifactAbility : RangedUnblockedPointTargetAbility
             DisplayName = "Lifespun Artifact",
         };
         cBase.CreatureTypes.Add("Artifact");
-        cBase.Abilities.Add("ArtifactLifeBuff");
+        //cBase.Abilities.Add("ArtifactLifeBuff");
 
         var creat = new Creature(cBase);
         creat.InitFromBase();
         creat.SetController(Owner.Controller);
+
+        creat.GainAbility(new ArtifactLifeBuffAbility(_spd, _atk, _health));
 
         return creat;
     }

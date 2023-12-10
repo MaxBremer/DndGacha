@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class GameDemoBoardChar : MonoBehaviour
 {
@@ -15,6 +16,9 @@ public class GameDemoBoardChar : MonoBehaviour
     public BoardCharSelMode MySelectMode = BoardCharSelMode.NORMAL;
 
     private Renderer rend;
+
+    [SerializeField]
+    private TextMeshPro nameTextObj;
 
     // Start is called before the first frame update
     void Start()
@@ -61,6 +65,7 @@ public class GameDemoBoardChar : MonoBehaviour
     public void SetCreat(Creature creat)
     {
         MyCreature = creat;
+        nameTextObj.text = creat.DisplayName;
     }
 
     public void HighlightAttackTarget()

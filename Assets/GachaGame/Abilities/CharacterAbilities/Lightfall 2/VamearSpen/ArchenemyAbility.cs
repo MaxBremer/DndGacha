@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 public sealed class ArchenemyAbility : TargetSingleEnemyAbility
 {
     private Creature _theEnemy = null;
+    private int _dmgAmount = 0;
 
     public ArchenemyAbility()
     {
         Name = "Archenemy";
         DisplayName = "Archenemy";
-        Description = "Choose an enemy creature. Both that creature and this one can only target each other with abilities and attacks. Can only have one archenemy at a time.";
         MaxCooldown = 0;
     }
 
@@ -40,6 +40,22 @@ public sealed class ArchenemyAbility : TargetSingleEnemyAbility
         {
             _theEnemy = creatChoice.TargetCreature;
         }
+    }
+
+    public override void UpdateDescription()
+    {
+        string midSect = (_dmgAmount > 0 ? " Deal " + _dmgAmount + " damage to it." : "");
+        Description = "Choose an enemy creature." + midSect + " Both that creature and this one can only target each other with abilities and attacks. Can only have one archenemy at a time.";
+    }
+
+    public override void RankUpToOne()
+    {
+        _dmgAmount += 2;
+    }
+
+    public override void RankUpToTwo()
+    {
+        _dmgAmount += 3;
     }
 
     private void Creature_AbilityTargetsBeingSelected(object sender, EventArgs e)

@@ -6,11 +6,13 @@ using UnityEngine;
 
 public sealed class GargauthBlessingAbility : TargetFriendlyOrSelfAbility
 {
+    private int healthAmt = 8;
+    private int atkAmt = 4;
+
     public GargauthBlessingAbility()
     {
         Name = "GargauthsBlessing";
         DisplayName = "Gargauth's Blessing";
-        Description = "Give a friendly creature or this character +0/+8/+4 (speed/health/attack)";
         MaxCooldown = 4;
     }
 
@@ -20,5 +22,16 @@ public sealed class GargauthBlessingAbility : TargetFriendlyOrSelfAbility
         {
             creatChoice.TargetCreature.StatsChange(AtkChg: 4, HealthChg: 8);
         }
+    }
+
+    public override void UpdateDescription()
+    {
+        Description = "Give a friendly creature or this character +0/+" + healthAmt + "/+" + atkAmt + " (speed/health/attack)";
+    }
+
+    public override void RankUpToOne()
+    {
+        healthAmt += 2;
+        atkAmt++;
     }
 }

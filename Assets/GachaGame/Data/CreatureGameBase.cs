@@ -21,4 +21,6 @@ public class CreatureGameBase
     public int Speed = 1;
 
     public int Initiative = 1;
+
+    public int[] AbilityRanks = new int[] { 0, 0, 0 };
 }

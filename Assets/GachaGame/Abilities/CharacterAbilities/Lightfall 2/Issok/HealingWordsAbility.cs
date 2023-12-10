@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 public sealed class HealingWordsAbility : TouchRangeFriendlyOrSelfAbility
 {
-    private const int HEALING_AMOUNT = 4;
+    private int HEALING_AMOUNT = 4;
 
     public int RandomStatPoints = 0;
 
@@ -14,7 +14,6 @@ public sealed class HealingWordsAbility : TouchRangeFriendlyOrSelfAbility
     {
         Name = "HealingWords";
         DisplayName = "Healing Words";
-        Description = "Restore " + HEALING_AMOUNT + " health to a character in range 3, or to this character.";
         MaxCooldown = 0;
         Range = 3;
     }
@@ -48,5 +47,20 @@ public sealed class HealingWordsAbility : TouchRangeFriendlyOrSelfAbility
                 creatChoice.TargetCreature.StatsChange(AtkChg: atkAmt, HealthChg: healthAmt, SpeedChg: spdAmt);
             }
         }
+    }
+
+    public override void RankUpToOne()
+    {
+        HEALING_AMOUNT += 2;
+    }
+
+    public override void RankUpToTwo()
+    {
+        Range += 2;
+    }
+
+    public override void UpdateDescription()
+    {
+        Description = "Restore " + HEALING_AMOUNT + " health to a character in range " + Range + ", or to this character.";
     }
 }

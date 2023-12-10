@@ -6,13 +6,12 @@ using UnityEngine;
 
 public sealed class HexbladesCurseAbility : TargetSingleEnemyAbility
 {
-    private const int DAMAGE_AMOUNT = 3;
+    private int DAMAGE_AMOUNT = 3;
 
     public HexbladesCurseAbility()
     {
         Name = "HexbladesCurse";
         DisplayName = "Hexblade's Curse";
-        Description = "Select a character. It takes " + DAMAGE_AMOUNT + " extra damage when damaged by this character. This can only curse one character at a time.";
         MaxCooldown = 0;
     }
 
@@ -46,6 +45,21 @@ public sealed class HexbladesCurseAbility : TargetSingleEnemyAbility
             creatChoice.TargetCreature.GainTag(new Tag(CreatureTag.HEXBLADES_CURSE) { CreatureData = Owner });
 
         }
+    }
+
+    public override void RankUpToOne()
+    {
+        DAMAGE_AMOUNT += 2;
+    }
+
+    public override void RankUpToTwo()
+    {
+        DAMAGE_AMOUNT += 5;
+    }
+
+    public override void UpdateDescription()
+    {
+        Description = "Select a character. It takes " + DAMAGE_AMOUNT + " extra damage when damaged by this character. This can only curse one character at a time.";
     }
 
     private void ExtraDamage(object sender, EventArgs e)

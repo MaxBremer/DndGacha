@@ -13,7 +13,6 @@ public sealed class SundialVisionsAbility : PassiveAbility
     {
         Name = "SundialVisions";
         DisplayName = "Sundial Visions";
-        Description = "Any enemy attack or enemy ability that targets this character has a 25% chance to fail when used. If this is the only character you control, this chance is 50%.";
         Priority = 5;
     }
 
@@ -37,16 +36,53 @@ public sealed class SundialVisionsAbility : PassiveAbility
         EventManager.StopListening(GachaEventType.CreatureSummoned, UpdateOdds, Priority);
     }
 
+    public override void UpdateDescription()
+    {
+        if(AbilityRank == 0)
+        {
+            Description = "Any enemy attack or enemy ability that targets this character has a 25% chance to fail when used. If this is the only character you control, this chance is 50%.";
+        }else if (AbilityRank == 1)
+        {
+            Description = "Any enemy attack or enemy ability that targets this character has a 50% chance to fail when used.";
+        }else if (AbilityRank == 2)
+        {
+            Description = "Any enemy attack or enemy ability that targets this character has a 50% chance to fail when used. If this is the only character you control, this chance is 75%.";
+        }
+    }
+
+    public override void RankUpToOne()
+    {
+    }
+
+    public override void RankUpToTwo()
+    {
+    }
+
+    public override void InitAbility()
+    {
+        base.InitAbility();
+        UpdateOdds(null, new EventArgs());
+    }
+
     private void UpdateOdds(object sender, EventArgs e)
     {
-        if(Owner.Controller.OnBoardCreatures.Count == 1 && Owner.Controller.OnBoardCreatures.First() == Owner)
+        if(AbilityRank == 1 || (IncreaseConditionsTrue() && AbilityRank == 0) || ((!IncreaseConditionsTrue()) && AbilityRank == 2))
         {
             _oddsOfCountering = 2;
         }
-        else
+        else if(AbilityRank == 0)
         {
             _oddsOfCountering = 1;
         }
+        else
+        {
+            _oddsOfCountering = 3;
+        }
+    }
+
+    private bool IncreaseConditionsTrue()
+    {
+        return Owner.Controller.OnBoardCreatures.Count == 1 && Owner.Controller.OnBoardCreatures.First() == Owner;
     }
 
     private void ActiveAbility_Activated(object sender, EventArgs e)

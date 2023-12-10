@@ -52,7 +52,7 @@ public class CollectionCharacter
 
     public int UnspentRankupPoints = 0;
 
-    public int[] AbilityRanks = new int[] { 0, 0, 0, };
+    public int[] AbilityRanks => _creatureBase.AbilityRanks;
 
     public LevelData[] LevelCurveData => _levelCurveData;
 
@@ -105,6 +105,7 @@ public class CollectionCharacter
 
         Rank++;
         UnspentRankupPoints++;
+        //TODO: Reset LevelUp stat increases? Or don't increase beyond rank 0? Or just leave it, keep increasing? Idk.
     }
 
     public void RankUpAbil(int abilIndex)
@@ -122,7 +123,7 @@ public class CollectionCharacter
         }
 
         AbilityRanks[abilIndex]++;
-        // TODO: ACTUALLY RANK UP THE ABILITY.
+        UnspentRankupPoints--;
     }
 
     public bool CanAbilityRankUp(int abilIndex) => AbilityRanks[abilIndex] < 2;

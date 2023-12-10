@@ -5,6 +5,7 @@ using UnityEngine;
 public class GridSpace
 {
     private bool _obstacle = false;
+    private int _speedWeight = 1;
 
     public int XPos;
     public int YPos;
@@ -26,6 +27,13 @@ public class GridSpace
     public bool isBlocked => Obstacle || Occupant != null;
 
     public HashSet<SpaceTag> Tags = new HashSet<SpaceTag>();
+
+    public int GetSpeedWeight(Creature c)
+    {
+        var spArgs = new GridSpaceSpeedWeightArgs() { SpaceSpeedWeight = _speedWeight, CreatureMovingThrough = c, };
+        EventManager.Invoke(GachaEventType.BeforeGridSpaceMoveWeightGet, this, spArgs);
+        return spArgs.SpaceSpeedWeight;
+    }
 }
 
 public enum SpaceTag

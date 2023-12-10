@@ -16,43 +16,7 @@ MonoBehaviour:
   m_Data:
     m_SerializedData: []
   m_GUID: 0e7d2b250085076469396098fac38928
-  m_SerializeEntries:
-  - m_GUID: ab9c84dd7f295284d93bbcb4bce57f06
-    m_Address: Assets/ScriptableObjects/LevelCurves/AttackHeavy.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    m_MainAsset: {fileID: 0}
-    m_TargetAsset: {fileID: 0}
-  - m_GUID: c3c0fce052f28db488d840f55a5f6d7a
-    m_Address: Assets/ScriptableObjects/LevelCurves/BalanceCurve.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    m_MainAsset: {fileID: 0}
-    m_TargetAsset: {fileID: 0}
-  - m_GUID: 8a6b5071f4fff2a4db1558d16091872a
-    m_Address: Assets/ScriptableObjects/LevelCurves/HealthHeavy.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    m_MainAsset: {fileID: 0}
-    m_TargetAsset: {fileID: 0}
-  - m_GUID: 5a49b8ea032d3a44f8d58aadfc6c51ee
-    m_Address: Assets/ScriptableObjects/LevelCurves/SpeedHeavy.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    m_MainAsset: {fileID: 0}
-    m_TargetAsset: {fileID: 0}
-  - m_GUID: 2e95a33ac3203a04aa522a44c2c517d8
-    m_Address: Assets/ScriptableObjects/LevelCurves/TankCurve.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    m_MainAsset: {fileID: 0}
-    m_TargetAsset: {fileID: 0}
-  - m_GUID: 627c8f0332e968949b1c80574d46af5d
-    m_Address: Assets/ScriptableObjects/LevelCurves/UtilityCurve.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    m_MainAsset: {fileID: 0}
-    m_TargetAsset: {fileID: 0}
+  m_SerializeEntries: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 3627b577393bde64880c261f56932601, type: 2}
   m_SchemaSet:

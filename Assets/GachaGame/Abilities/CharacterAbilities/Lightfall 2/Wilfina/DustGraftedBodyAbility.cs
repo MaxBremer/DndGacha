@@ -6,15 +6,18 @@ using System.Threading.Tasks;
 
 public sealed class DustGraftedBodyAbility : TurnEndPassive
 {
-    public DustGraftedBodyAbility()
+    private int HealthAmount;
+
+    public DustGraftedBodyAbility(int hpAmt = 1)
     {
         Name = "DustGraftedBody";
         DisplayName = "Dust-grafted Body";
-        Description = "At the end of each turn, this gains 1 health.";
+        HealthAmount = hpAmt;
+        Description = "At the end of each turn, this gains " + HealthAmount + " health.";
     }
 
     public override void Trigger(object sender, EventArgs e)
     {
-        Owner.StatsChange(HealthChg: 1);
+        Owner.StatsChange(HealthChg: HealthAmount);
     }
 }

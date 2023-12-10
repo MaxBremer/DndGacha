@@ -6,13 +6,10 @@ using System.Threading.Tasks;
 
 public sealed class DeployTurretAbility : RangedUnblockedPointTargetAbility
 {
-    private static CreatureGameBase _turretBase = GetTurretBase();
-
     public DeployTurretAbility()
     {
         Name = "DeployTurret";
         DisplayName = "Deploy Turret";
-        Description = "Create a 2/5/3 turret with a C0 Ranged Attack 3. Increase the cooldown of this ability by 1.";
         MaxCooldown = 1;
         Range = 1;
     }
@@ -24,18 +21,35 @@ public sealed class DeployTurretAbility : RangedUnblockedPointTargetAbility
             var tur = GetTurret();
             tur.SetController(Owner.Controller);
             Owner.MyGame.SummonCreature(tur, pointChoice.TargetSpace);
-            MaxCooldown += 1;
+            if(AbilityRank < 1)
+            {
+                MaxCooldown += 1;
+            }
         }
     }
 
-    private static CreatureGameBase GetTurretBase()
+    public override void RankUpToOne()
+    {
+    }
+
+    public override void RankUpToTwo()
+    {
+        
+    }
+
+    public override void UpdateDescription()
+    {
+        Description = "Create a " + (AbilityRank < 2 ? "2/5/3" : "3/10/4") + " turret with a C0 Ranged Attack 3." + (AbilityRank < 1 ? " Increase the cooldown of this ability by 1." : "");
+    }
+
+    private CreatureGameBase GetTurretBase()
     {
         var ret = new CreatureGameBase()
         {
             Initiative = 1,
-            Speed = 2,
-            Attack = 3,
-            Health = 5,
+            Speed = AbilityRank < 2 ? 2 : 3,
+            Attack = AbilityRank < 2 ? 3 : 4,
+            Health = AbilityRank < 2 ? 5 : 10,
             Name = "ArleTurret",
             DisplayName = "Turret",
         };
@@ -45,9 +59,9 @@ public sealed class DeployTurretAbility : RangedUnblockedPointTargetAbility
         return ret;
     }
 
-    private static Creature GetTurret()
+    private Creature GetTurret()
     {
-        var tur = new Creature(_turretBase);
+        var tur = new Creature(GetTurretBase());
         tur.InitFromBase();
 
         var atkAbil = new RangedAttackEnemiesAbility() { Range = 3, Name = "TurretFireCannon", DisplayName = "Fire Cannon!", Description = "Ranged Attack 3" };

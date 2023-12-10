@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 public sealed class LayOnHandsAbility : TouchRangeFriendlyOrSelfAbility
 {
-    private const int HEAL_AMOUNT = 10;
+    private int HEAL_AMOUNT = 10;
+    private int _maxNumTimes = 3;
 
     public int NumUses = 0;
 
@@ -14,13 +15,12 @@ public sealed class LayOnHandsAbility : TouchRangeFriendlyOrSelfAbility
     {
         Name = "LayOnHands";
         DisplayName = "Lay on Hands";
-        Description = "Heal an ally in Range 1 or this character by 10. Once this is used thrice, it cannot be used again this battle.";
         MaxCooldown = 0;
     }
 
     public override bool IsActivateable()
     {
-        return base.IsActivateable() && NumUses < 3;
+        return base.IsActivateable() && NumUses < _maxNumTimes;
     }
 
     public override void Trigger(object sender, EventArgs e)
@@ -30,5 +30,22 @@ public sealed class LayOnHandsAbility : TouchRangeFriendlyOrSelfAbility
             creatChoice.TargetCreature.Heal(HEAL_AMOUNT);
             NumUses++;
         }
+    }
+
+    public override void UpdateDescription()
+    {
+        Description = "Heal an ally in Range 1 or this character by " + HEAL_AMOUNT + ". Once this is used " + _maxNumTimes + " times, it cannot be used again this battle.";
+    }
+
+    public override void RankUpToOne()
+    {
+        HEAL_AMOUNT += 2;
+        _maxNumTimes++;
+    }
+
+    public override void RankUpToTwo()
+    {
+        HEAL_AMOUNT += 3;
+        _maxNumTimes++;
     }
 }

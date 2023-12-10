@@ -6,21 +6,30 @@ using System.Threading.Tasks;
 
 public sealed class ArtifactLifeBuffAbility : CreatureAffectingAuraWhileOnboardAbility
 {
-    public ArtifactLifeBuffAbility()
+    private int _spd, _atk, _health;
+
+    public ArtifactLifeBuffAbility(int spdBuff = 1, int atkBuff = 1, int healthBuff = 5)
     {
         Name = "ArtifactLifeBuff";
         DisplayName = "Life's Blessing";
-        Description = "Your other creatures have +1/+5/+1";
+        _spd = spdBuff;
+        _atk = atkBuff;
+        _health = healthBuff;
+    }
+
+    public override void UpdateDescription()
+    {
+        Description = "Your other creatures have +" + _spd + "/+" + _health + "/+" + _atk;
     }
 
     public override void ApplyEffectToCreature(Creature c)
     {
-        c.StatsChange(AtkChg: 1, HealthChg: 5, SpeedChg: 1, arePermanentStats: false);
+        c.StatsChange(AtkChg: _atk, HealthChg: _health, SpeedChg: _spd, arePermanentStats: false);
     }
 
     public override void RemoveEffectFromCreature(Creature c)
     {
-        c.StatsChange(AtkChg: -1, HealthChg: -5, SpeedChg: -1, arePermanentStats: false);
+        c.StatsChange(AtkChg: -1 * _atk, HealthChg: -1 * _health, SpeedChg: -1 * _spd, arePermanentStats: false);
     }
 
     public override bool ShouldCreatureBeEffected(Creature c)

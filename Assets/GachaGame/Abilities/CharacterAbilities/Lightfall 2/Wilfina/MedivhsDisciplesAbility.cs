@@ -6,11 +6,13 @@ using System.Threading.Tasks;
 
 public sealed class MedivhsDisciplesAbility : AfterMyDeathPassive
 {
+    private int HealthAmount = 1;
+    private bool SetHealthLow = true;
+
     public MedivhsDisciplesAbility()
     {
         Name = "MedivhsDisciples";
         DisplayName = "Medivh's Disciples";
-        Description = "When this character dies, summon an Alexander de Venecia. Set its health to 1 and give it \"P: At the end of each turn, this gains 1 health\"";
     }
 
     public override void Trigger(object sender, EventArgs e)
@@ -19,9 +21,28 @@ public sealed class MedivhsDisciplesAbility : AfterMyDeathPassive
         {
             var c = GetAlexander();
             Owner.MyGame.SummonCreature(c, dieArgs.WhereItDied);
-            c.StatsSet(HealthSet: 1);
-            c.GainAbility("DustGraftedBody", true);
+            if (SetHealthLow)
+            {
+                c.StatsSet(HealthSet: HealthAmount);
+            }
+            c.GainAbility(new DustGraftedBodyAbility(HealthAmount), true);
         }
+    }
+
+    public override void RankUpToOne()
+    {
+        HealthAmount++;
+    }
+
+    public override void RankUpToTwo()
+    {
+        SetHealthLow = false;
+    }
+
+    public override void UpdateDescription()
+    {
+        string midSection = SetHealthLow ? "Set its health to " + HealthAmount + " and g" : "G";
+        Description = "When this character dies, summon an Alexander de Venecia. " + midSection + "ive it \"P: At the end of each turn, this gains " + HealthAmount + " health\"";
     }
 
     private Creature GetAlexander()

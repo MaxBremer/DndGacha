@@ -196,7 +196,7 @@ public class GameDemo : MonoBehaviour
     internal void HighlightBasicActions(GameDemoBoardChar boardCharComp)
     {
         MyHighlightManager.HighlightValidMoves(CurSelectedCreat);
-        if (boardCharComp.MyCreature.CanAct)
+        if (boardCharComp.MyCreature.CanBasicAttack)
         {
             ValidAttackTargets = boardCharComp.MyCreature.GetValidBasicAttackTargets();
             MyHighlightManager.HighlightValidAttackTargets();

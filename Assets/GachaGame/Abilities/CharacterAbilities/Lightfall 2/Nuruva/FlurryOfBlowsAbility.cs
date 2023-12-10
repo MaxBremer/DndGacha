@@ -10,7 +10,6 @@ public sealed class FlurryOfBlowsAbility : TouchRangeEnemyCreatureAbility
     {
         Name = "FlurryOfBlows";
         DisplayName = "Flurry of Blows";
-        Description = "Attack, then Attack the same target again. This character is Immune during the second attack.";
         MaxCooldown = 1;
     }
 
@@ -20,9 +19,22 @@ public sealed class FlurryOfBlowsAbility : TouchRangeEnemyCreatureAbility
         {
             var targetCreat = creatChoice.TargetCreature;
             Owner.AttackTarget(targetCreat);
+            if(AbilityRank >= 1)
+            {
+                Owner.AttackTarget(targetCreat);
+            }
             Owner.GainTag(CreatureTag.IMMUNE);
             Owner.AttackTarget(targetCreat);
             Owner.LoseTag(CreatureTag.IMMUNE);
         }
+    }
+
+    public override void RankUpToOne()
+    {
+    }
+
+    public override void UpdateDescription()
+    {
+        Description = (AbilityRank < 1 ? "Attack, then Attack the same target again." : "Attack the same target thrice.") + " This character is Immune during the " + (AbilityRank < 1 ? "second" : "third") + " attack.";
     }
 }

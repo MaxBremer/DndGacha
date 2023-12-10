@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 public sealed class IterativeEnhancementAbility : ActiveAbility
 {
+    private int statPointNum = 1;
+
     public IterativeEnhancementAbility()
     {
         Name = "IterativeEnhancement";
         DisplayName = "Iterative Enhancement";
-        Description = "For the rest of this battle, Healing Words also gives the target 1 random stat point (Speed/Health/Attack). This ability stacks with itself.";
         MaxCooldown = 1;
     }
 
@@ -23,5 +24,15 @@ public sealed class IterativeEnhancementAbility : ActiveAbility
     {
         var healAbil = Owner.Abilities.Where(x => x is HealingWordsAbility).First() as HealingWordsAbility;
         healAbil.RandomStatPoints += 1;
+    }
+
+    public override void RankUpToTwo()
+    {
+        statPointNum++;
+    }
+
+    public override void UpdateDescription()
+    {
+        Description = "For the rest of this battle, this characters Healing Words ability also gives the target " + statPointNum + " random stat point" + (statPointNum == 1 ? "" : "s") + " (Speed/Health/Attack). This ability stacks with itself.";
     }
 }

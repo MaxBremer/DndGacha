@@ -7,13 +7,12 @@ using UnityEngine;
 
 public sealed class TowerwarpAbility : WhenImSummonedAbility
 {
-    private List<GridSpace> _myTower = new List<GridSpace>();
+    private int TowerRange = 1;
 
     public TowerwarpAbility()
     {
         Name = "Towerwarp";
         DisplayName = "Towerwarp";
-        Description = "When this character is summoned, choose a square on the board to teleport it to. Squares in range 1 (with diagonals) of that space become the Azure Tower.";
     }
 
     public override void InitAbility()
@@ -39,8 +38,23 @@ public sealed class TowerwarpAbility : WhenImSummonedAbility
 
             var towerSpaces = new List<GridSpace>();
             towerSpaces.Add(pointChoice.TargetSpace);
-            towerSpaces.AddRange(Owner.MyGame.GameGrid.GetAdjacents(pointChoice.TargetSpace, true));
+            towerSpaces.AddRange(Owner.MyGame.GameGrid.GetSpacesInRange(pointChoice.TargetSpace, TowerRange, true));
             towerSpaces.ForEach(x => x.Tags.Add(SpaceTag.AZURETOWER));
         }
+    }
+
+    public override void UpdateDescription()
+    {
+        Description = "When this character is summoned, choose a square on the board to teleport it to. Squares in range " + TowerRange + " (with diagonals) of that space become the Azure Tower.";
+    }
+
+    public override void RankUpToOne()
+    {
+        TowerRange++;
+    }
+
+    public override void RankUpToTwo()
+    {
+        TowerRange++;
     }
 }

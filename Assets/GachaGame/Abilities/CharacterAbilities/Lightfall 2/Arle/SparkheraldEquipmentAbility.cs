@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 public sealed class SparkheraldEquipmentAbility : TouchRangeFriendlyOrSelfAbility
 {
-    private const int ATK_INCREASE_AMOUNT = 2;
+    private int ATK_INCREASE_AMOUNT = 2;
 
     private List<Creature> _thoseWhoHaveReceived = new List<Creature>();
 
@@ -14,7 +14,6 @@ public sealed class SparkheraldEquipmentAbility : TouchRangeFriendlyOrSelfAbilit
     {
         Name = "SparkheraldEquipment";
         DisplayName = "Sparkherald Equipment";
-        Description = "Give an adjacent ally or this character +" + ATK_INCREASE_AMOUNT + " attack. Each character can only receive this boost once";
         MaxCooldown = 0;
     }
 
@@ -37,5 +36,20 @@ public sealed class SparkheraldEquipmentAbility : TouchRangeFriendlyOrSelfAbilit
             _thoseWhoHaveReceived.Add(creatChoice.TargetCreature);
             creatChoice.TargetCreature.StatsChange(AtkChg: ATK_INCREASE_AMOUNT);
         }
+    }
+
+    public override void UpdateDescription()
+    {
+        Description = "Give an adjacent ally or this character +" + ATK_INCREASE_AMOUNT + " attack. Each character can only receive this boost once";
+    }
+
+    public override void RankUpToOne()
+    {
+        ATK_INCREASE_AMOUNT += 2;
+    }
+
+    public override void RankUpToTwo()
+    {
+        ATK_INCREASE_AMOUNT += 2;
     }
 }
