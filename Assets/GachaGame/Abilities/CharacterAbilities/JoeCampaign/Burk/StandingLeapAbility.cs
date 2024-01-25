@@ -6,13 +6,12 @@ using System.Threading.Tasks;
 
 public sealed class StandingLeapAbility : ActiveAbility
 {
-    private const int JUMP_DIST = 3;
+    private int JUMP_DIST = 3;
 
     public StandingLeapAbility()
     {
         Name = "StandingLeap";
         DisplayName = "Standing Leap";
-        Description = "If this creature has not moved yet this turn, it may instead move exactly " + JUMP_DIST + " spaces in a straight line. This move is treated as Flying.";
         MaxCooldown = 0;
     }
 
@@ -45,5 +44,20 @@ public sealed class StandingLeapAbility : ActiveAbility
             // TODO: Simplify process for temporary tags.
             Owner.SpeedLeft = 0;
         }
+    }
+
+    public override void UpdateDescription()
+    {
+        Description = "If this creature has not moved yet this turn, it may instead move exactly " + JUMP_DIST + " spaces in a straight line. This move is treated as Flying.";
+    }
+
+    public override void RankUpToOne()
+    {
+        JUMP_DIST++;
+    }
+
+    public override void RankUpToTwo()
+    {
+        JUMP_DIST++;
     }
 }

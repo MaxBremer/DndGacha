@@ -10,8 +10,12 @@ public sealed class FubikianLongbowAbility : RangedAttackEnemiesAbility
     {
         Name = "FubikianLongbow";
         DisplayName = "Fubikian Longbow";
-        Description = "Ranged Attack 3";
         MaxCooldown = 0;
         Range = 3;
+    }
+
+    public override void UpdateDescription()
+    {
+        Description = "Ranged Attack " + Range;
     }
 }

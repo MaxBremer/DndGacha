@@ -10,7 +10,7 @@ public sealed class NobleFriendAbility : BeforeDamageAbility
     {
         Name = "NobleFriend";
         DisplayName = "Noble Friend";
-        Description = "If an adjacent friendly character would take lethal damage, this character dies instead, and the adjacent character takes no damage.";
+        Priority = 5;
     }
 
     public override void ConditionalTrigger(object sender, EventArgs e)
@@ -25,8 +25,26 @@ public sealed class NobleFriendAbility : BeforeDamageAbility
     {
         if(e is TakingDamageArgs dmgArgs)
         {
+            if(AbilityRank == 0)
+            {
+                Owner.Die();
+            }
+            else if(AbilityRank == 1)
+            {
+                Owner.RemoveAbility(this);
+            }
+            else
+            {
+                int amount = dmgArgs.DamageAmount / 2;
+                Owner.TakeDamage(amount, dmgArgs.DamageDealer);
+            }
             dmgArgs.DamageAmount = 0;
-            Owner.Die();
         }
+    }
+
+    public override void UpdateDescription()
+    {
+        string MiddleSection = AbilityRank == 0 ? "dies" : (AbilityRank == 1 ? "loses this ability" : "takes half that damage");
+        Description = "If an adjacent friendly character would take lethal damage, this character " + MiddleSection + " instead, and the adjacent character takes no damage.";
     }
 }

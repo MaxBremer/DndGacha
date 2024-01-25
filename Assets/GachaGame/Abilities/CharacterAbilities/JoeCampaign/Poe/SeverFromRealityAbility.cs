@@ -10,8 +10,17 @@ public sealed class SeverFromRealityAbility : RangedAttackEnemiesAbility
     {
         Name = "SeverFromReality";
         DisplayName = "Sever from Reality";
-        Description = "Ranged Attack 3";
         MaxCooldown = 1;
         Range = 3;
+    }
+
+    public override void UpdateDescription()
+    {
+        Description = "Ranged Attack " + Range;
+    }
+
+    public override void RankUpToTwo()
+    {
+        MaxCooldown = Math.Max(0, MaxCooldown - 1);
     }
 }

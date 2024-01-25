@@ -12,7 +12,7 @@ public sealed class TongueOfWarriorsAbility : OrthogonalTargetEnemyAbility
         Name = "TongueOfWarriors";
         DisplayName = "Tongue of Warriors";
         Description = "Choose an orthogonal direction with a straight line to an enemy. Pull that enemy closer until it is 1 tile away. It takes damage for each tile it moved.";
-        MaxCooldown = 1;
+        MaxCooldown = 2;
     }
 
     public override void Trigger(object sender, EventArgs e)

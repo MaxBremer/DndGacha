@@ -10,7 +10,6 @@ public sealed class LightningOfTheBeholderAbility : RangedTargetEnemyAbility
     {
         Name = "LightningOfTheBeholder";
         DisplayName = "Lightning of the Beholder";
-        Description = "Ranged Attack: 3. The character hit by this attack has an equal chance of either: losing 2 attack, being unable to move next turn, or taking an additional 4 damage.";
         MaxCooldown = 2;
         Range = 3;
     }
@@ -38,5 +37,10 @@ public sealed class LightningOfTheBeholderAbility : RangedTargetEnemyAbility
                     break;
             }
         }
+    }
+
+    public override void UpdateDescription()
+    {
+        Description = "Ranged Attack: " + Range + ". The character hit by this attack has an equal chance of either: losing 2 attack, being unable to move next turn, or taking an additional 4 damage.";
     }
 }

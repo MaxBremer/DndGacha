@@ -11,11 +11,12 @@ public sealed class EasilyFrightenedAbility : AuraAbility
     private bool _cantActOn = false;
     private bool _cantMoveOn = false;
 
+    private int _limitationRange = 3;
+
     public EasilyFrightenedAbility()
     {
         Name = "EasilyFrightened";
         DisplayName = "Easily Frightened";
-        Description = "Cannot act or move when within range 2 of an enemy character.";
     }
 
     public override void AddOnboardTriggers()
@@ -38,12 +39,12 @@ public sealed class EasilyFrightenedAbility : AuraAbility
     {
         if(e is CreatureSpaceArgs spaceArgs)
         {
-            if (GachaGrid.IsInRange(Owner, spaceArgs.SpaceInvolved, 2) && spaceArgs.MyCreature.Controller != Owner.Controller)
+            if (GachaGrid.IsInRange(Owner, spaceArgs.SpaceInvolved, _limitationRange) && spaceArgs.MyCreature.Controller != Owner.Controller)
             {
                 ExternalTrigger(sender, e);
             } else if(spaceArgs.MyCreature == Owner)
             {
-                var enemies = Owner.MyGame.AllCreatures.Where(x => x.IsOnBoard && x.Controller != Owner.Controller && GachaGrid.IsInRange(Owner, x, 2));
+                var enemies = Owner.MyGame.AllCreatures.Where(x => x.IsOnBoard && x.Controller != Owner.Controller && GachaGrid.IsInRange(Owner, x, _limitationRange));
                 enemies.ToList().ForEach(x =>
                 {
                     if (!_afraidOf.Contains(x))
@@ -74,6 +75,21 @@ public sealed class EasilyFrightenedAbility : AuraAbility
         }
 
         _afraidOf.Add((e as CreatureSpaceArgs).MyCreature);
+    }
+
+    public override void UpdateDescription()
+    {
+        Description = "Cannot act or move when within range " + _limitationRange + " of an enemy character.";
+    }
+
+    public override void RankUpToOne()
+    {
+        _limitationRange--;
+    }
+
+    public override void RankUpToTwo()
+    {
+        _limitationRange--;
     }
 
     private void OnCreatureLeaves(object sender, EventArgs e)

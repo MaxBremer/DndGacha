@@ -10,7 +10,6 @@ public sealed class DirtshaperAbility : RangedMultiplePointTargetAbility
     {
         Name = "Dirtshaper";
         DisplayName = "Dirtshaper";
-        Description = "Summon 3 1-health dirt mounds within range 3. They can't move or act.";
         MaxCooldown = 0;
         Range = 3;
         NumTargets = 3;
@@ -25,6 +24,11 @@ public sealed class DirtshaperAbility : RangedMultiplePointTargetAbility
                 Owner.MyGame.SummonCreature(GetDirt(), pointChoice.TargetSpace);
             }
         }
+    }
+
+    public override void UpdateDescription()
+    {
+        Description = "Summon 3 1-health dirt mounds within range " + Range + ". They can't move or act.";
     }
 
     private Creature GetDirt()

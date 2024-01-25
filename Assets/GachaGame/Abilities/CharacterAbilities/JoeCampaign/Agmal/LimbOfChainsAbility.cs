@@ -10,8 +10,12 @@ public sealed class LimbOfChainsAbility : RangedAttackEnemiesAbility
     {
         Name = "LimbOfChains";
         DisplayName = "Limb of Chains";
-        Description = "Ranged Attack 1";
         MaxCooldown = 0;
         Range = 1;
+    }
+
+    public override void UpdateDescription()
+    {
+        Description = "Ranged Attack " + Range;
     }
 }

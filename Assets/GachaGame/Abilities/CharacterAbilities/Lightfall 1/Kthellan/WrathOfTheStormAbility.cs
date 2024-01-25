@@ -10,7 +10,6 @@ public sealed class WrathOfTheStormAbility : RangedTargetEnemyAbility
     {
         Name = "WrathOfTheStorm";
         DisplayName = "Wrath of the Storm";
-        Description = "Ranged Attack 3. This creature gains health equal to its speed.";
         MaxCooldown = 2;
         Range = 3;
     }
@@ -22,5 +21,10 @@ public sealed class WrathOfTheStormAbility : RangedTargetEnemyAbility
             Owner.AttackTarget(creatChoice.TargetCreature, true);
             Owner.StatsChange(HealthChg: Owner.Speed);
         }
+    }
+
+    public override void UpdateDescription()
+    {
+        Description = "Ranged Attack " + Range + ". This creature gains health equal to its speed.";
     }
 }

@@ -4,16 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public sealed class LetsMakeADealAbility : ActiveAbility
+public sealed class LetsMakeADealAbility : RangedActiveAbility
 {
     private List<Creature> ReceivedDeal = new List<Creature>();
-    public int Range;
 
     public LetsMakeADealAbility()
     {
         Name = "LetsMakeADeal";
         DisplayName = "Let's make a deal...";
-        Description = "Give a character in Range 4 *Agmal's Promise*. Agmal can only use *Let's Make a Deal* on each character once.";
         MaxCooldown = 2;
         Range = 4;
     }
@@ -35,5 +33,20 @@ public sealed class LetsMakeADealAbility : ActiveAbility
             promise.PromiseGiver = Owner;
             creatChoice.TargetCreature.GainAbility(promise, true);
         }
+    }
+
+    public override void UpdateDescription()
+    {
+        Description = "Give a character in Range " + Range + " *Agmal's Promise*. Agmal can only use *Let's Make a Deal* on each character once.";
+    }
+
+    public override void RankUpToOne()
+    {
+        MaxCooldown--;
+    }
+
+    public override void RankUpToTwo()
+    {
+        MaxCooldown--;
     }
 }

@@ -62,7 +62,7 @@ public sealed class TowerlockedAbility : CreatureMovesFoundWhileOnboardPassive
 
     public override void UpdateDescription()
     {
-        var suffix = (enemiesMoveSlow ? "Enemy creatures move at half speed through the Azure Tower." : "") + (iCantMove ? "" : "Free at last.");
+        var suffix = (enemiesMoveSlow ? "Enemy creatures move at half speed through the Azure Tower." : "") + (iCantMove ? "" : " Free at last.");
         Description = (iCantMove ? "This creature cannot move outside the Azure Tower. " : "") + suffix;
     }
 

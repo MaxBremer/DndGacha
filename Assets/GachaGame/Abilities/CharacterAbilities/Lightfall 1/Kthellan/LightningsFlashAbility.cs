@@ -10,7 +10,6 @@ public sealed class LightningsFlashAbility : RangedPointTargetAbility
     {
         Name = "LightningsFlash";
         DisplayName = "Lightning's Flash";
-        Description = "Teleport this unit to a space within range equal to its speed. Deals damage to adjacent units equal to this units attack.";
         MaxCooldown = 3;
     }
 
@@ -33,5 +32,20 @@ public sealed class LightningsFlashAbility : RangedPointTargetAbility
                 }
             }
         }
+    }
+
+    public override void UpdateDescription()
+    {
+        Description = "Teleport this unit to a space within range equal to its speed. Deals damage to adjacent units equal to this units attack.";
+    }
+
+    public override void RankUpToOne()
+    {
+        MaxCooldown--;
+    }
+
+    public override void RankUpToTwo()
+    {
+        MaxCooldown--;
     }
 }

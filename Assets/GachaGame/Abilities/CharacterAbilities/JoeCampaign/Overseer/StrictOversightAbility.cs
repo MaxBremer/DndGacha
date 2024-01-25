@@ -6,11 +6,14 @@ using System.Threading.Tasks;
 
 public sealed class StrictOversightAbility : TurnStartPassive
 {
+    private int _dmgRange = 2;
+    private int _dmgAmount = 2;
+    private int _atkAmount = 1;
+
     public StrictOversightAbility()
     {
         Name = "StrictOversight";
         DisplayName = "Strict Oversight";
-        Description = "At the start of your turn, deal 2 damage to all friendly characters within Range 2. They each gain 1 attack.";
     }
 
     public override void ConditionalTrigger(object sender, EventArgs e)
@@ -25,13 +28,29 @@ public sealed class StrictOversightAbility : TurnStartPassive
     {
         foreach (var creat in GetCandidates())
         {
-            creat.TakeDamage(2, Owner);
-            creat.StatsChange(AtkChg: 1);
+            creat.TakeDamage(_dmgAmount, Owner);
+            creat.StatsChange(AtkChg: _atkAmount);
         }
+    }
+
+    public override void UpdateDescription()
+    {
+        Description = "At the start of your turn, deal " + _dmgAmount + " damage to all friendly characters within Range " + _dmgRange + ". They each gain " + _atkAmount + " attack.";
+    }
+
+    public override void RankUpToOne()
+    {
+        _dmgRange++;
+    }
+
+    public override void RankUpToTwo()
+    {
+        _dmgAmount--;
+        _atkAmount++;
     }
 
     private IEnumerable<Creature> GetCandidates()
     {
-        return Owner.MyGame.AllCreatures.Where(x => x.IsOnBoard && x != Owner && x.Controller == Owner.Controller && GachaGrid.IsInRange(x, Owner, 2));
+        return Owner.MyGame.AllCreatures.Where(x => x.IsOnBoard && x != Owner && x.Controller == Owner.Controller && GachaGrid.IsInRange(x, Owner, _dmgRange));
     }
 }

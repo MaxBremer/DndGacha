@@ -10,8 +10,7 @@ public sealed class EnthrallAbility : RangedTargetEnemyAbility
     {
         Name = "Enthrall";
         DisplayName = "Enthrall";
-        Description = "Select an enemy character within Range 1. It is now in your control, until it is no longer within Range 1 of this character at the start of its turn.";
-        MaxCooldown = 0;
+        MaxCooldown = 2;
         Range = 1;
     }
 
@@ -19,25 +18,43 @@ public sealed class EnthrallAbility : RangedTargetEnemyAbility
     {
         if(ChoicesNeeded.Where(x => x.Caption == "Target").FirstOrDefault() is CreatureTargetChoice creatChoice && creatChoice.ChoiceMade)
         {
-            var enthrall = new EnthralledAbility(Owner.Controller, Owner);
+            var enthrall = new EnthralledAbility(Owner.Controller, Owner, Range);
             creatChoice.TargetCreature.GainAbility(enthrall);
         }
+    }
+
+    public override void UpdateDescription()
+    {
+        Description = "Select an enemy character within Range " + Range + ". It is now in your control, until it is no longer within Range " + Range + " of this character at the start of its turn.";
+    }
+
+    public override void RankUpToOne()
+    {
+        MaxCooldown = Math.Max(0, MaxCooldown - 1);
+    }
+
+    public override void RankUpToTwo()
+    {
+        Range++;
     }
 }
 
 public sealed class EnthralledAbility : PassiveAbility
 {
+    private int _controlRange;
+
     private Player _boss;
     private Player _previous;
     private Creature _stayNear;
 
-    public EnthralledAbility(Player newController, Creature stayNear)
+    public EnthralledAbility(Player newController, Creature stayNear, int contRange)
     {
         _boss = newController;
         _stayNear = stayNear;
         Name = "Enthralled";
         DisplayName = "Enthralled";
-        Description = "Controlled until I start my turn not in Range 1 of my enthraller.";
+        _controlRange = contRange;
+        Description = "Controlled until I start my turn not in Range " + _controlRange + " of my enthraller.";
     }
 
     public override void AddOnboardTriggers()
@@ -48,7 +65,7 @@ public sealed class EnthralledAbility : PassiveAbility
 
     private void CheckForEnd(object sender, EventArgs e)
     {
-        if(e is TurnStartArgs startArgs && startArgs.PlayerWhoseTurnIsStarting == Owner.Controller.MyPlayerIndex && (!GachaGrid.IsInRange(Owner, _stayNear, 1)))
+        if(e is TurnStartArgs startArgs && startArgs.PlayerWhoseTurnIsStarting == Owner.Controller.MyPlayerIndex && !GachaGrid.IsInRange(Owner, _stayNear, _controlRange))
         {
             Owner.RemoveAbility(this);
         }

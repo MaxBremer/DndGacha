@@ -10,7 +10,6 @@ public sealed class DualDaggersAbility : RangedTargetMultipleEnemiesAbility
     {
         Name = "DualDaggers";
         DisplayName = "Dual Daggers";
-        Description = "Attack twice.";
         MaxCooldown = 0;
         Range = 1;
         NumChoices = 2;
@@ -25,5 +24,11 @@ public sealed class DualDaggersAbility : RangedTargetMultipleEnemiesAbility
                 Owner.AttackTarget(creatChoice.TargetCreature);
             }
         }
+    }
+
+    public override void UpdateDescription()
+    {
+        string numTimes = NumChoices == 2 ? "twice." : "thrice.";
+        Description = "Attack " + numTimes;
     }
 }

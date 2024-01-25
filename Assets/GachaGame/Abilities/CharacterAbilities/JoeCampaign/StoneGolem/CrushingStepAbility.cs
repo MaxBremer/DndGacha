@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 public sealed class CrushingStepAbility : RangedTargetEnemyAbility
 {
     private bool _freeUsage = false;
+    private int _dmgAmt = 16;
 
     public CrushingStepAbility()
     {
         Name = "CrushingStep";
         DisplayName = "Crushing Step";
-        Description = "Only usable if this character hasn't moved this turn. Select an enemy character in range 1. Deal 16 damage to them. If killed, move into their space, and you may act again.";
         MaxCooldown = 0;
         Range = 1;
     }
@@ -20,7 +20,7 @@ public sealed class CrushingStepAbility : RangedTargetEnemyAbility
     public override bool IsActivateable()
     {
         //TODO: Better check if creat has moved this turn? Flag? Applies to Focus Ki too.
-        return base.IsActivateable() && Owner.SpeedLeft >= Owner.Speed;
+        return base.IsActivateable() && (Owner.SpeedLeft >= Owner.Speed || AbilityRank == 2);
     }
 
     public override void Trigger(object sender, EventArgs e)
@@ -51,5 +51,20 @@ public sealed class CrushingStepAbility : RangedTargetEnemyAbility
             Owner.Acted();
         }
         _activatedThisTurn = true;
+    }
+
+    public override void UpdateDescription()
+    {
+        string prefix = AbilityRank < 2 ? "Only usable if this character hasn't moved this turn. " : "";
+        Description = prefix + "Select an enemy character in range " + Range + ". Deal " + _dmgAmt + " damage to them. If killed, move into their space, and you may act again.";
+    }
+
+    public override void RankUpToOne()
+    {
+        _dmgAmt += 8;
+    }
+
+    public override void RankUpToTwo()
+    {
     }
 }

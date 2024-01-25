@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 public sealed class SparkstoneRifleAbility : OrthogonalTargetEnemyAbility
 {
+    private int _dmgBonus = 0;
+
     public SparkstoneRifleAbility()
     {
         Name = "SparkstoneRifle";
         DisplayName = "Sparkstone Rifle";
-        Description = "Make a ranged attack of any distance in an orthogonal line.";
         MaxCooldown = 0;
     }
 
@@ -22,5 +23,22 @@ public sealed class SparkstoneRifleAbility : OrthogonalTargetEnemyAbility
 
             Owner.AttackTarget(trueTarget, true);
         }
+    }
+
+    public override void UpdateDescription()
+    {
+        string dmgBonStr = _dmgBonus == 0 ? "" : " with +" + _dmgBonus + " damage";
+
+        Description = "Make a ranged attack" + dmgBonStr + " of any distance in an orthogonal line.";
+    }
+
+    public override void RankUpToOne()
+    {
+        _dmgBonus++;
+    }
+
+    public override void RankUpToTwo()
+    {
+        _dmgBonus += 2;
     }
 }
