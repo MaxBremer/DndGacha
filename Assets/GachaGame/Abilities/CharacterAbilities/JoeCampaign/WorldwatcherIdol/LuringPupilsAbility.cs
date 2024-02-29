@@ -10,7 +10,6 @@ public sealed class LuringPupilsAbility : CreatureMovesFoundWhileOnboardPassive
     {
         Name = "LuringPupils";
         DisplayName = "Luring Pupils";
-        Description = "When moving, if a creature can move within Range 3 of this creature, it must.";
     }
 
     public override void ConditionalTrigger(object sender, EventArgs e)
@@ -36,5 +35,12 @@ public sealed class LuringPupilsAbility : CreatureMovesFoundWhileOnboardPassive
 
             toDelete.ForEach(x => moveArgs.ValidMovesWithPaths.Remove(x));
         }
+    }
+
+    public override void UpdateDescription()
+    {
+        //Rank 1: If an ENEMY creature can move...
+        //Rank 2: ...it must move as close as possible.
+        Description = "When moving, if a creature can move within Range 3 of this creature, it must.";
     }
 }

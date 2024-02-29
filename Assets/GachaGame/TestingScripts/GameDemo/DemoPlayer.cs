@@ -90,11 +90,6 @@ public class DemoPlayer : Player
                 HandleOptionSelectChoice(currentOptionChoice);
                 break;
 
-            case ChoiceType.CONDOPTIONSELECT:
-                var condOptChoice = CurrentTargetChoice as ConditionalOptionSelectChoice;
-                HandleCondOptionSelectChoice(condOptChoice);
-                break;
-
             default:
                 Debug.LogError("Unknown choice type encountered");
                 break;
@@ -148,23 +143,7 @@ public class DemoPlayer : Player
 
     private void HandleOptionSelectChoice(OptionSelectChoice choice)
     {
-        MyGameDemo.DisplayOptionButtons(choice.Options, (selectedOption) =>
-        {
-            choice.ChosenOption = selectedOption;
-
-            // Call a function in GameDemo to remove the displayed buttons
-            MyGameDemo.ClearOptionAbilityTargets(false);
-
-            // Call the next choice
-            PotentialNextChoice();
-        });
-        MyGameDemo.MySelectState = GameDemoSelectState.TARGETSELECT;
-        MyGameDemo.CurrentChoiceMakingAbility = CurrentTargetAbility;
-    }
-
-    private void HandleCondOptionSelectChoice(ConditionalOptionSelectChoice choice)
-    {
-        MyGameDemo.DisplayOptionButtons(choice.ChoiceConditions.Keys.Where(x => choice.ChoiceConditions[x](CurrentTargetAbility)).ToList(), (selectedOption) =>
+        MyGameDemo.DisplayOptionButtons(choice.Options.Where(x => x.ConditionOfPresentation(CurrentTargetAbility)).ToList(), (selectedOption) =>
         {
             choice.ChosenOption = selectedOption;
 

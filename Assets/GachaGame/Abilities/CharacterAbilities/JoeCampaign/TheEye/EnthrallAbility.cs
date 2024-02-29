@@ -32,11 +32,6 @@ public sealed class EnthrallAbility : RangedTargetEnemyAbility
     {
         MaxCooldown = Math.Max(0, MaxCooldown - 1);
     }
-
-    public override void RankUpToTwo()
-    {
-        Range++;
-    }
 }
 
 public sealed class EnthralledAbility : PassiveAbility
@@ -54,7 +49,6 @@ public sealed class EnthralledAbility : PassiveAbility
         Name = "Enthralled";
         DisplayName = "Enthralled";
         _controlRange = contRange;
-        Description = "Controlled until I start my turn not in Range " + _controlRange + " of my enthraller.";
     }
 
     public override void AddOnboardTriggers()
@@ -90,5 +84,10 @@ public sealed class EnthralledAbility : PassiveAbility
         base.OnLost();
         Owner.SetController(_previous);
         Owner.StartOfTurnRefresh(false);
+    }
+
+    public override void UpdateDescription()
+    {
+        Description = "Controlled until I start my turn not in Range " + _controlRange + " of my enthraller.";
     }
 }

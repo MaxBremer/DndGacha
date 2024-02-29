@@ -52,6 +52,8 @@
 
     CreatureLeavesBoard,
 
+    PlayerGainsControlOfCreature,
+
     CreatureSelectingAttackTargets,
     CreatureMovesFound,
     CreatureAbilitySelectingTargets,

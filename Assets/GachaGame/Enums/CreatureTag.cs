@@ -10,6 +10,7 @@ public enum CreatureTag
     HEXBLADES_CURSE,
     CANT_ACT,
     CANT_MOVE,
+    CANT_ACTIVATE,
     ILLUSORY,
     SNOOZING,
 }

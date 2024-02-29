@@ -308,11 +308,11 @@ public class GameDemo : MonoBehaviour
         }
     }
 
-    public void DisplayOptionButtons(List<string> options, Action<string> onOptionSelected)
+    public void DisplayOptionButtons(List<ChoiceOption> options, Action<ChoiceOption> onOptionSelected)
     {
         for (int i = 0; i < options.Count; i++)
         {
-            string option = options[i];
+            var option = options[i];
             GameObject button = CreateOptionButton(option, onOptionSelected);
 
             // Adjust the position of the button based on its index
@@ -321,12 +321,12 @@ public class GameDemo : MonoBehaviour
         }
     }
 
-    private GameObject CreateOptionButton(string option, Action<string> onOptionSelected)
+    private GameObject CreateOptionButton(ChoiceOption option, Action<ChoiceOption> onOptionSelected)
     {
         GameObject button = Instantiate(OptionButtonPrefab);
 
         // Set the button's text to the option
-        button.GetComponentInChildren<TextMeshProUGUI>().text = option;
+        button.GetComponentInChildren<TextMeshProUGUI>().text = option.OptionName;
 
         // Attach an event listener to the button
         button.GetComponent<Button>().onClick.AddListener(() => onOptionSelected(option));

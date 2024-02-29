@@ -19,7 +19,7 @@ public sealed class MirrorImageAbility : RangedUnblockedPointTargetAbility
     public override void InitAbility()
     {
         base.InitAbility();
-        OptionSelectChoice choice = new OptionSelectChoice() { Caption = "SwapChoice", Options = new List<string>() { "Swap Positions with Image", "Don't Swap" } };
+        OptionSelectChoice choice = new OptionSelectChoice(new List<string>() { "Swap Positions with Image", "Don't Swap" }) { Caption = "SwapChoice" };
         ChoicesNeeded.Add(choice);
     }
 
@@ -36,7 +36,7 @@ public sealed class MirrorImageAbility : RangedUnblockedPointTargetAbility
 
             image.GainTag(CreatureTag.CANT_ACT);
             image.GainTag(CreatureTag.ILLUSORY);
-            if (optChoice.ChosenOption == "Swap Positions with Image")
+            if (optChoice.ChosenOptionString == "Swap Positions with Image")
             {
                 var origSpace = Owner.MySpace;
                 Owner.MyGame.GameGrid.TeleportTo(Owner, pointChoice.TargetSpace);

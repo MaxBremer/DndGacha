@@ -11,13 +11,12 @@ public sealed class TongueOfWarriorsAbility : OrthogonalTargetEnemyAbility
     {
         Name = "TongueOfWarriors";
         DisplayName = "Tongue of Warriors";
-        Description = "Choose an orthogonal direction with a straight line to an enemy. Pull that enemy closer until it is 1 tile away. It takes damage for each tile it moved.";
         MaxCooldown = 2;
     }
 
     public override void Trigger(object sender, EventArgs e)
     {
-        if(ChoicesNeeded.Where(x => x.Caption == "Options").FirstOrDefault() is ConditionalOptionSelectChoice condOptChoice && condOptChoice.ChoiceMade)
+        if(ChoicesNeeded.Where(x => x.Caption == "Options").FirstOrDefault() is OptionSelectChoice condOptChoice && condOptChoice.ChoiceMade)
         {
             var trueTarget = GetTargetForDir(condOptChoice.ChosenOption);
 
@@ -29,7 +28,7 @@ public sealed class TongueOfWarriorsAbility : OrthogonalTargetEnemyAbility
             }
             GridSpace moveToSpace = null;
             var grid = Owner.MyGame.GameGrid;
-            switch (condOptChoice.ChosenOption)
+            switch (condOptChoice.ChosenOption.OptionName)
             {
                 case "North":
                     moveToSpace = grid[(Owner.MySpace.XPos, Owner.MySpace.YPos + 1)];
@@ -48,5 +47,10 @@ public sealed class TongueOfWarriorsAbility : OrthogonalTargetEnemyAbility
             grid.TeleportTo(trueTarget, moveToSpace);
             trueTarget.TakeDamage(damageNum, Owner);
         }
+    }
+
+    public override void UpdateDescription()
+    {
+        Description = "Choose an orthogonal direction with a straight line to an enemy. Pull that enemy closer until it is 1 tile away. It takes damage for each tile it moved.";
     }
 }

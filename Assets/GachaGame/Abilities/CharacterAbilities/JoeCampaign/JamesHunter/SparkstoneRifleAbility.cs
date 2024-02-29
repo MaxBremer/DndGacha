@@ -17,7 +17,7 @@ public sealed class SparkstoneRifleAbility : OrthogonalTargetEnemyAbility
 
     public override void Trigger(object sender, EventArgs e)
     {
-        if (ChoicesNeeded.Where(x => x.Caption == "Options").FirstOrDefault() is ConditionalOptionSelectChoice condOptChoice && condOptChoice.ChoiceMade)
+        if (ChoicesNeeded.Where(x => x.Caption == "Options").FirstOrDefault() is OptionSelectChoice condOptChoice && condOptChoice.ChoiceMade)
         {
             var trueTarget = GetTargetForDir(condOptChoice.ChosenOption);
 

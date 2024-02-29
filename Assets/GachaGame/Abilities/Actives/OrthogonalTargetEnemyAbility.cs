@@ -11,18 +11,20 @@ public class OrthogonalTargetEnemyAbility : ActiveAbility
     {
         base.InitAbility();
 
-        var chooseWhichToActivate = new ConditionalOptionSelectChoice() { Caption = "Options" };
-        chooseWhichToActivate.ChoiceConditions.Add("North", GetValidForDirection("North"));
-        chooseWhichToActivate.ChoiceConditions.Add("South", GetValidForDirection("South"));
-        chooseWhichToActivate.ChoiceConditions.Add("East", GetValidForDirection("East"));
-        chooseWhichToActivate.ChoiceConditions.Add("West", GetValidForDirection("West"));
+        var chooseWhichToActivate = new OptionSelectChoice() { Caption = "Options" };
+        chooseWhichToActivate.Options.Add(new ChoiceOption() { OptionName = "North", ConditionOfPresentation = GetValidForDirection("North") });
+        chooseWhichToActivate.Options.Add(new ChoiceOption() { OptionName = "South", ConditionOfPresentation = GetValidForDirection("South") });
+        chooseWhichToActivate.Options.Add(new ChoiceOption() { OptionName = "East", ConditionOfPresentation = GetValidForDirection("East") });
+        chooseWhichToActivate.Options.Add(new ChoiceOption() { OptionName = "West", ConditionOfPresentation = GetValidForDirection("West") });
 
         ChoicesNeeded.Add(chooseWhichToActivate);
     }
 
-    internal virtual Creature GetTargetForDir(string dir)
+    internal virtual Creature GetTargetForDir(ChoiceOption opt)
     {
-        var condOptChoice = ChoicesNeeded.Where(x => x.Caption == "Options").First() as ConditionalOptionSelectChoice;
+        var dir = opt.OptionName;
+
+        var condOptChoice = ChoicesNeeded.Where(x => x.Caption == "Options").First() as OptionSelectChoice;
 
         var possibleTargets = Owner.MyGame.AllCreatures.Where(x =>
         {
@@ -31,7 +33,7 @@ public class OrthogonalTargetEnemyAbility : ActiveAbility
                 return false;
             }
             bool possibility = false;
-            switch (condOptChoice.ChosenOption)
+            switch (condOptChoice.ChosenOption.OptionName)
             {
                 case "North":
                     possibility = x.MySpace.XPos == Owner.MySpace.XPos && x.MySpace.YPos > Owner.MySpace.YPos;
@@ -82,6 +84,8 @@ public class OrthogonalTargetEnemyAbility : ActiveAbility
             while (shouldGo)
             {
                 shouldGo = false;
+
+                //TODO: Jesus christ. Fix this.
                 switch (dir)
                 {
                     case "North":

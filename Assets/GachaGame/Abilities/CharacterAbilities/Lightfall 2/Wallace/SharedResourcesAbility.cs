@@ -26,14 +26,24 @@ public sealed class SharedResourcesAbility : ActiveAbility
         firstTargetChoice.TriggerAfterChoiceMade = () =>
         {
             firstAbilChoice.Options.Clear();
-            firstAbilChoice.Options.AddRange(firstTargetChoice.TargetCreature.Abilities.Select(x => x.DisplayName));
+            var opts = new List<ChoiceOption>();
+            foreach (var abil in firstTargetChoice.TargetCreature.Abilities)
+            {
+                opts.Add(new ChoiceOption() { OptionName = abil.DisplayName, AssociatedObject = abil });
+            }
+            firstAbilChoice.Options.AddRange(opts);
         };
 
         var secondTargetChoice = new CreatureTargetChoice() { Caption = "Target2", IsValidCreature = x => isValid(x) && firstTargetChoice.TargetCreature != x };
         secondTargetChoice.TriggerAfterChoiceMade = () =>
         {
             secondAbilChoice.Options.Clear();
-            secondAbilChoice.Options.AddRange(secondTargetChoice.TargetCreature.Abilities.Select(x => x.DisplayName));
+            var opts = new List<ChoiceOption>();
+            foreach (var abil in secondTargetChoice.TargetCreature.Abilities)
+            {
+                opts.Add(new ChoiceOption() { OptionName = abil.DisplayName, AssociatedObject = abil });
+            }
+            secondAbilChoice.Options.AddRange(opts);
         };
 
         ChoicesNeeded.AddRange(new Choice[] { firstTargetChoice, secondTargetChoice, firstAbilChoice, secondAbilChoice });
@@ -44,11 +54,8 @@ public sealed class SharedResourcesAbility : ActiveAbility
         var target1 = (ChoicesNeeded.Where(x => x.Caption == "Target1").First() as CreatureTargetChoice).TargetCreature;
         var target2 = (ChoicesNeeded.Where(x => x.Caption == "Target2").First() as CreatureTargetChoice).TargetCreature;
 
-        var chosenAbil1 = (ChoicesNeeded.Where(x => x.Caption == "AbilSelect1").First() as OptionSelectChoice).ChosenOption;
-        var chosenAbil2 = (ChoicesNeeded.Where(x => x.Caption == "AbilSelect2").First() as OptionSelectChoice).ChosenOption;
-
-        var targetAbility1 = target1.Abilities.Where(x => x.DisplayName == chosenAbil1).First();
-        var targetAbility2 = target2.Abilities.Where(x => x.DisplayName == chosenAbil2).First();
+        var targetAbility1 = (ChoicesNeeded.Where(x => x.Caption == "AbilSelect1").First() as OptionSelectChoice).ChosenOption.AssociatedObject as Ability;
+        var targetAbility2 = (ChoicesNeeded.Where(x => x.Caption == "AbilSelect2").First() as OptionSelectChoice).ChosenOption.AssociatedObject as Ability;
 
         target1.RemoveAbility(targetAbility1, false);
         target2.RemoveAbility(targetAbility2, false);

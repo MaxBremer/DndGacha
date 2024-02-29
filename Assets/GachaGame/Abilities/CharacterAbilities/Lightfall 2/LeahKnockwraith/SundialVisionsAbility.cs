@@ -24,6 +24,7 @@ public sealed class SundialVisionsAbility : PassiveAbility
         EventManager.StartListening(GachaEventType.BeforeAttack, Attack_TargetSelected, Priority);
         EventManager.StartListening(GachaEventType.CreatureLeavesBoard, UpdateOdds, Priority);
         EventManager.StartListening(GachaEventType.CreatureSummoned, UpdateOdds, Priority);
+        EventManager.StartListening(GachaEventType.PlayerGainsControlOfCreature, UpdateOdds, Priority);
     }
 
     public override void RemoveOnboardTriggers()
@@ -34,6 +35,7 @@ public sealed class SundialVisionsAbility : PassiveAbility
         EventManager.StopListening(GachaEventType.BeforeAttack, Attack_TargetSelected, Priority);
         EventManager.StopListening(GachaEventType.CreatureLeavesBoard, UpdateOdds, Priority);
         EventManager.StopListening(GachaEventType.CreatureSummoned, UpdateOdds, Priority);
+        EventManager.StopListening(GachaEventType.PlayerGainsControlOfCreature, UpdateOdds, Priority);
     }
 
     public override void UpdateDescription()
@@ -82,7 +84,7 @@ public sealed class SundialVisionsAbility : PassiveAbility
 
     private bool IncreaseConditionsTrue()
     {
-        return Owner.Controller.OnBoardCreatures.Count == 1 && Owner.Controller.OnBoardCreatures.First() == Owner;
+        return Owner != null && Owner.Controller != null && Owner.Controller.OnBoardCreatures.Count == 1 && Owner.Controller.OnBoardCreatures.First() == Owner;
     }
 
     private void ActiveAbility_Activated(object sender, EventArgs e)

@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 public sealed class BanishAbility : RangedTargetAbility
 {
+    private int _healthCeil = 10;
+
     public BanishAbility()
     {
         Name = "Banish";
         DisplayName = "Banish";
-        Description = "Choose a creature below 10 health within range 2. Return them to their owner's reserve.";
         MaxCooldown = 3;
         Range = 2;
     }
@@ -22,7 +23,7 @@ public sealed class BanishAbility : RangedTargetAbility
         var choice = ChoicesNeeded.Where(x => x.Caption == "Target").FirstOrDefault();
         if(choice != null && choice is CreatureTargetChoice creatChoice)
         {
-            Func<Creature, bool> newIsValid = x => x.IsOnBoard && x != Owner && GachaGrid.IsInRange(Owner, x, Range) && x.Health < 10;
+            Func<Creature, bool> newIsValid = x => x.IsOnBoard && x != Owner && GachaGrid.IsInRange(Owner, x, Range) && x.Health < _healthCeil;
             creatChoice.IsValidCreature = newIsValid;
         }
     }
@@ -33,5 +34,15 @@ public sealed class BanishAbility : RangedTargetAbility
         {
             creatChoice.TargetCreature.Controller.PutInReserve(creatChoice.TargetCreature);
         }
+    }
+
+    public override void UpdateDescription()
+    {
+        Description = "Choose a creature below " + _healthCeil + " health within range " + Range + ". Return them to their owner's reserve.";
+    }
+
+    public override void RankUpToTwo()
+    {
+        _healthCeil += 5;
     }
 }

@@ -101,7 +101,8 @@ public class ActiveAbility : Ability
 
     public virtual bool IsActivateable()
     {
-        return Owner.CanAct && Cooldown == 0 && ChoiceManager.ValidChoicesExist(ChoicesNeeded, this);
+        //TODO: Better way of doing CANT_ACTIVATE.
+        return Owner.CanAct && (!Owner.HasTag(CreatureTag.CANT_ACTIVATE)) && Cooldown == 0 && ChoiceManager.ValidChoicesExist(ChoicesNeeded, this);
     }
 
     public override void PostExternalTrigger()

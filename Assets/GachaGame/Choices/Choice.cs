@@ -9,7 +9,6 @@ public enum ChoiceType
     CREATURETARGET,
     POINTTARGET,
     OPTIONSELECT,
-    CONDOPTIONSELECT,
 }
 
 public abstract class Choice
@@ -19,8 +18,6 @@ public abstract class Choice
     public string Caption;
 
     public abstract void ClearChoice();
-
-    public Func<bool> ConditionOfPresentation = () => true;
 
     public Action TriggerAfterChoiceMade = () => { };
 }

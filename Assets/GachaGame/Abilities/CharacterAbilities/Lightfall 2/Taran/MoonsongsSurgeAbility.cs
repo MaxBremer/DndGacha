@@ -45,16 +45,16 @@ public sealed class MoonsongsSurgeAbility : ActiveAbility
 
         //TODO: When abilities of owner change, update choice to reflect this? I.e. update isvalid functions in cond option.
 
-        var chooseWhichToActivate = new ConditionalOptionSelectChoice() { Caption = "Options" };
-        chooseWhichToActivate.ChoiceConditions.Add("Mirror Image Thrice", mirrorIsValid);
-        chooseWhichToActivate.ChoiceConditions.Add("Lunar Volley Twice", volleyIsValid);
+        var chooseWhichToActivate = new OptionSelectChoice() { Caption = "Options" };
+        chooseWhichToActivate.Options.Add(new ChoiceOption() { OptionName = "Mirror Image Thrice", ConditionOfPresentation = mirrorIsValid });
+        chooseWhichToActivate.Options.Add(new ChoiceOption() { OptionName = "Lunar Volley Twice", ConditionOfPresentation = volleyIsValid });
 
         ChoicesNeeded.Add(chooseWhichToActivate);
     }
 
     public override void Trigger(object sender, EventArgs e)
     {
-        if(ChoicesNeeded.First() is ConditionalOptionSelectChoice condOpt && condOpt.ChoiceMade && condOpt.ChoiceConditions[condOpt.ChosenOption](this))
+        if(ChoicesNeeded.First() is OptionSelectChoice condOpt && condOpt.ChoiceMade && condOpt.ChosenOption.ConditionOfPresentation(this))
         {
             if (condOpt.ChosenOption == "Mirror Image Thrice")
             {

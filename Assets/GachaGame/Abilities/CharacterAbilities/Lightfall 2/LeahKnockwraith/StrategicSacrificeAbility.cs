@@ -25,10 +25,10 @@ public sealed class StrategicSacrificeAbility : TargetNonselfFriendlyAbility
 
         if(AbilityRank == 0)
         {
-            optSel = new OptionSelectChoice() { Caption = "Choice", Options = (new string[] { "Destroy creature", "Give control of creature to Opponent", }).ToList() };
+            optSel = new OptionSelectChoice(new string[] { "Destroy creature", "Give control of creature to Opponent", }) { Caption = "Choice" };
         }else if(AbilityRank == 2)
         {
-            optSel = new OptionSelectChoice() { Caption = "Choice", Options = (new string[] { "Destroy creature and give opponent a double agent", "Destroy this and buff its stats by " + StatIncreaseAmount, }).ToList() };
+            optSel = new OptionSelectChoice(new string[] { "Destroy creature and give opponent a double agent", "Destroy this and buff its stats by " + StatIncreaseAmount, }) { Caption = "Choice" };
         }
         
         if(optSel != null)
@@ -61,7 +61,7 @@ public sealed class StrategicSacrificeAbility : TargetNonselfFriendlyAbility
             {
                 if (AbilityRank == 0)
                 {
-                    if (optChoice.ChosenOption == "Destroy creature")
+                    if (optChoice.ChosenOptionString == "Destroy creature")
                     {
                         creatChoice.TargetCreature.Die();
                     }
@@ -75,7 +75,7 @@ public sealed class StrategicSacrificeAbility : TargetNonselfFriendlyAbility
                 }
                 else
                 {
-                    if (optChoice.ChosenOption == "Destroy creature and give opponent a double agent")
+                    if (optChoice.ChosenOptionString == "Destroy creature and give opponent a double agent")
                     {
                         //target dies, summon double agent, give control to opponent.
                         DestroyAndSummonAgent(creatChoice.TargetCreature, opp);

@@ -110,15 +110,8 @@ public static class ChoiceManager
             case ChoiceType.OPTIONSELECT:
                 if (choice is OptionSelectChoice optChoice)
                 {
-                    optChoice.ChosenOption = optChoice.Options[r.Next(optChoice.Options.Count)];
-                }
-                break;
-
-            case ChoiceType.CONDOPTIONSELECT:
-                if (choice is ConditionalOptionSelectChoice condChoice)
-                {
-                    var validOptions = condChoice.ChoiceConditions.Keys.Where(x => condChoice.ChoiceConditions[x](abilOfChoice)).ToList();
-                    condChoice.ChosenOption = validOptions[r.Next(validOptions.Count)];
+                    var validOptions = optChoice.Options.Where(x => x.ConditionOfPresentation(abilOfChoice)).ToList();
+                    optChoice.ChosenOption = validOptions[r.Next(validOptions.Count)];
                 }
                 break;
             default:
@@ -150,10 +143,6 @@ public static class ChoiceManager
 
     public static bool ValidChoiceExists(Choice choice, Ability abilOfChoice)
     {
-        if (!choice.ConditionOfPresentation())
-        {
-            return true;
-        }
         switch (choice.Type)
         {
             case ChoiceType.CREATURETARGET:
@@ -161,9 +150,7 @@ public static class ChoiceManager
             case ChoiceType.POINTTARGET:
                 return CurrentGame.GameGrid.GetAllGridSquares().Where(x => ((PointTargetChoice)choice).IsValidSpace(x)).Any();
             case ChoiceType.OPTIONSELECT:
-                return true;
-            case ChoiceType.CONDOPTIONSELECT:
-                return ((ConditionalOptionSelectChoice)choice).ChoiceConditions.Values.Where(x => x(abilOfChoice)).Any();
+                return ((OptionSelectChoice)choice).Options.Where(x => x.ConditionOfPresentation(abilOfChoice)).Any();
             case ChoiceType.NONE:
             default:
                 return false;
@@ -172,10 +159,6 @@ public static class ChoiceManager
 
     public static bool NumValidChoicesExist(Choice choice, Ability abilOfChoice, int numReq)
     {
-        if (!choice.ConditionOfPresentation())
-        {
-            return true;
-        }
         switch (choice.Type)
         {
             case ChoiceType.CREATURETARGET:
@@ -183,9 +166,7 @@ public static class ChoiceManager
             case ChoiceType.POINTTARGET:
                 return CurrentGame.GameGrid.GetAllGridSquares().Where(x => ((PointTargetChoice)choice).IsValidSpace(x)).Count() >= numReq;
             case ChoiceType.OPTIONSELECT:
-                return true;
-            case ChoiceType.CONDOPTIONSELECT:
-                return ((ConditionalOptionSelectChoice)choice).ChoiceConditions.Values.Where(x => x(abilOfChoice)).Count() >= numReq;
+                return ((OptionSelectChoice)choice).Options.Where(x => x.ConditionOfPresentation(abilOfChoice)).Count() >= numReq;
             case ChoiceType.NONE:
             default:
                 return false;

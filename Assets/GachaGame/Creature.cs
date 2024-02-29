@@ -6,6 +6,8 @@ using UnityEngine;
 
 public class Creature
 {
+    private Player _controller;
+
     private bool _canAct;
 
     private bool _canAttack = true;
@@ -86,7 +88,16 @@ public class Creature
 
     public bool CanBasicAttack => (HasTag(CreatureTag.QUICKSTRIKE) ? _canAttack : CanAct) && GetValidBasicAttackTargets().Count > 0;
 
-    public Player Controller;
+    public Player Controller {
+        get => _controller;
+        set
+        {
+            var oldController = _controller;
+            _controller = value;
+
+            EventManager.Invoke(GachaEventType.PlayerGainsControlOfCreature, this, new GainControlArgs() { CreatureControlChanging = this, NewController = _controller, OldController = oldController });
+        }
+    }
 
     public List<Ability> Abilities { get; } = new List<Ability>();
 
@@ -598,10 +609,14 @@ public class Creature
         return Abilities.Contains(abil);
     }
 
-    public void GainHiddenAbility(PassiveAbility abil)
+    public void GainHiddenAbility(PassiveAbility abil, int rankOf = 0)
     {
         HiddenAbilities.Add(abil);
         abil.Owner = this;
+        for (int i = 0; i < rankOf; i++)
+        {
+            abil.RankUp();
+        }
         abil.InitAbility();
     }
 
